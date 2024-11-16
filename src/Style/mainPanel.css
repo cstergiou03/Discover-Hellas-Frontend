@@ -1,0 +1,76 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.main-container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.top-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-container h1{
+    font-size: 4rem;
+    font-weight: bold;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+}
+
+.welcome-container {
+    margin-top: 8em;
+}
+
+.welcome-container .blue {
+    color: rgb(0, 123, 255);
+}
+
+.welcome-container .white {
+    color: rgb(255, 255, 255);
+}
+
+.greece-photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.mid-container{
+    flex: 1;
+    margin-top: 2em;
+    width: auto;
+    height: 100vh;
+}
+
+.mid-container h2 {
+    font-size: 1.5rem;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    color: #007BFF;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    padding-top: 1em;
+}
+
+

@@ -1,0 +1,52 @@
+[
+    {
+        "id": "thessaloniki",
+        "name": "Thessaloniki",
+        "summary": "Thessaloniki is the cultural heart of Northern Greece...",
+        "imagePath": "../src/assets/cities/skg.jpg",
+        "weather": {
+            "temperature": "25°C",
+            "condition": "Sunny",
+            "icon": "☀️"
+        },
+        "monuments": [
+            {
+                "name": "White Tower",
+                "imagePath": "../src/assets/monuments/white_tower.jpg"
+            },
+            {
+                "name": "Rotunda",
+                "imagePath": "../src/assets/monuments/rotunda.jpg"
+            },
+            {
+                "name": "Aristotelous Square",
+                "imagePath": "../src/assets/monuments/aristotelous_square.jpg"
+            }
+        ]
+    },
+    {
+        "id": "athens",
+        "name": "Athens",
+        "summary": "Athens, the capital of Greece, is a vibrant city...",
+        "imagePath": "../src/assets/cities/athens.jpg",
+        "weather": {
+            "temperature": "28°C",
+            "condition": "Clear Sky",
+            "icon": "🌤️"
+        },
+        "monuments": [
+            {
+                "name": "Acropolis",
+                "imagePath": "../src/assets/monuments/acropolis.jpg"
+            },
+            {
+                "name": "Parthenon",
+                "imagePath": "../src/assets/monuments/syntagma.jpg"
+            },
+            {
+                "name": "Temple of Olympian Zeus",
+                "imagePath": "../src/assets/monuments/temple_of_zeus.jpg"
+            }
+        ]
+    }
+]
