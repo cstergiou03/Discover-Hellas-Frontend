@@ -1,0 +1,61 @@
+.header {
+    background-color: #a4c991;
+    padding: 10px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 85%;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.header .logo{
+    width: 200px;
+    border-radius: 25px;
+}
+
+.header .navigation {
+    display: flex;
+    width: 800px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    font-size: 18px;
+    color: blanchedalmond;
+    position: relative; /* Απαραίτητο για το dropdown */
+}
+
+.header .navigation a {
+    text-decoration: none;
+    color: blanchedalmond;
+}
+
+.header .dropdown {
+    position: relative; /* Βάση για το dropdown */
+    cursor: pointer; /* Δείχνει ότι είναι clickable */
+}
+
+.header .dropdown ul {
+    display: none; /* Αρχικά κρυφό */
+    position: absolute; /* Τοποθέτηση */
+    background-color: #a4c991; /* Χρώμα φόντου */
+    margin: 0;
+    padding: 10px;
+    border-radius: 10px;
+    list-style: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10; /* Εξασφαλίζει ότι το dropdown εμφανίζεται πάνω από άλλα στοιχεία */
+}
+
+.header .dropdown ul li {
+    margin: 5px 0; /* Απόσταση μεταξύ των στοιχείων */
+}
+
+.header .dropdown ul li a {
+    color: white; /* Χρώμα για τα links */
+}
+
+.header .dropdown:hover ul {
+    display: block; /* Εμφανίζεται όταν γίνεται hover στο dropdown */
+}
