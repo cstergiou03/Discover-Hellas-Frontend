@@ -1,0 +1,122 @@
+[
+    {
+      "amenity_id": "1a2b3c4d-5e6f-7g8h-9i0j-abcdefgh1234",
+      "name": "Mount Olympus National Park",
+      "type": "Destination",
+      "provider_id": "provider-001",
+      "phone": "+302351234567",
+      "email": "info@mountolympuspark.gr",
+      "status": "Accepted",
+      "location": {
+        "latitude": 40.0853,
+        "longitude": 22.3580
+      },
+      "description": "A majestic national park surrounding the mythical Mount Olympus, perfect for hiking and nature enthusiasts.",
+      "photos": [
+        "../src/assets/amenities/olympus.jpg"
+      ]
+    },
+    {
+      "amenity_id": "2b3c4d5e-6f7g-8h9i-0j1a-bcdefgh2345",
+      "name": "Platamon Castle",
+      "type": "Destination",
+      "provider_id": "provider-002",
+      "phone": "+302351234568",
+      "email": "info@platamoncastle.gr",
+      "status": "Accepted",
+      "location": {
+        "latitude": 40.0002,
+        "longitude": 22.5833
+      },
+      "description": "A historic castle offering panoramic views of the Thermaic Gulf and rich medieval history.",
+      "photos": [
+        "../src/assets/amenities/platamon.jpg"
+      ]
+    },
+    {
+      "amenity_id": "3c4d5e6f-7g8h-9i0j-1a2b-cdefgh3456",
+      "name": "Leptokarya Beach",
+      "type": "Destination",
+      "provider_id": "provider-003",
+      "phone": "+302351234569",
+      "email": "info@leptokaryabeach.gr",
+      "status": "Accepted",
+      "location": {
+        "latitude": 40.0590,
+        "longitude": 22.5500
+      },
+      "description": "A beautiful sandy beach with crystal-clear waters, perfect for families and sunseekers.",
+      "photos": [
+        "../src/assets/amenities/leptokaria.jpg"
+      ]
+    },
+    {
+      "amenity_id": "4d5e6f7g-8h9i-0j1a-2b3c-defgh4567",
+      "name": "Litochoro Village",
+      "type": "Destination",
+      "provider_id": "provider-004",
+      "phone": "+302351234570",
+      "email": "info@litochorovillage.gr",
+      "status": "Accepted",
+      "location": {
+        "latitude": 40.1002,
+        "longitude": 22.4972
+      },
+      "description": "A picturesque village at the base of Mount Olympus, known for its charming streets and proximity to nature.",
+      "photos": [
+        "../"
+      ]
+    },
+    {
+      "amenity_id": "5e6f7g8h-9i0j-1a2b-3c4d-efgh5678",
+      "name": "Dion Archaeological Site",
+      "type": "Destination",
+      "provider_id": "provider-005",
+      "phone": "+302351234571",
+      "email": "info@dionarchaeological.gr",
+      "status": "Accepted",
+      "location": {
+        "latitude": 40.1750,
+        "longitude": 22.4914
+      },
+      "description": "An ancient city dedicated to Zeus, featuring impressive ruins and a fascinating museum.",
+      "photos": [
+        "../src/assets/amenities/dion.jpg"
+      ]
+    },
+    {
+      "amenity_id": "6f7g8h9i-0j1a-2b3c-4d5e-fgh6789",
+      "name": "Nei Pori Beach",
+      "type": "Destination",
+      "provider_id": "provider-006",
+      "phone": "+302351234572",
+      "email": "info@neiporibeach.gr",
+      "status": "Accepted",
+      "location": {
+        "latitude": 39.9850,
+        "longitude": 22.6300
+      },
+      "description": "A serene beach with shallow waters and stunning sunsets, ideal for relaxation and water sports.",
+      "photos": [
+        "../src/assets/amenities/nei.jpg"
+      ]
+    },
+    {
+      "amenity_id": "7g8h9i0j-1a2b-3c4d-5e6f-gh7890",
+      "name": "Olympus Resort Hotel",
+      "type": "Accommodation",
+      "provider_id": "provider-007",
+      "phone": "+302351234573",
+      "email": "info@olympusresorthotel.gr",
+      "status": "Accepted",
+      "location": {
+        "latitude": 40.0650,
+        "longitude": 22.5330
+      },
+      "description": "A luxurious hotel offering exceptional service, stunning views, and modern amenities near Mount Olympus.",
+      "photos": [
+        "https://example.com/photos/olympus_resort_hotel.jpg"
+      ]
+    }
+  ]
+  
