@@ -1,0 +1,14 @@
+.title-container {
+    position: absolute;
+    width: 300px;
+    bottom: 10px; /* Απόσταση από το κάτω μέρος */
+    left: 10px;   /* Απόσταση από το αριστερό μέρος */
+    background-color: rgba(219, 219, 219, 0.5); /* Προαιρετικό: Φόντο με ημιδιαφάνεια */
+    background-color: rgba(164, 201, 145, 0.493);
+    padding: 10px; /* Προαιρετικό: Εσωτερικό περιθώριο */
+    border-radius: 5px; /* Προαιρετικό: Καμπυλωμένες γωνίες */
+    color: white; /* Προαιρετικό: Χρώμα κειμένου */
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+}

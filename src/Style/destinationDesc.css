@@ -1,0 +1,23 @@
+.destinationDesc-container{
+    width: 500px;
+    height: 540px;
+    background-color: rgba(50, 50, 50, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 25px;
+}
+
+.destinationDesc-title {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.destinationDesc-text {
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.6;
+    text-align: justify;
+}
