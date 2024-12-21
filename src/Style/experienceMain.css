@@ -1,0 +1,86 @@
+.experience-main-container {
+    width: 100%;
+}
+
+.experience-table {
+    display: flex;
+    height: 602px;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 1em;
+}
+
+.experience-record {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+}
+
+.record-column {
+    flex: 1;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.record-image {
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.pagination-button {
+    padding: 10px 15px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-button:hover {
+    background-color: #a4c991;
+    color: white;
+}
+
+.pagination-button.active {
+    background-color: #a4c991;
+    color: white;
+    font-weight: bold;
+    border-color: #a4c991;
+}
+
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.search-input {
+    padding: 10px;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.filter-select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+}

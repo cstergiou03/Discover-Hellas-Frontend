@@ -1,0 +1,109 @@
+.provider-table {
+    padding: 20px;
+    background-color: #fff;
+    height: 510px; /* Εξασφαλίζει ότι το ύψος του container παραμένει σταθερό */
+}
+
+.table {
+    height: 400px;
+    max-height: 505px; /* Περιορισμός ύψους της περιοχής του πίνακα */
+}
+
+.tabs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.tab {
+    cursor: pointer;
+    padding: 10px 15px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.tab.active {
+    background-color: #a4c991;
+    color: white;
+}
+
+.table-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.table-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    align-items: center; /* Κεντράρει τα στοιχεία κατακόρυφα */
+    gap: 20px; /* Απόσταση μεταξύ των στοιχείων */
+}
+
+.table-item:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.record-column {
+    text-align: left;
+    flex: 1;
+    font-size: 1rem;
+}
+
+.record-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.record-description {
+    font-size: 1rem;
+    color: #555;
+}
+
+.more-btn {
+    padding: 10px 15px;
+    background-color: #a4c991;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.more-btn:hover {
+    background-color: #8fb87e;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 10px 20px;
+    background-color: #a4c991;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #8fb87e;
+}
+
+.pagination span {
+    font-size: 1rem;
+}

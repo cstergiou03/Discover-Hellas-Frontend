@@ -1,23 +1,34 @@
 import React, { useState } from "react";
 import "../Style/destinationGallery.css";
 
-function DestinationGallery({ photos }){
-    const photosPerPage = 6; // Αριθμός φωτογραφιών ανά σελίδα
+function DestinationGallery({ data }) {
     const [currentPage, setCurrentPage] = useState(0);
+    const photosPerPage = 6;
 
-    // Υπολογισμός των φωτογραφιών που θα εμφανιστούν
+    // Επεξεργασία φωτογραφιών
+    const photos = Array.isArray(data)
+        ? data // Αν τα δεδομένα είναι ήδη πίνακας, τα χρησιμοποιούμε άμεσα
+        : data.photosTable || []; // Χρησιμοποιούμε το photosTable αν έχει προετοιμαστεί
+
+    // Υπολογισμός του εύρους της τρέχουσας σελίδας
     const startIndex = currentPage * photosPerPage;
     const currentPhotos = photos.slice(startIndex, startIndex + photosPerPage);
 
-    const hasNextPage = startIndex + photosPerPage < photos.length;
-    const hasPreviousPage = currentPage > 0; // Έλεγχος για να δούμε αν υπάρχει προηγούμενη σελίδα
+    // Αριθμός κενών για την τρέχουσα σελίδα (αν οι φωτογραφίες είναι λιγότερες)
+    const emptyPhotos = Array(photosPerPage - currentPhotos.length).fill(null);
 
+    // Έλεγχοι για τα κουμπιά περιήγησης
+    const hasNextPage = startIndex + photosPerPage < photos.length;
+    const hasPreviousPage = currentPage > 0;
+
+    // Μετάβαση στην επόμενη σελίδα
     const nextPage = () => {
         if (hasNextPage) {
             setCurrentPage(currentPage + 1);
         }
     };
 
+    // Μετάβαση στην προηγούμενη σελίδα
     const previousPage = () => {
         if (hasPreviousPage) {
             setCurrentPage(currentPage - 1);
@@ -27,9 +38,13 @@ function DestinationGallery({ photos }){
     return (
         <div className="gallery-container">
             <div className="photo-grid">
-                {currentPhotos.map((photo, index) => (
+                {currentPhotos.concat(emptyPhotos).map((photo, index) => (
                     <div key={index} className="photo-item">
-                        <img src={photo.src} alt={`Photo ${index + 1}`} />
+                        {photo ? (
+                            <img src={photo} alt={`Photo ${index + 1}`} />
+                        ) : (
+                            <div className="empty-photo" />
+                        )}
                     </div>
                 ))}
             </div>
@@ -51,6 +66,6 @@ function DestinationGallery({ photos }){
             </div>
         </div>
     );
-};
+}
 
 export default DestinationGallery;

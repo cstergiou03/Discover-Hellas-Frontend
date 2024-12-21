@@ -1,0 +1,96 @@
+.filter-button-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.filter-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #94dd70;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter-button:hover {
+    background-color: #91d171;
+}
+
+/* Filter Panel και Εσωτερικά Κουμπιά */
+.filter-panel {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 20px;
+    width: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.filter-panel h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    text-align: center;
+}
+
+.filter-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.filter-panel li {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.filter-panel input {
+    margin-right: 10px;
+}
+
+/* Κουμπιά μέσα στο πάνελ */
+.filter-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.close-panel-button,
+.apply-button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.close-panel-button {
+    background-color: #f44336;
+}
+
+.close-panel-button:hover {
+    background-color: #d32f2f;
+}
+
+.apply-button {
+    background-color: #4caf50;
+}
+
+.apply-button:hover {
+    background-color: #388e3c;
+}

@@ -1,0 +1,159 @@
+.amenity-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+    width: 66%;
+    font-family: 'Roboto', sans-serif;
+    height: auto; /* Προσαρμογή ύψους στο περιεχόμενο */
+    max-height: 99vh; /* Όριο ύψους στο 99% της οθόνης */
+    overflow-y: auto; /* Ενεργοποίηση κύλισης για το content */
+    padding: 30px 20px; /* Προσθέτουμε padding για απόσταση από τις άκρες */
+    margin: 20px auto; /* Απόσταση από πάνω και κάτω με margin */
+}
+
+/* Μοντέρνα μπάρα κύλισης για το amenity-form-container */
+.amenity-form-container::-webkit-scrollbar {
+    width: 8px; /* Καθορίζουμε το πλάτος της μπάρας κύλισης */
+}
+
+.amenity-form-container::-webkit-scrollbar-track {
+    background: transparent; /* Διαφανές track */
+    border-radius: 10px; /* Στρογγυλά άκρα για το track */
+}
+
+.amenity-form-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* Χρώμα για τη μπάρα κύλισης */
+    border-radius: 10px; /* Στρογγυλά άκρα για τη μπάρα */
+    border: 2px solid transparent; /* Χωρίς πλαίσιο γύρω από τη μπάρα */
+    background-clip: content-box; /* Κάνει τη μπάρα πιο "πλήρη" με το χρώμα */
+}
+
+.amenity-form-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Σκούρο χρώμα όταν γίνεται hover */
+}
+
+/* Για Firefox */
+.amenity-form-container {
+    scrollbar-width: thin; /* Ίδιο αποτέλεσμα για Firefox (λεπτότερη μπάρα) */
+    scrollbar-color: #888 transparent; /* Χρώμα για τη μπάρα και το track */
+}
+
+.amenity-form-container:hover {
+    scrollbar-color: #555 transparent; /* Χρώμα για το hover της μπάρας σε Firefox */
+}
+
+/* Στυλ για τον τίτλο */
+.amenity-form-container h1 {
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #343a40;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Στυλ για την φόρμα (μία στήλη) */
+.amenity-form {
+    display: flex;
+    flex-direction: column; /* Τοποθετούμε τα στοιχεία κάθετα */
+    gap: 20px; /* Κενό ανάμεσα στα στοιχεία */
+    width: 100%;
+}
+
+/* Στυλ για τα labels */
+.amenity-form label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Στυλ για τα inputs, selects και textareas */
+.amenity-form input,
+.amenity-form select,
+.amenity-form textarea {
+    font-size: 16px;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Στυλ όταν το input, select ή textarea είναι σε focus */
+.amenity-form input:focus,
+.amenity-form select:focus,
+.amenity-form textarea:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 6px rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+/* Στυλ για το textarea */
+.amenity-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Στυλ για το submit button */
+.amenity-form .submit-button {
+    padding: 14px 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    align-self: center;
+}
+
+/* Στυλ όταν γίνεται hover στο submit button */
+.amenity-form .submit-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Στυλ όταν το submit button είναι ενεργό */
+.amenity-form .submit-button:active {
+    background-color: #004494;
+    transform: translateY(0);
+}
+
+/* Στυλ για το file input */
+.amenity-form .file-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.amenity-form input[type="file"] {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+/* Στυλ για το footer της φόρμας */
+.amenity-form-container .form-footer {
+    font-size: 14px;
+    color: #868e96;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Στυλ για τα links στο footer */
+.amenity-form-container .form-footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.amenity-form-container .form-footer a:hover {
+    text-decoration: underline;
+}

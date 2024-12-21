@@ -1,0 +1,120 @@
+/* CSS στο myCalendar.css */
+.rbc-event {
+    background-color: #9090f7;
+    border-radius: 15px; /* Στρογγυλεμένες γωνίες */
+    padding: 5px 10px; /* Μειώσαμε το padding για να υπάρχει περισσότερο χώρος */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); /* Μικρότερη σκιά για πιο καθαρή εμφάνιση */
+    font-size: 0.9em; /* Μειώσαμε το μέγεθος γραμματοσειράς για να χωράει καλύτερα */
+    overflow: hidden; /* Απόκρυψη περιεχομένου που ξεπερνά το όριο */
+    text-overflow: ellipsis; /* Απόδοση ... αν το κείμενο είναι πολύ μεγάλο */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto; /* Διασφάλιση ότι η ύψος προσαρμόζεται στο περιεχόμενο */
+    max-width: 100%; /* Αποφυγή υπερβολικού μεγέθους */
+}
+
+.rbc-event-label {
+    display: block; 
+    overflow: hidden; 
+    text-overflow: ellipsis; /* Απόκρυψη κειμένου που ξεπερνά το όριο */
+    white-space: nowrap; /* Αποφυγή αλλαγής γραμμής */
+    width: 100%;
+}
+
+.rbc-day-bg {
+    background-color: #fafafa; /* Ελαφρύ φόντο για τις ημέρες */
+}
+
+.rbc-header {
+    background-color: #5c6bc0; /* Σκούρο μπλε για την επικεφαλίδα */
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+/* Style για το container του calendar */
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Το footer να είναι πάντα στο κάτω μέρος */
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: #fafafa;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-wrapper {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    flex-grow: 1;  /* Επιτρέπει στο calendar να καταλαμβάνει όλο τον υπόλοιπο χώρο */
+}
+
+.react-calendar {
+    border-radius: 8px;
+}
+
+.react-calendar__month-view__days__day--weekend {
+    background-color: #f0f0f0;
+}
+
+.react-calendar__tile {
+    border-radius: 6px;
+}
+
+/* Header customization */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 2.5em;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Styling the Footer */
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+}
+
+footer span {
+    font-size: 1.1em;
+    color: #666;
+}
+
+/* Event Styling */
+.events-container {
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .calendar-container {
+        margin: 20px;
+        padding: 15px;
+    }
+
+    .calendar-wrapper {
+        padding: 5px;
+    }
+
+    header h1 {
+        font-size: 2em;
+    }
+
+    /* Προσαρμογή του font-size και padding για μικρότερες οθόνες */
+    .rbc-event {
+        font-size: 0.8em;
+        padding: 5px 8px;
+    }
+}
+

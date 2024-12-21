@@ -1,0 +1,7 @@
+.provider-statistics h2 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    padding: 10px 0; /* Προσθέτει padding πάνω και κάτω */
+    margin: 20px; /* Για λίγο κενό κάτω από τον τίτλο */
+    font-size: 1.9rem; /* Αν θέλεις να αυξήσεις το μέγεθος του τίτλου */
+}

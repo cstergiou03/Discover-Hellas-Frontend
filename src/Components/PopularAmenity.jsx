@@ -1,25 +1,39 @@
 import "../Style/popularAmenity.css";
-import stats from "../assets/destinationsStats.json";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function PopularAmenity() {
     const navigate = useNavigate();
     const [destinations, setDestinations] = useState([]);
+    const [statistics, setStatistics] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchDestinations = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch(
-                    "https://olympus-riviera.onrender.com/api/admin/destination/get/all"
+                setLoading(true);
+
+                // Fetch destinations
+                const destinationsResponse = await fetch(
+                    "https://olympus-riviera.onrender.com/api/destination/get/all"
                 );
-                if (!response.ok) {
+                if (!destinationsResponse.ok) {
                     throw new Error("Failed to fetch destinations");
                 }
-                const data = await response.json();
-                setDestinations(data);
+                const destinationsData = await destinationsResponse.json();
+                setDestinations(destinationsData);
+
+                // Fetch statistics
+                const statisticsResponse = await fetch(
+                    "https://olympus-riviera.onrender.com/api/admin/statistics/get/all"
+                );
+                if (!statisticsResponse.ok) {
+                    throw new Error("Failed to fetch statistics");
+                }
+                const statisticsData = await statisticsResponse.json();
+                setStatistics(statisticsData);
+
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -27,11 +41,11 @@ function PopularAmenity() {
             }
         };
 
-        fetchDestinations();
+        fetchData();
     }, []);
 
     const getTopDestinations = () => {
-        const statsMap = stats.reduce((map, stat) => {
+        const statsMap = statistics.reduce((map, stat) => {
             map[stat.destination_id] = stat;
             return map;
         }, {});
@@ -70,13 +84,12 @@ function PopularAmenity() {
                 {topDestinations.map((destination, index) => (
                     <div
                         key={destination.destination_id}
-                        className={`destination-card ${
-                            index === 0 ? "destination-card-large" : ""
-                        }`}
+                        className={`destination-card ${index === 0 ? "destination-card-large" : ""
+                            }`}
                         onClick={() => handleCardClick(destination.destination_id)}
                     >
                         <img
-                            src={destination.photos}
+                            src={destination.photos.split(',').map(photo => photo.trim())[0]} // Παίρνει το πρώτο URL με trim
                             alt={destination.name}
                             className="destination-photo"
                         />

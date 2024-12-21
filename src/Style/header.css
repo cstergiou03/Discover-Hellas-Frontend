@@ -8,22 +8,27 @@
     width: 85%;
     border-bottom-left-radius: 30px;
     border-bottom-right-radius: 30px;
+    z-index: 1;
 }
 
-.header .logo{
+.header .logo2 {
     width: 200px;
     border-radius: 25px;
 }
 
+.header .logo2 {
+    cursor: pointer;
+}
+
 .header .navigation {
     display: flex;
-    width: 800px;
+    width: 920px;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
     font-size: 18px;
     color: blanchedalmond;
-    position: relative; /* Απαραίτητο για το dropdown */
+    position: relative;
 }
 
 .header .navigation a {
@@ -31,31 +36,99 @@
     color: blanchedalmond;
 }
 
+.header .navigation a {
+    cursor: pointer;
+}
+
 .header .dropdown {
-    position: relative; /* Βάση για το dropdown */
-    cursor: pointer; /* Δείχνει ότι είναι clickable */
+    position: relative;
+    cursor: pointer;
 }
 
 .header .dropdown ul {
-    display: none; /* Αρχικά κρυφό */
-    position: absolute; /* Τοποθέτηση */
-    background-color: #a4c991; /* Χρώμα φόντου */
+    display: none;
+    position: absolute;
+    background-color: #a4c991;
     margin: 0;
-    padding: 10px;
+    padding: 15px;
     border-radius: 10px;
     list-style: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10; /* Εξασφαλίζει ότι το dropdown εμφανίζεται πάνω από άλλα στοιχεία */
+    z-index: 10;
+    width: 200px;
+    /* top: 25px; */
+    left: 50%;
+    transform: translateX(-50%);
 }
+
 
 .header .dropdown ul li {
-    margin: 5px 0; /* Απόσταση μεταξύ των στοιχείων */
+    margin: 10px 0;
 }
 
-.header .dropdown ul li a {
-    color: white; /* Χρώμα για τα links */
+.header .dropdown ul li span {
+    color: white;
+    font-size: 18px;
+    text-align: left;
+    padding-left: 10px;
+    cursor: pointer;
 }
 
-.header .dropdown:hover ul {
-    display: block; /* Εμφανίζεται όταν γίνεται hover στο dropdown */
+.header .dropdown:hover ul,
+.header .dropdown ul:hover {
+    display: block; 
+}
+
+.header input {
+    width: 200px;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.header input:focus {
+    outline: none;
+}
+
+.header button {
+    background-color: #68522a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.header button:hover {
+    opacity: 0.8;
+}
+
+.header .login-button {
+    background-color: #68522a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+.header .login-button:hover {
+    opacity: 0.8;
+}
+
+.header .user-icon {
+    background-color: transparent;
+    background-color: #68522a;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.header .user-icon:hover {
+    opacity: 0.8;
 }

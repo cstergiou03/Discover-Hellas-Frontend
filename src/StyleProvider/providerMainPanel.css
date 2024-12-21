@@ -1,0 +1,59 @@
+.provider-main-panel {
+    display: flex;  /* Ενεργοποιούμε flexbox για οριζόντια διάταξη */
+    justify-content: space-between; /* Δημιουργούμε κενό ανάμεσα στα στοιχεία */
+    gap: 20px; /* Δίνουμε λίγο κενό ανάμεσα στα components */
+    height: 100vh; /* Το ύψος του panel είναι ίσο με το ύψος της οθόνης */
+    overflow: hidden; /* Αποτρέπουμε την κύλιση ολόκληρης της σελίδας */
+}
+
+.provider-sidebar, .profile-sidebar {
+    width: 250px; /* Καθορίζουμε το πλάτος για το αριστερό και το δεξί sidebar */
+    background-color: #f7f7f7;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    height: 100vh; /* Ορίζουμε το ύψος για να καλύπτει όλο το ύψος της σελίδας */
+}
+
+/* Μοντέρνα μπάρα κύλισης για το provider-statistics */
+.provider-statistics {
+    flex-grow: 1;
+    background-color: #fff;
+    padding: 0px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    height: 100vh;
+}
+
+/* Ρυθμίζουμε το στιλ της κάθετης μπάρας κύλισης */
+.provider-statistics::-webkit-scrollbar {
+    width: 8px; /* Ίσως θέλεις να είναι λεπτότερη η μπάρα κύλισης */
+}
+
+.provider-statistics::-webkit-scrollbar-track {
+    background: transparent; /* Χωρίς φόντο στο track της μπάρας */
+    border-radius: 10px; /* Στρογγυλά άκρα για το track */
+}
+
+.provider-statistics::-webkit-scrollbar-thumb {
+    background-color: #888; /* Χρώμα για τη μπάρα κύλισης */
+    border-radius: 10px; /* Στρογγυλά άκρα για τη μπάρα κύλισης */
+    border: 2px solid transparent; /* Χωρίς πλαίσιο γύρω από τη μπάρα */
+    background-clip: content-box; /* Κάνει τη μπάρα πιο "πλήρη" με το χρώμα */
+}
+
+.provider-statistics::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Σκούρο χρώμα όταν γίνεται hover */
+}
+
+/* Για Firefox */
+.provider-statistics {
+    scrollbar-width: thin; /* Ίδιο αποτέλεσμα για Firefox (λεπτότερη μπάρα) */
+    scrollbar-color: #888 transparent; /* Χρώμα για τη μπάρα και το track */
+}
+
+.provider-statistics:hover {
+    scrollbar-color: #555 transparent; /* Χρώμα για το hover της μπάρας σε Firefox */
+}

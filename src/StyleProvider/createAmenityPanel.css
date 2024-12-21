@@ -1,0 +1,7 @@
+.create-amenity-container {
+    display: flex; /* Οριζόντια διάταξη */
+    justify-content: space-between; /* Χώρος μεταξύ των στοιχείων */
+    gap: 20px; /* Κενό μεταξύ των components */
+    height: 100vh; /* Ύψος ίσο με την οθόνη */
+    overflow: hidden; /* Αποτροπή κύλισης του εξωτερικού container */
+}

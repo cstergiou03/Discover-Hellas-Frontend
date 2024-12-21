@@ -1,0 +1,68 @@
+.register-panel-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100vh; /* Πλήρες ύψος της οθόνης */
+    background-color: #f0f0f0; /* Προαιρετικό background */
+}
+
+.panel-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; /* Κεντράρει τα παιδιά */
+    background-color: white; /* Προαιρετικό χρώμα */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Προαιρετική σκιά */
+    border-radius: 10px; /* Προαιρετικές γωνίες */
+    padding: 20px; /* Προαιρετική απόσταση */
+    width: 80%; /* Προσαρμόζει το πλάτος */
+    max-width: 1200px; /* Μέγιστο πλάτος */
+}
+
+.panel-container img {
+    max-width: 300px; /* Περιορίζει το μέγεθος της εικόνας */
+    height: auto;
+    margin-right: 20px; /* Απόσταση από τη φόρμα */
+}
+
+.register-form-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+}
+
+.register-form-container form {
+    display: flex;
+    flex-direction: column; /* Τακτοποιεί τα πεδία της φόρμας κάθετα */
+    gap: 15px; /* Απόσταση μεταξύ των πεδίων */
+}
+
+.register-form-container label {
+    font-weight: bold;
+}
+
+.register-form-container input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.register-form-container button {
+    padding: 10px;
+    background-color: rgb(164, 201, 145);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 150px;
+}
+
+.register-form-container button:hover {
+    background-color: rgb(164, 211, 145);
+}
+
+
+

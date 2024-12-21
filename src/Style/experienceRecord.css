@@ -1,0 +1,44 @@
+.experience-record {
+    display: grid;
+    width: 80%;
+    grid-template-columns: 2fr 4fr 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+.record-column {
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    flex-direction: column; 
+    gap: 10px;
+    justify-content: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.1;
+}
+
+.directions-button, .more-button {
+    padding: 10px 15px;
+    background-color: #a4c991;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.directions-button:hover, .more-button:hover {
+    background-color: #8fb87e;
+}
+
+.directions-button:focus, .more-button:focus {
+    outline: none;
+    box-shadow: 0 0 3px 2px rgb(164, 201, 145, 0.5);
+}
+
