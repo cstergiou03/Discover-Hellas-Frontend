@@ -19,9 +19,9 @@ function EventEdit() {
         eventStart: "",
         eventEnd: "",
     });
-
     const [destinations, setDestinations] = useState([]);
     const [isCustomLocation, setIsCustomLocation] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const markerRef = useRef(null);
     const navigate = useNavigate();
 
@@ -33,9 +33,15 @@ function EventEdit() {
             .catch(error => console.error("Error fetching destinations:", error));
 
         // Fetch event data using the provided eventId
-        fetch(`https://olympus-riviera.onrender.com/api/event/get/even_3ef7a0a6`)
+        fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
             .then(response => response.json())
             .then(data => {
+                // Convert ISO date strings to the proper format for datetime-local input
+                const formatDate = (dateString) => {
+                    const date = new Date(dateString);
+                    return date.toISOString().slice(0, 16);  // Get the date in 'YYYY-MM-DDTHH:MM' format
+                };
+
                 setFormData({
                     name: data.name,
                     description: data.description,
@@ -46,14 +52,17 @@ function EventEdit() {
                     photos: data.photos ? data.photos.split(',') : [],
                     latitude: data.latitude,
                     longitude: data.longitude,
-                    eventStart: data.eventStart,
-                    eventEnd: data.eventEnd,
+                    eventStart: formatDate(data.event_start),  // Convert event_start to the correct format
+                    eventEnd: formatDate(data.event_end),      // Convert event_end to the correct format
                 });
                 // Determine if location is custom based on the latitude and longitude
                 setIsCustomLocation(data.latitude && data.longitude);
+                setIsLoading(false);
             })
-            .catch(error => console.error("Error fetching event data:", error));
-
+            .catch(error => {
+                console.error("Error fetching event data:", error);
+                setIsLoading(false);
+            });
     }, [eventId]);
 
     const handleChange = (e) => {
@@ -92,7 +101,6 @@ function EventEdit() {
         map.addListener("click", (event) => {
             const lat = event.latLng.lat();
             const lng = event.latLng.lng();
-            console.log("Latitude:", lat, "Longitude:", lng);
 
             if (markerRef.current) {
                 markerRef.current.setMap(null);
@@ -188,6 +196,10 @@ function EventEdit() {
                 alert("Failed to update event.");
             });
     };
+
+    if (isLoading) {
+        return <div>Loading...</div>;  // Display loading message until data is ready
+    }
 
     return (
         <div className="event-form-container">
