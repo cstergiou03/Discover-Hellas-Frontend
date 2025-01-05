@@ -41,6 +41,15 @@ function Destination() {
         return <div>Error: {error}</div>;
     }
 
+    const photosTable = data.photos
+    ? data.photos
+          .split("data:image/jpeg;base64,")
+          .filter((photo) => photo.trim() !== "")
+          .map((photo) =>
+              "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+          ) // Αφαιρούμε οποιοδήποτε κόμμα στο τέλος
+    : [];
+
     const handleDirectionsClick = () => {
         const latitude = data.latitude;
         const longitude = data.longitude;
@@ -62,7 +71,7 @@ function Destination() {
         <div>
             <PageTopDestination data={data} />
             <DestinationInfo data={data} />
-            <DestinationsGallery data={data} />
+            <DestinationsGallery data={photosTable} />
             <div className="event-map-and-info">
                 <div className="event-map-container">
                     <GoogleMapReact

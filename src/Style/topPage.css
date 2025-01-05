@@ -27,7 +27,8 @@
     border-top-right-radius: 20px;
 }
 
-.season-container .season{
+.season-container .season-text{
+    margin-top: 1em;
     cursor: pointer;
     padding: 10px;
     font-size: 18px;
@@ -45,8 +46,9 @@
     top: 50%;
     transform: translateY(-50%);
     background-color: #a4c991;
-    width: 300px;
-    height: 500px;
+    width: auto;
+    max-width: 300px;
+    height: fit-content;
     border-top-left-radius: 25px;
     border-bottom-left-radius: 25px;
     text-align: center;

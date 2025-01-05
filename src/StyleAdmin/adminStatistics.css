@@ -1,0 +1,44 @@
+.admin-container {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+}
+
+.admin-list-box {
+    flex: 1;
+}
+
+.admin-list-box h3{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.custom-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.custom-list li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.custom-list li:last-child {
+    border-bottom: none;
+}
+
+.custom-list li:hover {
+    background-color: #e6e6e6;
+}
+
+.admin-content {
+    flex: 2;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}

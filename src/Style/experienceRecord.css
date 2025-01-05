@@ -1,6 +1,6 @@
 .experience-record {
     display: grid;
-    width: 80%;
+    width: auto;
     grid-template-columns: 2fr 4fr 1fr 1fr;
     gap: 10px;
     align-items: center;
@@ -15,7 +15,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: flex;
-    flex-direction: column; 
+    flex-direction: row; 
     gap: 10px;
     justify-content: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,6 +23,7 @@
 }
 
 .directions-button, .more-button {
+    width: fit-content;
     padding: 10px 15px;
     background-color: #a4c991;
     color: white;

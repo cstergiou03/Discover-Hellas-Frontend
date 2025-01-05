@@ -68,6 +68,27 @@ function PopularAmenity() {
         navigate(`/destination/${destinationId}`);
     };
 
+    const getImageSrc = (photos) => {
+        if (!photos) {
+            return "";  // Επιστρέφουμε κενή τιμή αν δεν υπάρχουν φωτογραφίες
+        }
+    
+        // Διαχωρίζουμε τις φωτογραφίες σε πίνακα από base64
+        const photoArray = photos
+            .split("data:image/jpeg;base64,")
+            .filter((photo) => photo.trim() !== "")  // Φιλτράρουμε τις κενές φωτογραφίες
+            .map((photo) => "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")); // Αφαιρούμε οποιοδήποτε κόμμα στο τέλος
+    
+        // Αν δεν υπάρχουν φωτογραφίες μετά τη φιλτραρίσματος, επιστρέφουμε κενή τιμή
+        if (photoArray.length === 0) {
+            return "";
+        }
+    
+        // Επιστρέφουμε την πρώτη φωτογραφία
+        return photoArray[0];
+    };
+    
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -89,7 +110,7 @@ function PopularAmenity() {
                         onClick={() => handleCardClick(destination.destination_id)}
                     >
                         <img
-                            src={destination.photos.split(',').map(photo => photo.trim())[0]} // Παίρνει το πρώτο URL με trim
+                            src={getImageSrc(destination.photos)}
                             alt={destination.name}
                             className="destination-photo"
                         />

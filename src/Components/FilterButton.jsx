@@ -2,26 +2,41 @@ import React, { useEffect, useState } from 'react';
 import "../Style/filterButton.css";
 
 function FilterButton({ onFilterChange }) {
-    const [categories, setCategories] = useState([]);
-    const [tempSelectedCategories, setTempSelectedCategories] = useState([]); // Για προσωρινή αποθήκευση επιλογών
-    const [selectedCategories, setSelectedCategories] = useState([]); // Τρέχουσες επιλογές
+    const [destinationCategories, setDestinationCategories] = useState([]);
+    const [amenityCategories, setAmenityCategories] = useState([]);
+    const [tempSelectedCategories, setTempSelectedCategories] = useState([]);
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [panelOpen, setPanelOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loadingDestinations, setLoadingDestinations] = useState(true);
+    const [loadingAmenities, setLoadingAmenities] = useState(true);
 
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchDestinationCategories = async () => {
             try {
                 const response = await fetch('https://olympus-riviera.onrender.com/api/admin/destination/category/get/all');
                 const data = await response.json();
-                setCategories(data);
-                setLoading(false);
+                setDestinationCategories(data);
+                setLoadingDestinations(false);
             } catch (error) {
-                console.error('Error fetching categories:', error);
-                setLoading(false);
+                console.error('Error fetching destination categories:', error);
+                setLoadingDestinations(false);
             }
         };
 
-        fetchCategories();
+        const fetchAmenityCategories = async () => {
+            try {
+                const response = await fetch('https://olympus-riviera.onrender.com/api/amenity/category/get/all');
+                const data = await response.json();
+                setAmenityCategories(data);
+                setLoadingAmenities(false);
+            } catch (error) {
+                console.error('Error fetching amenity categories:', error);
+                setLoadingAmenities(false);
+            }
+        };
+
+        fetchDestinationCategories();
+        fetchAmenityCategories();
     }, []);
 
     const handleCategoryChange = (categoryId) => {
@@ -51,24 +66,44 @@ function FilterButton({ onFilterChange }) {
 
             {panelOpen && (
                 <div className="filter-panel">
-                    <h3>Κατηγορίες</h3>
-                    {loading ? (
-                        <p>Loading categories...</p>
+                    <h3>Κατηγορίες Προορισμών</h3>
+                    {loadingDestinations ? (
+                        <p>Loading destination categories...</p>
                     ) : (
                         <ul>
-                            {categories.map((category) => (
+                            {destinationCategories.map((category) => (
                                 <li key={category.category_id}>
                                     <input
                                         type="checkbox"
-                                        id={category.category_id}
+                                        id={`destination-${category.category_id}`}
                                         checked={tempSelectedCategories.includes(category.category_id)}
                                         onChange={() => handleCategoryChange(category.category_id)}
                                     />
-                                    <label htmlFor={category.category_id}>{category.name}</label>
+                                    <label htmlFor={`destination-${category.category_id}`}>{category.name}</label>
                                 </li>
                             ))}
                         </ul>
                     )}
+
+                    <h3>Κατηγορίες Παροχών</h3>
+                    {loadingAmenities ? (
+                        <p>Loading amenity categories...</p>
+                    ) : (
+                        <ul>
+                            {amenityCategories.map((category) => (
+                                <li key={category.category_id}>
+                                    <input
+                                        type="checkbox"
+                                        id={`amenity-${category.category_id}`}
+                                        checked={tempSelectedCategories.includes(category.category_id)}
+                                        onChange={() => handleCategoryChange(category.category_id)}
+                                    />
+                                    <label htmlFor={`amenity-${category.category_id}`}>{category.name}</label>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
                     <div className="filter-buttons">
                         <button onClick={() => setPanelOpen(false)} className="close-panel-button">
                             Κλείσιμο
@@ -80,7 +115,6 @@ function FilterButton({ onFilterChange }) {
                 </div>
             )}
         </div>
-
     );
 }
 

@@ -1,0 +1,11 @@
+.admin-profile-panel {
+    display: flex;
+    height: 100vh; /* Εξασφαλίζει πλήρες ύψος */
+    overflow: hidden; /* Αποτρέπει το scroll στο κύριο container */
+}
+
+.admin-profile-scroll {
+    flex-grow: 1; /* Καταλαμβάνει όλο τον υπόλοιπο χώρο */
+    overflow-y: auto; /* Ενεργοποιεί το κάθετο scroll μόνο εδώ */
+    background-color: #ffffff; /* Χρώμα φόντου για παράδειγμα */
+}

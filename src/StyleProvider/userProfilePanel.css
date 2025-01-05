@@ -1,0 +1,13 @@
+.user-profile-panel {
+    display: flex;
+    height: 100vh;
+}
+
+.profile-content {
+    flex: 1;
+    /* παίρνει όλο το υπόλοιπο πλάτος */
+    background-color: #fff;
+    /* λευκό φόντο για το profile */
+    overflow-y: auto;
+    /* επιτρέπει scroll αν το περιεχόμενο είναι πολύ */
+}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom"; // Εισάγουμε useLocation και useNavigate
+import GoogleMapReact from "google-map-react";
+import Compressor from "compressorjs";
 import "../StyleProvider/amenityForm.css";
-import GoogleMapReact from 'google-map-react';
-import Compressor from 'compressorjs'; // Εισάγουμε τη βιβλιοθήκη
-import { useNavigate } from 'react-router-dom'; // Εισάγουμε το useNavigate
 
 function AmenityForm() {
     const [formData, setFormData] = useState({
@@ -13,14 +13,15 @@ function AmenityForm() {
         website: "",
         phone: "",
         email: "",
-        photos: "", // Αλλάξαμε το photos σε string
+        photos: "",
         latitude: null,
         longitude: null,
     });
 
     const [categories, setCategories] = useState([]);
     const markerRef = useRef(null);
-    const navigate = useNavigate(); // Δημιουργούμε το navigate
+    const navigate = useNavigate();
+    const location = useLocation(); // Λαμβάνουμε το τρέχον URL
 
     useEffect(() => {
         fetch("https://olympus-riviera.onrender.com/api/amenity/category/get/all", {
@@ -29,11 +30,11 @@ function AmenityForm() {
                 "Content-Type": "application/json",
             },
         })
-        .then(response => response.json())
-        .then(data => setCategories(data))
-        .catch((error) => {
-            console.error("Error fetching categories:", error);
-        });
+            .then((response) => response.json())
+            .then((data) => setCategories(data))
+            .catch((error) => {
+                console.error("Error fetching categories:", error);
+            });
     }, []);
 
     const handleChange = (e) => {
@@ -56,7 +57,6 @@ function AmenityForm() {
         map.addListener("click", (event) => {
             const lat = event.latLng.lat();
             const lng = event.latLng.lng();
-            console.log("Latitude:", lat, "Longitude:", lng);
 
             if (markerRef.current) {
                 markerRef.current.setMap(null);
@@ -73,91 +73,91 @@ function AmenityForm() {
         });
     };
 
-    // Τροποποιημένη συνάρτηση για συμπίεση και μετατροπή σε Base64
     const convertImagesToBase64 = (files) => {
         return new Promise((resolve, reject) => {
             if (!files || files.length === 0) {
-                resolve(""); // Επιστρέφουμε άδειο string αν δεν υπάρχουν αρχεία
+                resolve("");
             }
 
-            const promises = [];
-            files.forEach(file => {
-                promises.push(
-                    new Promise((resolve, reject) => {
-                        new Compressor(file, {
-                            quality: 1, // Εδώ ορίζουμε το ποσοστό συμπίεσης (π.χ., 60%)
-                            success(result) {
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                    resolve(reader.result); // Επιστρέφουμε το Base64 της συμπιεσμένης εικόνας
-                                };
-                                reader.onerror = reject;
-                                reader.readAsDataURL(result); // Διαβάζουμε το αρχείο ως Base64
-                            },
-                            error(err) {
-                                reject(err);
-                            }
-                        });
-                    })
-                );
+            const promises = files.map((file) => {
+                return new Promise((resolve, reject) => {
+                    new Compressor(file, {
+                        quality: 0.8,
+                        success(result) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(result);
+                        },
+                        error(err) {
+                            reject(err);
+                        },
+                    });
+                });
             });
 
             Promise.all(promises)
-                .then(base64Images => resolve(base64Images.join(','))) // Ενώνουμε τα Base64 σε μία συμβολοσειρά με κόμμα
+                .then((base64Images) => resolve(base64Images.join(",")))
                 .catch(reject);
         });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Μετατροπή των φωτογραφιών σε Base64
+    
         const photosBase64 = await convertImagesToBase64(formData.photos);
-        console.log("Base64 Photos:", photosBase64);
-
-        // Αν δεν έχουμε φωτογραφίες, επιστρέφουμε
         if (!photosBase64) {
             alert("Please upload at least one photo.");
             return;
         }
-
-        // Δημιουργία του payload για το POST
+    
         const payload = {
             name: formData.name,
             category_id: formData.category,
-            provider_id: "provider123",
+            provider_id: "provider123", // Dummy provider ID for now
             phone: formData.phone,
             email: formData.email,
             latitude: formData.latitude,
             longitude: formData.longitude,
             description: formData.description,
-            photos: photosBase64, // Στέλνουμε την ενιαία συμβολοσειρά Base64 φωτογραφιών
+            photos: photosBase64,
         };
-
-        console.log("Payload to send:", payload);
-
-        fetch("https://olympus-riviera.onrender.com/api/provider/amenity/add-request/create", {
+    
+        let apiUrl = "";
+        if (location.pathname.includes("/admin/create-amenity")) {
+            apiUrl = "https://olympus-riviera.onrender.com/api/admin/amenity/create";
+        } else {
+            apiUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/add-request/create";
+        }
+    
+        fetch(apiUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Response from server:", data);
-            alert("Amenity created successfully!");
-            navigate("/provider"); // Πλοήγηση στην σελίδα /provider μετά την επιτυχία
-        })
-        .catch(error => {
-            console.error("Error submitting the form:", error);
-            navigate("/provider");
-        });        
-    };
+            .then((response) => response.json())
+            .then((data) => {
+                alert("Amenity processed successfully!");
+                if (location.pathname.includes("/admin")) {
+                    navigate("/admin"); // Redirect admin to /admin
+                } else {
+                    navigate("/provider"); // Redirect provider to /provider
+                }
+            })
+            .catch((error) => {
+                if (location.pathname.includes("/admin")) {
+                    navigate("/admin"); // Redirect admin to /admin
+                } else {
+                    navigate("/provider"); // Redirect provider to /provider
+                }
+            });
+    };    
 
     return (
         <div className="amenity-form-container">
-            <h1>Create a New Amenity</h1>
+            <h1>{location.pathname.includes("/admin") ? "Admin - Create Amenity" : "Provider - Create Amenity"}</h1>
             <form className="amenity-form" onSubmit={handleSubmit}>
                 <label htmlFor="name">Amenity Name:</label>
                 <input
@@ -195,7 +195,7 @@ function AmenityForm() {
                 />
 
                 <label htmlFor="location">Location (Click on the map to select):</label>
-                <div style={{ height: '500px', width: '100%' }}>
+                <div style={{ height: "500px", width: "100%" }}>
                     <GoogleMapReact
                         bootstrapURLKeys={{
                             key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
@@ -209,15 +209,6 @@ function AmenityForm() {
                         yesIWantToUseGoogleMapApiInternals
                     />
                 </div>
-
-                <label htmlFor="website">Website:</label>
-                <input
-                    type="url"
-                    id="website"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleChange}
-                />
 
                 <label htmlFor="phone">Phone:</label>
                 <input
@@ -249,7 +240,9 @@ function AmenityForm() {
                     onChange={handleChange}
                 />
 
-                <button type="submit" className="submit-button">Submit</button>
+                <button type="submit" className="submit-button">
+                    Submit
+                </button>
             </form>
         </div>
     );

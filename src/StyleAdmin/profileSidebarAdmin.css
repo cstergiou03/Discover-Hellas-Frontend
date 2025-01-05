@@ -1,0 +1,56 @@
+.profile-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 250px; /* Καθορίζουμε το πλάτος του sidebar */
+    background-color: #f7f7f7;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 25px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.profile-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.profile-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Κενό ανάμεσα στα metrics */
+}
+
+.metrics-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.metrics-label {
+    font-size: 14px;
+    color: #777;
+}
+
+.metrics-count {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}

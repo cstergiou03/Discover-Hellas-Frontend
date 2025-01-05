@@ -1,0 +1,7 @@
+.event-view-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    height: 100vh;
+    overflow: hidden;
+}

@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 function Header() {
-    const [loggedIn, setLoggedIn] = useState(false); // Μετατροπή σε κατάσταση
+    const [loggedIn, setLoggedIn] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [language, setLanguage] = useState("GR");
     const [categories, setCategories] = useState([]);
@@ -16,10 +16,27 @@ function Header() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Check if loggedIn state is saved in localStorage
+        const storedLoggedIn = localStorage.getItem('loggedIn') === 'true';
+        setLoggedIn(storedLoggedIn);
+
+        // Fetch categories from API
         fetch("https://olympus-riviera.onrender.com/api/admin/destination/category/get/all")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch((error) => console.error("Error fetching categories:", error));
+
+        // Clear localStorage when the user closes the tab
+        const handleBeforeUnload = () => {
+            localStorage.removeItem('loggedIn');
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        // Clean up the event listener when the component is unmounted
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
     }, []);
 
     const handleLanguageChange = () => {
@@ -59,6 +76,16 @@ function Header() {
         setIsModalOpen(false);
     };
 
+    const handleUserIconClick = () => {
+        navigate("/profile");
+    };
+
+    // Update loggedIn state and save to localStorage
+    const handleLoginSuccess = () => {
+        setLoggedIn(true);
+        localStorage.setItem('loggedIn', 'true');
+    };
+
     return (
         <header className="header">
             <img src={logo} alt="Company Logo" className="logo2" onClick={handleHomeTravelClick} />
@@ -93,7 +120,7 @@ function Header() {
                 <button onClick={handleLanguageChange}>{language}</button>
 
                 {loggedIn ? (
-                    <button className="user-icon">
+                    <button className="user-icon" onClick={handleUserIconClick}>
                         <FontAwesomeIcon icon={faUser} size="lg" />
                     </button>
                 ) : (
@@ -103,7 +130,11 @@ function Header() {
                 )}
             </nav>
 
-            <LoginModal isOpen={isModalOpen} onClose={handleCloseModal} setLoggedIn={setLoggedIn} />
+            <LoginModal 
+                isOpen={isModalOpen} 
+                onClose={handleCloseModal} 
+                setLoggedIn={handleLoginSuccess} 
+            />
         </header>
     );
 }

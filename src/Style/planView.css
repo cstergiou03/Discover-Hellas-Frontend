@@ -1,0 +1,91 @@
+.plan-main-container {
+    display: flex;
+    flex-direction: column; /* Ορίστε σε column για να στοίχιση τα στοιχεία κάθετα */
+    align-items: center; /* Ευθυγράμμιση στο κέντρο */
+    width: 100%;
+    background-image: url('https://vistatrip.gr/wp-content/uploads/2024/02/5e28d0a9240000b403c972af.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh; /* Για να καλύψει όλο το ύψος της σελίδας */
+    position: relative;
+}
+
+.plan-header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 2em; /* Δώστε λίγο κενό κάτω από το header */
+}
+
+.plan-content {
+    display: flex;
+    flex-direction: row; /* Ορίστε το σε row για να τοποθετήσετε τα στοιχεία δίπλα */
+    justify-content: space-around; /* Δώστε χώρο μεταξύ των στοιχείων */
+    align-items: flex-start; /* Ευθυγράμμιση στην κορυφή */
+    margin-left: 2em;
+    margin-right: 2em;
+    margin-top: 1em;
+    width: 100%;
+}
+
+.plan-list {
+    width: fit-content;
+    height: 600px;
+    overflow-y: auto;
+}
+
+.plan-map {
+    flex: 0.6;
+    height: 600px; /* Ορίστε το ύψος του χάρτη */
+}
+
+h3 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.travel-info-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3em;
+    margin-bottom: 3em;
+    background-color: rgba(165, 173, 173, 0.637);
+    padding: 15px;
+    border-radius: 20px;
+    width: 80%;
+}
+
+.travel-info-cards {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.travel-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1em;
+    width: calc(25% - 16px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.travel-card h4 {
+    margin-bottom: 8px;
+    font-size: 18px;
+    color: #333;
+}
+
+.travel-card p {
+    color: #666;
+    font-size: 14px;
+}

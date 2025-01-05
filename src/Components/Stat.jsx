@@ -44,7 +44,7 @@ function Stat({ number, type }) {
     }, [isVisible, number]);
 
     return (
-        <div className="stat-container" ref={statRef}>
+        <div className="statistic-container" ref={statRef}>
             <h2 className="statNumber">{currentNumber}</h2>
             <h2 className="statType">{type}</h2>
         </div>

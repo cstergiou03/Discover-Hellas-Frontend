@@ -1,0 +1,12 @@
+.photo-carousel {
+    max-height: fit-content; 
+    overflow: hidden;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Απόσταση ανάμεσα στα κουμπιά */
+    justify-content: center; /* Ευθυγράμμιση κουμπιών στο κέντρο */
+}

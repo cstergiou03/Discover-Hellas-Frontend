@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/loginModal.css";
+import * as jwt_decode from 'jwt-decode';
 
 function LoginModal({ isOpen, onClose, setLoggedIn }) {
     const [email, setEmail] = useState("");
@@ -11,7 +12,8 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
     const navigate = useNavigate();
 
-    const provider = true;
+    const provider = false;
+    const admin = false;
 
     useEffect(() => {
         if (isOpen) {
@@ -54,18 +56,27 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
     const handleGoogleSignIn = (response) => {
         console.log("Google Response:", response);
+        
         if (response.credential) {
-            console.log("Logged in with Google:", response);
-            setLoggedIn(true); // Αλλαγή του `loggedIn` στο Header
-            if (provider) {
-                navigate("/provider"); // Navigate to /provider if provider is true
-            } else {
-                onClose(); // Κλείσιμο του modal
+            console.log("JWT Token:", response);
+            
+            try {
+        
+                setLoggedIn(true);
+                if (provider) {
+                    navigate("/provider");
+                } else if (admin) {
+                    navigate("/admin");
+                } else {
+                    onClose();
+                }
+            } catch (error) {
+                console.error("Error decoding the token:", error);
             }
         } else {
             setGoogleSignInError("Something went wrong with Google login. Please try again.");
         }
-    };
+    };           
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -93,8 +104,8 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
     return (
         isOpen && (
-            <div className="modal-overlay">
-                <div className="modal-content">
+            <div className="login-modal-overlay">
+                <div className="login-modal-content">
                     <button className="close-btn" onClick={onClose}>X</button>
 
                     <h2>Login</h2>

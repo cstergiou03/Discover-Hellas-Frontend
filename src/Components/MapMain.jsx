@@ -8,116 +8,243 @@ import { useNavigate } from "react-router-dom";
 function MapMain() {
     const [destinations, setDestinations] = useState([]);
     const [filteredDestinations, setFilteredDestinations] = useState([]);
+    const [amenities, setAmenities] = useState([]);
+    const [filteredAmenities, setFilteredAmenities] = useState([]);
+    const [plans, setPlans] = useState([]); // Νέα state για τα plans
     const [loading, setLoading] = useState(true);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [markers, setMarkers] = useState([]);
     const mapRef = useRef(null);
     const navigate = useNavigate();
 
-    const handleCardClick = (destinationId) => {
-        navigate(`/destination/${destinationId}`);
+    const handleCardClick = (id, type) => {
+        navigate(`/${type}/${id}`);
     };
 
     useEffect(() => {
-        const fetchDestinations = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch(
+                const destinationsResponse = await fetch(
                     "https://olympus-riviera.onrender.com/api/destination/get/all"
                 );
-                const data = await response.json();
-                setDestinations(data);
-                setFilteredDestinations(data); // Αρχικά δεν υπάρχει φίλτρο
+                const destinationsData = await destinationsResponse.json();
+                const normalizedDestinations = destinationsData.map((destination) => ({
+                    ...destination,
+                    id: destination.destination_id,
+                }));
+                setDestinations(normalizedDestinations);
+                setFilteredDestinations(normalizedDestinations);
+
+                const amenitiesResponse = await fetch(
+                    "https://olympus-riviera.onrender.com/api/amenity/get/all"
+                );
+                const amenitiesData = await amenitiesResponse.json();
+                const normalizedAmenities = amenitiesData.map((amenity) => ({
+                    ...amenity,
+                    id: amenity.amenity_id,
+                }));
+                setAmenities(normalizedAmenities);
+                setFilteredAmenities(normalizedAmenities);
+
+                // Νέα κλήση API για τα plans
+                const plansResponse = await fetch(
+                    "https://olympus-riviera.onrender.com/api/plan/user/user_678xyz/plans"
+                );
+                const plansData = await plansResponse.json();
+                setPlans(plansData); // Αποθήκευση των plans
+
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching destinations:", error);
+                console.error("Error fetching data:", error);
                 setLoading(false);
             }
         };
 
-        fetchDestinations();
+        fetchData();
     }, []);
 
-    // Handle filter change and update selected categories
+
     const handleFilterChange = (categories) => {
         setSelectedCategories(categories);
-        console.log("Updated Selected Categories in FilterButton:", categories);
 
         if (categories.length === 0) {
-            setFilteredDestinations(destinations); // Χωρίς φίλτρο, εμφανίζονται όλα
+            setFilteredDestinations(destinations);
+            setFilteredAmenities(amenities);
         } else {
-            const filtered = destinations.filter((destination) =>
+            const filteredDest = destinations.filter((destination) =>
                 categories.includes(destination.category_id)
             );
-            setFilteredDestinations(filtered); // Ενημερώνουμε τα φιλτραρισμένα destinations
+            const filteredAmen = amenities.filter((amenity) =>
+                categories.includes(amenity.category_id)
+            );
+            setFilteredDestinations(filteredDest);
+            setFilteredAmenities(filteredAmen);
         }
     };
 
-    const openInfoWindowRef = useRef(null); // Αναφορά στο τρέχον ανοιχτό InfoWindow
+    const openInfoWindowRef = useRef(null);
 
     const handleApiLoaded = ({ map, maps }) => {
         mapRef.current = map;
 
         markers.forEach((marker) => marker.setMap(null));
 
-        const newMarkers = filteredDestinations.map((destination) => {
+        const createMarker = (item, type) => {
             const position = {
-                lat: parseFloat(destination.latitude),
-                lng: parseFloat(destination.longitude),
+                lat: parseFloat(item.latitude),
+                lng: parseFloat(item.longitude),
             };
 
             const marker = new maps.Marker({
                 position,
                 map,
-                title: destination.name,
+                title: item.name,
             });
 
-            const infoWindow = new maps.InfoWindow({
+            const mainInfoWindow = new maps.InfoWindow({
                 content: `
-                <div id="info-window-${destination.destination_id}" style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border: 1px solid #ddd; max-width: 300px;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #a4c991;">${destination.name}</h3>
-                    <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.5; color: #555;">${destination.description || "No description available."}</p>
-                    <button id="info-button-${destination.destination_id}" style="background-color: #a4c991; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; display: inline-block;">Περισσότερα...</button>
-                </div>
-            `,
+                    <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border: 1px solid #ddd; max-width: 300px;">
+                        <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #a4c991;">${item.name}</h3>
+                        <p style="margin: 0 0 10px 0; font-size: 14px; line-height: 1.5; color: #555;">${item.description || "No description available."}</p>
+                        <button id="info-button-details-${type}-${item.id}" style="background-color: #a4c991; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; display: inline-block;">Περισσότερα...</button>
+                        <button id="info-button-plan-${type}-${item.id}" style="background-color: #a4c991; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; display: inline-block;">Προσθήκη σε πλάνο</button>
+                    </div>
+                `,
+            });
+
+            const planInfoWindow = new maps.InfoWindow({
+                content: `
+                    <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border: 1px solid #ddd; max-width: 300px;">
+                        <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #a4c991;">Προσθήκη σε πλάνο</h3>
+                        <label for="plan-type-${item.id}" style="font-size: 14px; color: #555;">Επιλογή πλάνου:</label>
+                        <select id="plan-type-${item.id}" style="width: 100%; padding: 5px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="" disabled selected>--Επιλέξτε Πλάνο--</option>
+                            ${plans && plans.length > 0 ?
+                                plans.map((plan) => `<option value="${plan.plan_id}">${plan.title}</option>`).join('')
+                                : '<option value="">Δεν υπάρχουν διαθέσιμα πλάνα</option>'
+                            }
+                        </select>
+
+                        <label for="plan-date-${item.id}" style="font-size: 14px; color: #555;">Ημερομηνία και ώρα:</label>
+                        <div style="display: flex; flex-direction: column;">
+                            <input type="date" id="plan-date-${item.id}-date" style="width: 100%; padding: 5px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
+                            <div style="display: flex; margin-bottom: 10px;">
+                                <select id="plan-date-${item.id}-hour" style="flex: 1; padding: 5px; margin-right: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                    ${[...Array(24).keys()].map(hour => `<option value="${hour}">${hour.toString().padStart(2, '0')}</option>`).join('')}
+                                </select>
+                                <select id="plan-date-${item.id}-minute" style="flex: 1; padding: 5px; border: 1px solid #ddd; border-radius: 5px;">
+                                    <option value="00">00</option>
+                                    <option value="15">15</option>
+                                    <option value="30">30</option>
+                                    <option value="45">45</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="plan-add-button-${item.id}" style="background-color: #a4c991; color: #fff; border: none; padding: 10px 15px; border-radius: 5px; font-size: 14px; cursor: pointer; display: inline-block;">Προσθήκη</button>
+                    </div>
+                `,
             });
 
             marker.addListener("click", () => {
-                // Κλείσιμο του προηγούμενου InfoWindow
                 if (openInfoWindowRef.current) {
                     openInfoWindowRef.current.close();
                 }
-
-                // Άνοιγμα του νέου InfoWindow
-                infoWindow.open(map, marker);
-
-                // Ενημέρωση της αναφοράς
-                openInfoWindowRef.current = infoWindow;
+                mainInfoWindow.open(map, marker);
+                openInfoWindowRef.current = mainInfoWindow;
             });
 
-            infoWindow.addListener("domready", () => {
-                const button = document.getElementById(
-                    `info-button-${destination.destination_id}`
-                );
-                if (button) {
-                    button.addEventListener("click", () =>
-                        handleCardClick(destination.destination_id)
-                    );
+            mainInfoWindow.addListener("domready", () => {
+                const detailsButton = document.getElementById(`info-button-details-${type}-${item.id}`);
+                if (detailsButton) {
+                    detailsButton.addEventListener("click", () => handleCardClick(item.id, type));
+                }
+
+                const planButton = document.getElementById(`info-button-plan-${type}-${item.id}`);
+                if (planButton) {
+                    planButton.addEventListener("click", () => {
+                        mainInfoWindow.close();
+                        planInfoWindow.open(map, marker);
+                        openInfoWindowRef.current = planInfoWindow;
+                    });
+                }
+            });
+
+            planInfoWindow.addListener("domready", () => {
+                const addButton = document.getElementById(`plan-add-button-${item.id}`);
+                if (addButton) {
+                    addButton.addEventListener("click", async () => {
+                        const selectedDate = document.getElementById(`plan-date-${item.id}-date`).value;
+                        const selectedHour = document.getElementById(`plan-date-${item.id}-hour`).value;
+                        const selectedMinute = document.getElementById(`plan-date-${item.id}-minute`).value;
+
+                        const fullDateTime = selectedDate && selectedHour && selectedMinute
+                            ? `${selectedDate}T${selectedHour}:${selectedMinute}:00`
+                            : null;
+
+                        const selectedPlan = document.getElementById(`plan-type-${item.id}`);
+                        const plan_id = selectedPlan && selectedPlan.value !== "" ? selectedPlan.value : null;
+
+                        if (!plan_id) {
+                            alert('Παρακαλώ επιλέξτε πλάνο.');
+                            return;
+                        }
+
+                        if (!fullDateTime) {
+                            alert('Παρακαλώ επιλέξτε ημερομηνία και ώρα.');
+                            return;
+                        }
+
+                        const requestBody = {
+                            plan_id: plan_id,
+                            plan: [
+                                {
+                                    entity_id: `${item.id}`,
+                                    date: fullDateTime,
+                                },
+                            ],
+                        };
+
+                        try {
+                            const response = await fetch(`https://olympus-riviera.onrender.com/api/plan/${plan_id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(requestBody),
+                            });
+
+                            if (response.ok) {
+                                alert('Το πλάνο προστέθηκε επιτυχώς!');
+                            } else {
+                                alert('Προέκυψε πρόβλημα κατά την προσθήκη του πλάνου.');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Προέκυψε κάποιο σφάλμα κατά την αποστολή του αιτήματος.');
+                        }
+                    });
                 }
             });
 
             return marker;
-        });
+        };
 
-        setMarkers(newMarkers);
+        const destinationMarkers = filteredDestinations.map((destination) =>
+            createMarker(destination, "destination")
+        );
+        const amenityMarkers = filteredAmenities.map((amenity) =>
+            createMarker(amenity, "amenity")
+        );
+
+        setMarkers([...destinationMarkers, ...amenityMarkers]);
     };
-
 
     useEffect(() => {
         if (mapRef.current && window.google) {
             const maps = window.google.maps;
             handleApiLoaded({ map: mapRef.current, maps });
         }
-    }, [filteredDestinations, selectedCategories]); // Παρακολουθούμε αλλαγές στα φίλτρα και στα destinations
+    }, [filteredDestinations, filteredAmenities, selectedCategories, plans]); // Προσθήκη plans στις εξαρτήσεις
 
     if (loading) {
         return <div>Loading...</div>;

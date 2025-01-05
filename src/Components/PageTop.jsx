@@ -77,7 +77,7 @@ function TopPage() {
                 {seasonsData.seasons.map((season) => (
                     <p
                         key={season.name}
-                        className="season"
+                        className="season-text"
                         onClick={() => handleSeasonClick(season.name)}
                     >
                         {season.name}
