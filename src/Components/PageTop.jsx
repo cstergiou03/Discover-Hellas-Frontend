@@ -2,26 +2,35 @@ import { useState, useRef, useEffect } from "react";
 import Header from "./Header";
 import "../Style/topPage.css";
 import seasonsData from "../assets/season.json";
+import winter from "../assets/winter.png";
+import spring from "../assets/spring.jpg";
+import summer from "../assets/summer.jpg";
+import fall from "../assets/fall.jpg";
 
 function TopPage() {
-    const [currentImage, setCurrentImage] = useState(seasonsData.seasons[0].imagePath);
+    const [currentImage, setCurrentImage] = useState(winter); // Default image
     const [currentText, setCurrentText] = useState("");
     const [isTyping, setIsTyping] = useState(false);
 
     const typingTimeoutRef = useRef(null);
 
+    const imagesMap = {
+        Χειμώνας: winter,
+        Άνοιξη: spring,
+        Καλοκαίρι: summer,
+        Φθινόπωρο: fall,
+    };
+
     const getCurrentSeason = () => {
-        const currentMonth = new Date().getMonth()
-        
+        const currentMonth = new Date().getMonth();
         const seasonsMap = [
             { name: "Χειμώνας", months: [11, 0, 1] },
             { name: "Άνοιξη", months: [2, 3, 4] },
             { name: "Καλοκαίρι", months: [5, 6, 7] },
-            { name: "Φθινόπωρο", months: [8, 9, 10] }
+            { name: "Φθινόπωρο", months: [8, 9, 10] },
         ];
         const season = seasonsMap.find((season) => season.months.includes(currentMonth));
-        
-        return season ? season.name : "Άνοιξη"
+        return season ? season.name : "Άνοιξη";
     };
 
     useEffect(() => {
@@ -29,16 +38,15 @@ function TopPage() {
         const season = seasonsData.seasons.find((s) => s.name === currentSeasonName);
 
         if (season) {
-            setCurrentImage(season.imagePath);
+            setCurrentImage(imagesMap[currentSeasonName]);
             startTyping(season.text);
         }
     }, []);
 
     const handleSeasonClick = (seasonName) => {
         const season = seasonsData.seasons.find((s) => s.name === seasonName);
-
         if (season) {
-            setCurrentImage(season.imagePath);
+            setCurrentImage(imagesMap[seasonName]);
             startTyping(season.text);
         }
     };
