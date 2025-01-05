@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../StyleProvider/providerSidebar.css";
+import logo from "../assets/logo2.png";
 
 function ProviderSidebar() {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ function ProviderSidebar() {
     return (
         <div className="provider-sidebar">
             <div className="logo">
-                <img src="../../src/assets/logo2.png"></img>
+                <img src={logo}></img>
             </div>
             <div className="menu">
                 {menuItems.map((item, index) => (
