@@ -9,7 +9,7 @@ function ProviderMainPanel(){
         <div className="provider-main-panel">
             <ProviderSidebar/>
             <ProviderStatistics/>
-            <ProfileSidebar/>
+            {/* <ProfileSidebar/> */}
         </div>
     )
 }

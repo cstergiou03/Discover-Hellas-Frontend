@@ -3,7 +3,7 @@ import "../Style/destinationGallery.css";
 
 function DestinationGallery({ data }) {
     const [currentPage, setCurrentPage] = useState(0);
-    const photosPerPage = 6;
+    const photosPerPage = 4;
 
     // Επεξεργασία φωτογραφιών
     const photos = Array.isArray(data)

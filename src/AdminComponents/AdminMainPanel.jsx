@@ -9,7 +9,7 @@ function AdminMainPanel(){
         <div className="admin-main-panel">
             <AdminSidebar/>
             <AdminStatistics/>
-            <ProfileSidebar/>
+            {/* <ProfileSidebar/> */}
         </div>
     )
 }

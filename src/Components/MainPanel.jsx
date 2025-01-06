@@ -9,14 +9,14 @@ import PopularAmenity from "./PopularAmenity.jsx";
 function MainPanel() {
     return (
         <div className="main-container">
-            <PageTop></PageTop>
+            <PageTop />
             <div className="mid-container">
-                <StatSection></StatSection>
-                <PieriaInfo></PieriaInfo>
-                <Weather></Weather>
-                <PopularAmenity></PopularAmenity>
+                <div className="stat-section"><StatSection /></div>
+                <div className="pieria-info"><PieriaInfo /></div>
+                <div className="weather"><Weather /></div>
+                <div className="popular-amenity"><PopularAmenity /></div>
             </div>
-            <Footer></Footer>
+            <Footer />
         </div>
     );
 }

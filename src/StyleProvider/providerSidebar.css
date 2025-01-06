@@ -1,3 +1,4 @@
+/* Προσαρμογή του provider-sidebar */
 .provider-sidebar {
     width: 300px;
     background-color: #ffffff;
@@ -5,73 +6,101 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start; /* Ευθυγράμμιση των στοιχείων προς τα πάνω */
     font-family: "Arial", sans-serif;
-    
+    transition: width 0.3s ease;
+    position: relative; /* Προσθήκη για το κουμπί */
 }
 
+/* Collapse κατάσταση */
+.provider-sidebar.collapsed {
+    width: 80px; /* Μειώστε το πλάτος όταν είναι collapsed */
+}
+
+/* Ρυθμίσεις για το logo και το κουμπί πάνω από αυτό */
 .logo {
     display: flex;
+    justify-content: space-between; /* Τοποθετούμε το λογότυπο στα αριστερά και το favicon δεξιά */
     align-items: center;
-    gap: 10px;
     margin-bottom: 30px;
+    position: relative;
+    padding: 0 10px; /* Προσθήκη padding για καλύτερη τοποθέτηση */
 }
 
-.logo-icon {
-    font-size: 24px;
+/* Κρυφό το λογότυπο και το favicon όταν είναι collapsed */
+.provider-sidebar.collapsed .logo img {
+    display: none;
 }
 
-.logo-text {
-    font-weight: bold;
-    font-size: 18px;
+/* Κουμπί για το toggle */
+.logo-button {
+    background-color: transparent;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+    transition: right 0.3s ease;
 }
 
+/* Ρυθμίσεις εικόνας λογότυπου */
+.sidebar-logo {
+    max-width: 80%;
+    height: auto;
+}
+
+/* Ρυθμίσεις favicon στα δεξιά */
+.sidebar-favicon {
+    width: 30px; /* Πλάτος του favicon */
+    height: 30px;
+    object-fit: contain;
+}
+
+/* Ρυθμίσεις μενού */
 .menu {
     flex-grow: 1;
 }
 
+/* Τα στοιχεία του μενού */
 .menu-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 15px;
+    /* padding: 10px 15px; */
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
-.menu-item:hover {
-    background-color: #f0f0f0;
+/* Όταν είναι collapsed, κρύβουμε το κείμενο και αλλάζουμε το μέγεθος του εικονιδίου */
+.provider-sidebar.collapsed .menu-text {
+    display: none; /* Κρύβουμε το κείμενο */
 }
 
-.menu-icon {
-    font-size: 20px;
+.provider-sidebar.collapsed .menu-item {
+    padding-left: 10px;
 }
 
-.menu-text {
-    font-size: 16px;
-    flex-grow: 1;
-    margin-left: 10px;
+/* Όταν το sidebar είναι σε κατάσταση collapse, οι εικονίδια μενού μεγαλώνουν */
+.provider-sidebar.collapsed .menu-icon {
+    font-size: 24px; /* Αυξάνουμε το μέγεθος του εικονιδίου */
 }
 
-.menu-action {
-    font-size: 18px;
-    color: #4caf50;
-}
-
+/* Στην footer περιοχή */
 .side-bar-footer {
-    margin-top: 20px;
+    margin-top: auto; /* Κάνουμε το footer να παραμένει στο κάτω μέρος */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
 }
 
-.side-bar-footer .help-info,
+/* Κρυφό το λογότυπο στο footer όταν είναι collapsed */
+.provider-sidebar.collapsed .side-bar-footer img {
+    display: none;
+}
+
 .side-bar-footer .logout {
     font-size: 18px;
     color: #333;
     padding: 8px 0;
     cursor: pointer;
-}
-
-.side-bar-footer .help-info:hover,
-.side-bar-footer .logout:hover {
-    color: #4caf50;
 }

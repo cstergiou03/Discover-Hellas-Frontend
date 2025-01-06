@@ -1,12 +1,12 @@
 .provider-table {
     padding: 20px;
     background-color: #fff;
-    height: 510px; /* Εξασφαλίζει ότι το ύψος του container παραμένει σταθερό */
+    height: 510px;
 }
 
 .table {
-    height: 400px;
-    max-height: 505px; /* Περιορισμός ύψους της περιοχής του πίνακα */
+    height: fit-content;
+    max-height: 505px;
 }
 
 .tabs {

@@ -15,4 +15,24 @@ html, body {
     align-items: center;
 }
 
+.mid-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr); /* Δύο στήλες για μεγαλύτερες οθόνες */
+    gap: 1rem; /* Απόσταση μεταξύ των στοιχείων */
+    width: 100%;
+    max-width: 1200px;
+    padding: 1rem;
+    box-sizing: border-box;
+}
 
+/* Responsive design για οθόνες κινητών */
+@media (max-width: 768px) {
+    .mid-container {
+        grid-template-columns: 1fr; /* Μία στήλη για κινητά */
+        padding: 0.5rem;
+    }
+
+    .main-container {
+        padding: 0;
+    }
+}

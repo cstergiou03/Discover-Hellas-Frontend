@@ -32,7 +32,7 @@ function ProviderTable({ data, dataType }) {
         const id = dataType === "amenity" ? item.amenity_id : item.event_id;
         navigate(`/provider/edit-${dataType}/${id}`);
     };
-    
+
 
     return (
         <div className="provider-table">
@@ -55,8 +55,8 @@ function ProviderTable({ data, dataType }) {
                             <div className="table-item" key={item.id}>
                                 <div className="record-name">{item.name}</div>
                                 <div className="record-description">{item.description}</div>
-                                
-                                <button 
+
+                                <button
                                     onClick={() => handleEditClick(item)}
                                     className="more-btn"
                                 >
@@ -68,16 +68,16 @@ function ProviderTable({ data, dataType }) {
                         <div>No {dataType === "amenity" ? "amenities" : "events"} in this category</div>
                     )}
                 </div>
-            </div>
 
-            <div className="pagination">
-                <button onClick={handlePrevPage} disabled={currentPage === 1}>
-                    Previous
-                </button>
-                <span>Page {currentPage} of {totalPages}</span>
-                <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                    Next
-                </button>
+                <div className="pagination">
+                    <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                        Previous
+                    </button>
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
     );
