@@ -12,7 +12,7 @@
 
 .weather-title {
     font-size: 1.8rem;
-    color: #007BFF;
+    color: #a4c991;
     margin-bottom: 1em;
 }
 
@@ -42,4 +42,10 @@
     font-size: 1rem;
     color: #555;
     margin: 0.2em 0;
+}
+
+@media (max-width: 970px) {
+    .weather-day {
+        flex-basis: calc(40% - 10px);
+    }
 }

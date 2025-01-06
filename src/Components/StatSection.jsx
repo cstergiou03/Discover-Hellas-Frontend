@@ -6,7 +6,9 @@ function StatSection() {
     return (
         <div className="stats-container">
             {stats.map((stat, index) => (
-                <Stat key={index} number={stat.number} type={stat.type} />
+                <div className="stat" key={index}> {/* Ενσωματώνουμε την κλάση "stat" */}
+                    <Stat number={stat.number} type={stat.type} />
+                </div>
             ))}
         </div>
     );

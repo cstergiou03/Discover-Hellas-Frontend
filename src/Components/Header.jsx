@@ -5,6 +5,7 @@ import "../Style/header.css";
 import LoginModal from "./LoginModal";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { FaBars } from 'react-icons/fa';
 
 function Header() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -12,6 +13,8 @@ function Header() {
     const [language, setLanguage] = useState("GR");
     const [categories, setCategories] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false); // Track if screen is mobile
+    const [isMenuOpen, setIsMenuOpen] = useState(false); // Track if mobile menu is open
 
     const navigate = useNavigate();
 
@@ -26,16 +29,17 @@ function Header() {
             .then((data) => setCategories(data))
             .catch((error) => console.error("Error fetching categories:", error));
 
-        // Clear localStorage when the user closes the tab
-        const handleBeforeUnload = () => {
-            localStorage.removeItem('loggedIn');
+        // Check if screen is mobile (adjust the breakpoint as needed)
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 970);
         };
 
-        window.addEventListener('beforeunload', handleBeforeUnload);
+        checkMobile(); // Initial check
+        window.addEventListener('resize', checkMobile); // Update on resize
 
-        // Clean up the event listener when the component is unmounted
+        // Cleanup event listener
         return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
+            window.removeEventListener('resize', checkMobile);
         };
     }, []);
 
@@ -86,39 +90,83 @@ function Header() {
         localStorage.setItem('loggedIn', 'true');
     };
 
+    // Toggle the mobile menu
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
+
     return (
-        <header className="header">
-            <img src={logo} alt="Company Logo" className="logo2" onClick={handleHomeTravelClick} />
-            <nav className="navigation">
-                <div 
-                    className="dropdown"
-                    onMouseEnter={() => setIsDropdownOpen(true)}
-                    onMouseLeave={() => setIsDropdownOpen(false)}
-                >
-                    <span className="dropdown-title">Προορισμοί</span>
-                    {isDropdownOpen && (
-                        <ul>
-                            {categories.length > 0 ? (
-                                categories.map((category) => (
-                                    <li key={category.category_id}>
-                                        <span onClick={() => navigate(`/experience/${category.category_id}`)}>
-                                            {category.name}
-                                        </span>
-                                    </li>
-                                ))
-                            ) : (
-                                <li>Loading...</li>
+        <>
+            {/* Non-Mobile UI */}
+            {!isMobile ? (
+                <header className="header">
+                    <img src={logo} alt="Company Logo" className="logo2" onClick={handleHomeTravelClick} />
+                    <nav className="navigation">
+                        <div
+                            className="dropdown"
+                            onMouseEnter={() => setIsDropdownOpen(true)}
+                            onMouseLeave={() => setIsDropdownOpen(false)}
+                        >
+                            <span className="dropdown-title">Προορισμοί</span>
+                            {isDropdownOpen && (
+                                <ul>
+                                    {categories.length > 0 ? (
+                                        categories.map((category) => (
+                                            <li key={category.category_id}>
+                                                <span onClick={() => navigate(`/experience/${category.category_id}`)}>
+                                                    {category.name}
+                                                </span>
+                                            </li>
+                                        ))
+                                    ) : (
+                                        <li>Loading...</li>
+                                    )}
+                                </ul>
                             )}
-                        </ul>
-                    )}
-                </div>
+                        </div>
+                        <a onClick={handleTravelClick}>Οργάνωσε το ταξίδι σου</a>
+                        <a onClick={handleCalendarTravelClick}>Εκδηλώσεις</a>
+                        <a onClick={handleExperiencelClick}>Εμπειρίες</a>
+                        <a onClick={handleProviderlClick}>Παροχές</a>
+                        <input placeholder="Search..." />
+                        <button onClick={handleLanguageChange}>{language}</button>
+
+                        {loggedIn ? (
+                            <button className="user-icon" onClick={handleUserIconClick}>
+                                <FontAwesomeIcon icon={faUser} size="lg" />
+                            </button>
+                        ) : (
+                            <button className="login-button" onClick={handleLoginClick}>
+                                Login
+                            </button>
+                        )}
+                    </nav>
+
+                    <LoginModal
+                        isOpen={isModalOpen}
+                        onClose={handleCloseModal}
+                        setLoggedIn={handleLoginSuccess}
+                    />
+                </header>
+            ) : (
+                /* Mobile UI */
+                <header className="mobile-header">
+                    <button onClick={toggleMenu} className="logo-button">
+                        <FaBars />
+                    </button>
+                    <div>
+                        <img src={logo} alt="Company Logo" className="mobile-logo" onClick={handleHomeTravelClick} />
+                    </div>
+                </header>
+            )}
+
+            {/* Mobile Menu - Conditional Rendering */}
+            <nav className={`mobile-nav ${isMenuOpen ? 'open' : ''}`}>
                 <a onClick={handleTravelClick}>Οργάνωσε το ταξίδι σου</a>
                 <a onClick={handleCalendarTravelClick}>Εκδηλώσεις</a>
                 <a onClick={handleExperiencelClick}>Εμπειρίες</a>
                 <a onClick={handleProviderlClick}>Παροχές</a>
-                <input placeholder="Search..." />
                 <button onClick={handleLanguageChange}>{language}</button>
-
                 {loggedIn ? (
                     <button className="user-icon" onClick={handleUserIconClick}>
                         <FontAwesomeIcon icon={faUser} size="lg" />
@@ -130,12 +178,12 @@ function Header() {
                 )}
             </nav>
 
-            <LoginModal 
-                isOpen={isModalOpen} 
-                onClose={handleCloseModal} 
-                setLoggedIn={handleLoginSuccess} 
+            <LoginModal
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+                setLoggedIn={handleLoginSuccess}
             />
-        </header>
+        </>
     );
 }
 

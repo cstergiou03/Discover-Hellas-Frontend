@@ -11,6 +11,7 @@ function TopPage() {
     const [currentImage, setCurrentImage] = useState(winter); // Default image
     const [currentText, setCurrentText] = useState("");
     const [isTyping, setIsTyping] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 970); // Ελέγχουμε αν είναι κινητό
 
     const typingTimeoutRef = useRef(null);
 
@@ -41,6 +42,16 @@ function TopPage() {
             setCurrentImage(imagesMap[currentSeasonName]);
             startTyping(season.text);
         }
+
+        // Event listener για έλεγχο του μεγέθους της οθόνης
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 970);
+        };
+
+        window.addEventListener("resize", checkMobile);
+        return () => {
+            window.removeEventListener("resize", checkMobile);
+        };
     }, []);
 
     const handleSeasonClick = (seasonName) => {
@@ -81,17 +92,21 @@ function TopPage() {
                 <h2 className="description-title">Info</h2>
                 <p className={isTyping ? "typing" : ""}>{currentText}</p>
             </div>
-            <div className="season-container">
-                {seasonsData.seasons.map((season) => (
-                    <p
-                        key={season.name}
-                        className="season-text"
-                        onClick={() => handleSeasonClick(season.name)}
-                    >
-                        {season.name}
-                    </p>
-                ))}
-            </div>
+            
+            {/* Εμφάνιση ή απόκρυψη του season-container ανάλογα με το μέγεθος της οθόνης */}
+            {!isMobile && (
+                <div className="season-container">
+                    {seasonsData.seasons.map((season) => (
+                        <p
+                            key={season.name}
+                            className="season-text"
+                            onClick={() => handleSeasonClick(season.name)}
+                        >
+                            {season.name}
+                        </p>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

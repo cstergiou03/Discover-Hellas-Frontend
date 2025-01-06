@@ -1,6 +1,20 @@
-.stats-container{
+.stats-container {
     width: 100%;
     display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+    flex-wrap: wrap; /* Τα στοιχεία θα περνούν στην επόμενη γραμμή όταν χρειάζεται */
+    justify-content: space-between; /* Ισοκατανομή σε κάθε γραμμή */
+    gap: 20px; /* Κενό ανάμεσα στα στατιστικά */
+}
+
+.stat {
+    flex-basis: calc(50% - 10px); /* Το κάθε στοιχείο να καταλαμβάνει το 50% του διαθέσιμου πλάτους */
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* Responsive για κινητές συσκευές */
+@media (max-width: 970px) {
+    .stat {
+        flex-basis: calc(50% - 10px); /* Παραμένουν δύο στήλες αλλά μικρότερες */
+    }
 }
