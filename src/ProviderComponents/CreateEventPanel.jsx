@@ -2,13 +2,27 @@ import "../StyleProvider/createEventPanel.css";
 import ProfileSidebar from "./ProfileSidebar";
 import ProviderSidebar from "./ProviderSidebar";
 import EventForm from "./EventForm";
+import { useState, useEffect } from "react";
 
 function CreateEventPanel() {
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 950);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth <= 950);
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     return (
         <div className="create-event-container">
             <ProviderSidebar />
             <EventForm />
-            <ProfileSidebar />
+            {!isSmallScreen && <ProfileSidebar />}
         </div>
     );
 }

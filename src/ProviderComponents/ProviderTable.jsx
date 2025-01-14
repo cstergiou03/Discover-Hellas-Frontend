@@ -1,15 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../StyleProvider/providerTable.css";
 
 function ProviderTable({ data, dataType }) {
     const [activeTab, setActiveTab] = useState("APPROVED");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const [itemsPerPage, setItemsPerPage] = useState(5); // Default είναι 5
 
     const navigate = useNavigate();
 
-    const filteredData = data.filter(item => item.status === activeTab);
+    // Ελέγχουμε το πλάτος της οθόνης και προσαρμόζουμε το pagination
+    useEffect(() => {
+        const updateItemsPerPage = () => {
+            if (window.innerWidth <= 768) {
+                setItemsPerPage(3); // Μειώνουμε τα items ανά σελίδα στις μικρές οθόνες
+            } else {
+                setItemsPerPage(5); // Επαναφέρουμε την προεπιλογή
+            }
+        };
+
+        // Καλούμε την αρχική ρύθμιση και προσθέτουμε listener για αλλαγές στο μέγεθος
+        updateItemsPerPage();
+        window.addEventListener("resize", updateItemsPerPage);
+
+        return () => {
+            window.removeEventListener("resize", updateItemsPerPage);
+        };
+    }, []);
+
+    const filteredData = data.filter((item) => item.status === activeTab);
 
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
@@ -33,14 +52,13 @@ function ProviderTable({ data, dataType }) {
         navigate(`/provider/edit-${dataType}/${id}`);
     };
 
-
     return (
         <div className="provider-table">
             <div className="tabs">
-                {["APPROVED", "PENDING", "REJECTED"].map(status => (
+                {["APPROVED", "PENDING", "REJECTED"].map((status) => (
                     <div
                         key={status}
-                        className={`tab ${activeTab === status ? 'active' : ''}`}
+                        className={`tab ${activeTab === status ? "active" : ""}`}
                         onClick={() => setActiveTab(status)}
                     >
                         {status}
@@ -51,7 +69,7 @@ function ProviderTable({ data, dataType }) {
             <div className="table">
                 <div className="table-items">
                     {currentPageData.length > 0 ? (
-                        currentPageData.map(item => (
+                        currentPageData.map((item) => (
                             <div className="table-item" key={item.id}>
                                 <div className="record-name">{item.name}</div>
                                 <div className="record-description">{item.description}</div>
@@ -73,7 +91,9 @@ function ProviderTable({ data, dataType }) {
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>
                         Previous
                     </button>
-                    <span>Page {currentPage} of {totalPages}</span>
+                    <span>
+                        Page {currentPage} of {totalPages}
+                    </span>
                     <button onClick={handleNextPage} disabled={currentPage === totalPages}>
                         Next
                     </button>

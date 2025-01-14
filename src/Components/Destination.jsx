@@ -5,12 +5,14 @@ import DestinationInfo from "./DestinationInfo";
 import Footer from "./Footer";
 import DestinationsGallery from "./DestinationGallery";
 import GoogleMapReact from 'google-map-react';
+import "../Style/destination.css";
 
 function Destination() {
     const { destinationId } = useParams();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [mapInstance, setMapInstance] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,6 +35,20 @@ function Destination() {
         fetchData();
     }, [destinationId]);
 
+    useEffect(() => {
+        if (mapInstance && data) {
+            const { map, maps } = mapInstance;
+            new maps.Marker({
+                position: {
+                    lat: parseFloat(data.latitude),
+                    lng: parseFloat(data.longitude),
+                },
+                map,
+                title: data.name,
+            });
+        }
+    }, [mapInstance, data]);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -42,13 +58,13 @@ function Destination() {
     }
 
     const photosTable = data.photos
-    ? data.photos
-          .split("data:image/jpeg;base64,")
-          .filter((photo) => photo.trim() !== "")
-          .map((photo) =>
-              "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-          )
-    : [];
+        ? data.photos
+              .split("data:image/jpeg;base64,")
+              .filter((photo) => photo.trim() !== "")
+              .map((photo) =>
+                  "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+              )
+        : [];
 
     const handleDirectionsClick = () => {
         const latitude = data.latitude;
@@ -60,11 +76,7 @@ function Destination() {
     };
 
     const handleApiLoaded = (map, maps) => {
-        new maps.Marker({
-            position: { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) }, // Μετατροπή σε float για το Google Maps
-            map,
-            title: data.name,
-        });
+        setMapInstance({ map, maps });
     };
 
     return (

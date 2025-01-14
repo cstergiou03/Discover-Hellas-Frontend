@@ -9,7 +9,7 @@
     justify-content: flex-start; /* Ευθυγράμμιση των στοιχείων προς τα πάνω */
     font-family: "Arial", sans-serif;
     transition: width 0.3s ease;
-    position: relative; /* Προσθήκη για το κουμπί */
+    position: relative; /* Για μεγαλύτερες οθόνες */
 }
 
 /* Collapse κατάσταση */
@@ -64,7 +64,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* padding: 10px 15px; */
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -103,4 +102,37 @@
     color: #333;
     padding: 8px 0;
     cursor: pointer;
+}
+
+/* Για μικρές οθόνες (κάτω από 950px) */
+@media (max-width: 950px) {
+    .provider-sidebar {
+        /* Βάζουμε το sidebar να έχει z-index πάνω από όλα τα άλλα */
+        z-index: 9999; /* Βαθύ z-index για να τοποθετείται πάνω από όλα τα άλλα στοιχεία */
+        position: relative; /* Κάνουμε το sidebar fixed ώστε να μην επηρεάζει το layout */
+        transition: width 0.3s ease;
+    }
+
+    .provider-sidebar.collapsed {
+        width: 70px;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .menu-icon {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+
+    .menu-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }

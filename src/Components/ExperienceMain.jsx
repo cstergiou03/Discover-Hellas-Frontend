@@ -25,7 +25,6 @@ function ExperienceMain() {
             .then((response) => response.json())
             .then((data) => {
                 setDestinations(data);
-                setFilteredDestinations(data); // Αρχική τιμή
                 setLoading(false);
             })
             .catch((error) => {
@@ -61,17 +60,6 @@ function ExperienceMain() {
         }
     }, [loading, selectedCategory, searchTerm]);
 
-    // Handle search input
-    const handleSearch = (e) => {
-        const term = e.target.value.toLowerCase();
-        setSearchTerm(term);
-    };
-
-    // Handle filter dropdown
-    const handleFilter = (categoryId) => {
-        setSelectedCategory(categoryId);
-    };
-
     // Filter destinations based on search term and category
     const filterDestinations = (term, categoryId) => {
         let filtered = destinations;
@@ -89,7 +77,18 @@ function ExperienceMain() {
         }
 
         setFilteredDestinations(filtered);
-        setCurrentPage(1);
+        setCurrentPage(1);  // Reset to first page after filtering
+    };
+
+    // Handle search input
+    const handleSearch = (e) => {
+        const term = e.target.value.toLowerCase();
+        setSearchTerm(term);
+    };
+
+    // Handle filter dropdown
+    const handleFilter = (categoryId) => {
+        setSelectedCategory(categoryId);
     };
 
     // Pagination logic
@@ -118,6 +117,7 @@ function ExperienceMain() {
                     value={selectedCategory}
                     onChange={(e) => handleFilter(e.target.value)}
                     className="filter-select"
+                    disabled={categoryId !== undefined && categoryId !== "all"} // Disable dropdown if categoryId exists
                 >
                     {categories.map((category) => (
                         <option key={category.category_id} value={category.category_id}>

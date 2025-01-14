@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../StyleProvider/providerSidebar.css";
 import logo from "../assets/logo2.png";
 import { FaBars } from 'react-icons/fa';
 
 function ProviderSidebar() {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(window.innerWidth < 950); // Αρχική κατάσταση ανάλογα με το πλάτος
     const navigate = useNavigate();
 
     const menuItems = [
@@ -23,6 +23,24 @@ function ProviderSidebar() {
     const toggleSidebar = () => {
         setCollapsed(!collapsed);
     };
+
+    // Listener για το πλάτος της οθόνης
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 950) {
+                setCollapsed(true);
+            } else {
+                setCollapsed(false);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+
+        // Καθαρισμός του listener όταν το component αποσυνδέεται
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     return (
         <div className={`provider-sidebar ${collapsed ? 'collapsed' : ''}`}>

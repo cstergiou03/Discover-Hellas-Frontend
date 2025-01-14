@@ -38,10 +38,10 @@
 .calendar-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Το footer να είναι πάντα στο κάτω μέρος */
+    justify-content: space-between;
     align-items: center;
     width: 100%;
-    height: 100vh;
+    /* height: 100vh; */
     background-color: #fafafa;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -96,25 +96,5 @@ footer span {
     margin-top: 20px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .calendar-container {
-        margin: 20px;
-        padding: 15px;
-    }
 
-    .calendar-wrapper {
-        padding: 5px;
-    }
-
-    header h1 {
-        font-size: 2em;
-    }
-
-    /* Προσαρμογή του font-size και padding για μικρότερες οθόνες */
-    .rbc-event {
-        font-size: 0.8em;
-        padding: 5px 8px;
-    }
-}
 

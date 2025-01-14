@@ -1,13 +1,15 @@
+/* Στυλ για το overlay του modal (απαλό φόντο) */
 .login-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7); /* Σκοτεινότερο overlay για καλύτερη αντίθεση */
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1050; /* Το overlay είναι πάνω από όλα τα άλλα */
 }
 
 /* Στυλ για το περιεχόμενο του modal */
@@ -17,23 +19,28 @@
     justify-content: space-evenly;
     background-color: white;
     padding: 20px;
-    width: 400px;
-    height: 50%;
+    width: 90%; /* Αφήνουμε μεγαλύτερο πλάτος για το modal σε μικρές οθόνες */
+    max-width: 400px; /* Μέγιστο πλάτος του modal */
+    height: 30%;
     position: relative;
     border-radius: 8px;
+    z-index: 1060; /* Βεβαιωνόμαστε ότι το περιεχόμενο του modal είναι πάνω από το overlay */
 }
 
+/* Στυλ για τον τίτλο του modal */
 .login-modal-content h2 {
     margin-bottom: 20px;
     color: #4CAF50;
 }
 
+/* Στυλ για τις ετικέτες (labels) του modal */
 .login-modal-content label {
     color: #4CAF50;
     display: block;
     margin-top: 10px;
 }
 
+/* Στυλ για τα πεδία εισαγωγής του modal */
 .login-modal-content input {
     width: 80%;
     padding: 10px;
@@ -42,6 +49,7 @@
     border-radius: 5px;
 }
 
+/* Στυλ για το κουμπί Login του modal */
 .login-modal-content button {
     margin-top: 20px;
     padding: 10px 20px;
@@ -52,6 +60,7 @@
     cursor: pointer;
 }
 
+/* Στυλ για το κουμπί Close (X) */
 .login-modal-content .close-btn {
     margin-top: 10px;
     background-color: #f44336;
@@ -62,11 +71,13 @@
     cursor: pointer;
 }
 
+/* Hover effect για τα κουμπιά */
 .login-modal-content button:hover,
 .login-modal-content .close-btn:hover {
     opacity: 0.8;
 }
 
+/* Στυλ για το κουμπί Close (X) στην επάνω δεξιά γωνία */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -83,14 +94,14 @@
     color: red;
 }
 
-/* Τα γενικά στυλ του modal παραμένουν τα ίδια */
-
+/* Στυλ για το κουμπί Google sign-in */
 #google-signin-button {
     margin-top: 20px;
     display: flex;
     justify-content: center;
 }
 
+/* Στυλ για την ενότητα εγγραφής */
 .register-section {
     margin-top: -10px;
     text-align: center;
@@ -107,3 +118,22 @@
     text-decoration: underline;
 }
 
+@media (max-width: 970px) {
+    .login-modal-content {
+        width: 90%; /* Το modal καταλαμβάνει το 90% της οθόνης για μικρές οθόνες */
+        max-width: 350px; /* Περιορισμός πλάτους για καλύτερη εμφάνιση σε κινητά */
+        height: auto; /* Βελτιώνουμε το ύψος σε μικρές οθόνες */
+        padding: 20px; /* Διόρθωση padding για σωστό κεντράρισμα */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Στοιχίζει τα περιεχόμενα του modal κάθετα στο κέντρο */
+    }
+
+    .login-modal-overlay {
+        background-color: rgba(0, 0, 0, 0.8); /* Κάνουμε το overlay πιο σκοτεινό για κινητά */
+        display: flex;
+        justify-content: center; /* Στοιχίζει το modal οριζόντια στο κέντρο */
+        align-items: center; /* Στοιχίζει το modal κατακόρυφα στο κέντρο */
+        height: 100vh; /* Διασφαλίζει ότι το overlay καλύπτει όλο το ύψος της οθόνης */
+    }
+}

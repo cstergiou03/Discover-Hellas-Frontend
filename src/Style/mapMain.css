@@ -46,5 +46,5 @@ html, body {
 
 .dest-redirect-button:hover {
     cursor: pointer;
-    background-color: #0056b3; /* Μία πιο σκούρα απόχρωση στο hover */
+    background-color: #0056b3;
 }

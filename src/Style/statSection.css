@@ -1,20 +1,23 @@
 .stats-container {
     width: 100%;
     display: flex;
-    flex-wrap: wrap; /* Τα στοιχεία θα περνούν στην επόμενη γραμμή όταν χρειάζεται */
+    flex-wrap: nowrap; /* Τα στοιχεία θα περνούν στην επόμενη γραμμή όταν χρειάζεται */
     justify-content: space-between; /* Ισοκατανομή σε κάθε γραμμή */
     gap: 20px; /* Κενό ανάμεσα στα στατιστικά */
 }
 
-.stat {
-    flex-basis: calc(40% - 10px); /* Το κάθε στοιχείο να καταλαμβάνει το 50% του διαθέσιμου πλάτους */
-    margin: 10px 0;
-    text-align: center;
-}
-
 /* Responsive για κινητές συσκευές */
 @media (max-width: 970px) {
-    .stat {
-        flex-basis: calc(40% - 10px); /* Παραμένουν δύο στήλες αλλά μικρότερες */
+    .stats-container {
+        width: 80%;
+        display: flex;
+        flex-wrap: wrap; /* Τα στοιχεία θα περνούν στην επόμενη γραμμή όταν χρειάζεται */
+        justify-content: space-between; /* Ισοκατανομή σε κάθε γραμμή */
+        gap: 20px; /* Προσθέτουμε κάποιο κενό μεταξύ των στοιχείων */
+    }
+
+    /* Κάθε στοιχείο στο stats-container να καταλαμβάνει το 48% του πλάτους για δύο στήλες */
+    .stats-container .stat {
+        width: 30%; /* Κάθε στοιχείο παίρνει το 48% του πλάτους */
     }
 }

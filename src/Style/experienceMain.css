@@ -1,16 +1,27 @@
-.experience-main-container {
-    width: 100%;
+/* Γενικό CSS για τη σελίδα */
+html, body {
+    height: 100%; /* Βεβαιωθείτε ότι η σελίδα καταλαμβάνει όλο το ύψος */
+    margin: 0;
 }
 
+/* Container για το κυρίως περιεχόμενο */
+.experience-main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Το container καταλαμβάνει το ύψος της σελίδας */
+}
+
+/* Το περιεχόμενο της σελίδας */
 .experience-table {
     display: flex;
-    height: 602px;
     flex-direction: column;
     align-items: center;
     gap: 10px;
     margin: 1em;
+    flex-grow: 1; /* Κάνει το περιεχόμενο να καταλαμβάνει το διαθέσιμο χώρο */
 }
 
+/* Στυλ για κάθε record */
 .experience-record {
     display: flex;
     flex-direction: row;
@@ -22,18 +33,21 @@
     background-color: #f9f9f9;
 }
 
+/* Στυλ για τις στήλες του record */
 .record-column {
     flex: 1;
     padding: 0 10px;
     text-align: center;
 }
 
+/* Στυλ για την εικόνα στο record */
 .record-image {
     max-width: 100px;
     max-height: 100px;
     border-radius: 5px;
 }
 
+/* Pagination styling */
 .pagination {
     display: flex;
     justify-content: center;
@@ -62,6 +76,7 @@
     border-color: #a4c991;
 }
 
+/* Στυλ για το filter container */
 .filter-container {
     display: flex;
     justify-content: center;
@@ -69,6 +84,7 @@
     margin: 20px 0;
 }
 
+/* Στυλ για το search input */
 .search-input {
     padding: 10px;
     width: 200px;
@@ -77,10 +93,19 @@
     font-size: 1rem;
 }
 
+/* Στυλ για το filter select */
 .filter-select {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 1rem;
     background-color: #f9f9f9;
+}
+
+/* Footer styling */
+footer {
+    padding: 10px 0;
+    background-color: #333;
+    color: white;
+    text-align: center;
 }

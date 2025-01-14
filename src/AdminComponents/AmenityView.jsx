@@ -2,16 +2,29 @@ import AdminSidebar from "./AdminSidebar";
 import ProfileSidebarAdmin from "./ProfileSidebarAdmin";
 import AmenityFormAdmin from "./AmenityFormAdmin"
 import "../StyleAdmin/amenityView.css"
+import { useState, useEffect } from "react";
 
-function AmenityView(){
+function AmenityView() {
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 950);
 
-    return(
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth <= 950);
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    return (
         <div className="amenity-view-container">
-            <AdminSidebar/>
-            <AmenityFormAdmin/>
-            <ProfileSidebarAdmin/>
+            <AdminSidebar />
+            <AmenityFormAdmin />
+            {!isSmallScreen && <ProfileSidebarAdmin />}
         </div>
     );
-}   
+}
 
 export default AmenityView;

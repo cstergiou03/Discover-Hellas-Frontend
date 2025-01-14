@@ -6,12 +6,7 @@ import CategoriesTable from "./CategoriesTable";  // Εισάγουμε το Cat
 
 function AdminStatistics() {
     const [selectedItem, setSelectedItem] = useState(null); // Επιλογή στοιχείου από το ListBox
-    const [openSections, setOpenSections] = useState({
-        requests: true,
-        stats: true,
-        entity: true,
-        cat: true,
-    }); // Κατάσταση για το expand/collapse των τμημάτων
+    const [openSection, setOpenSection] = useState(null); // Μόνο ένα ανοιχτό τμήμα
     const [amenities, setAmenities] = useState([]); // Δεδομένα για amenities
     const [events, setEvents] = useState([]); // Δεδομένα για events
     const [destinationCategories, setDestinationCategories] = useState([]); // Δεδομένα για destination categories
@@ -21,16 +16,8 @@ function AdminStatistics() {
 
     const handleClick = (item) => {
         setSelectedItem(item); // Ορισμός της επιλεγμένης επιλογής
-        // Ανάλογα με την επιλογή, ανοίγουμε ή κλείνουμε την αντίστοιχη ενότητα
-        if (item === "Requests") {
-            setOpenSections(prev => ({ ...prev, requests: !prev.requests }));
-        } else if (item === "Stats") {
-            setOpenSections(prev => ({ ...prev, stats: !prev.stats }));
-        } else if (item === "Entity") {
-            setOpenSections(prev => ({ ...prev, entity: !prev.entity }));
-        } else if (item === "Categories") {
-            setOpenSections(prev => ({ ...prev, cat: !prev.cat }));
-        }
+        // Αν το section που κλικάρεται είναι ήδη ανοιχτό, το κλείνουμε. Διαφορετικά, το ανοίγουμε.
+        setOpenSection((prevSection) => (prevSection === item ? null : item));
     };
 
     useEffect(() => {
@@ -116,52 +103,57 @@ function AdminStatistics() {
 
     return (
         <div className="admin-container">
-            <div className="admin-list-box">
-                <h3>Επιλογές</h3>
-                <ul className="custom-list">
-                    <li onClick={() => handleClick("Requests")}>
-                        Αιτήματα {openSections.requests ? "▲" : "▼"}
-                    </li>
-                    {openSections.requests && (
-                        <ul className="sub-list">
-                            <li onClick={() => handleClick("Amenities")}>Παροχές</li>
-                            <li onClick={() => handleClick("Events")}>Εκδηλώσεις</li>
-                            <li onClick={() => handleClick("Users")}>Χρήστες</li>
-                        </ul>
-                    )}
-                    <li onClick={() => handleClick("Stats")}>
-                        Στατιστικά {openSections.stats ? "▲" : "▼"}
-                    </li>
-                    {openSections.stats && (
-                        <ul className="sub-list">
-                            <li onClick={() => handleClick("Stats1")}>Στατιστικά 1</li>
-                            <li onClick={() => handleClick("Stats2")}>Στατιστικά 2</li>
-                            <li onClick={() => handleClick("Stats3")}>Στατιστικά 3</li>
-                        </ul>
-                    )}
-                    <li onClick={() => handleClick("Entity")}>
-                        Οντότητες {openSections.entity ? "▲" : "▼"}
-                    </li>
-                    {openSections.entity && (
-                        <ul className="sub-list">
-                            <li onClick={() => handleClick("Destinations")}>Προορισμοί</li>
-                            <li onClick={() => handleClick("Activities")}>Δραστηριότητες</li>
-                        </ul>
-                    )}
-                    <li onClick={() => handleClick("Categories")}>
-                        Κατηγορίες {openSections.cat ? "▲" : "▼"}
-                    </li>
-                    {openSections.cat && (
-                        <ul className="sub-list">
-                            <li onClick={() => handleClick("DestinationCategories")}>Κατηγορίες Προορισμών</li>
-                            <li onClick={() => handleClick("AmenityCategories")}>Κατηγορίες Παροχών</li>
-                        </ul>
-                    )}
-                </ul>
-            </div>
+            <h2>Διαχείριση Στοιχείων</h2>
+            
+            {/* Αιτήματα */}
+            <h3 onClick={() => handleClick("requests")}>
+                Αιτήματα {openSection === "requests" ? "▲" : "▼"}
+            </h3>
+            {openSection === "requests" && (
+                <div className="section-content">
+                    <h4 onClick={() => handleClick("Amenities")}>Παροχές</h4>
+                    <h4 onClick={() => handleClick("Events")}>Εκδηλώσεις</h4>
+                    <h4 onClick={() => handleClick("Users")}>Χρήστες</h4>
+                </div>
+            )}
 
+            {/* Στατιστικά */}
+            <h3 onClick={() => handleClick("stats")}>
+                Στατιστικά {openSection === "stats" ? "▲" : "▼"}
+            </h3>
+            {openSection === "stats" && (
+                <div className="section-content">
+                    <h4 onClick={() => handleClick("Stats1")}>Στατιστικά 1</h4>
+                    <h4 onClick={() => handleClick("Stats2")}>Στατιστικά 2</h4>
+                    <h4 onClick={() => handleClick("Stats3")}>Στατιστικά 3</h4>
+                </div>
+            )}
+
+            {/* Οντότητες */}
+            <h3 onClick={() => handleClick("entity")}>
+                Οντότητες {openSection === "entity" ? "▲" : "▼"}
+            </h3>
+            {openSection === "entity" && (
+                <div className="section-content">
+                    <h4 onClick={() => handleClick("Destinations")}>Προορισμοί</h4>
+                    <h4 onClick={() => handleClick("Activities")}>Δραστηριότητες</h4>
+                </div>
+            )}
+
+            {/* Κατηγορίες */}
+            <h3 onClick={() => handleClick("cat")}>
+                Κατηγορίες {openSection === "cat" ? "▲" : "▼"}
+            </h3>
+            {openSection === "cat" && (
+                <div className="section-content">
+                    <h4 onClick={() => handleClick("DestinationCategories")}>Κατηγορίες Προορισμών</h4>
+                    <h4 onClick={() => handleClick("AmenityCategories")}>Κατηγορίες Παροχών</h4>
+                </div>
+            )}
+
+            {/* Περιεχόμενο */}
             <div className="admin-content">
-                {selectedItem && selectedItem !== "Requests" && selectedItem !== "Stats" && renderContent()}
+                {renderContent()}
             </div>
         </div>
     );

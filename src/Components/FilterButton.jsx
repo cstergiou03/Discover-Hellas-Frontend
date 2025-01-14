@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../Style/filterButton.css";
 
 function FilterButton({ onFilterChange }) {
@@ -9,6 +10,9 @@ function FilterButton({ onFilterChange }) {
     const [panelOpen, setPanelOpen] = useState(false);
     const [loadingDestinations, setLoadingDestinations] = useState(true);
     const [loadingAmenities, setLoadingAmenities] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn') === 'true'); // State για το loggedIn
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDestinationCategories = async () => {
@@ -37,6 +41,17 @@ function FilterButton({ onFilterChange }) {
 
         fetchDestinationCategories();
         fetchAmenityCategories();
+
+        // Παρακολούθηση αλλαγών στο localStorage για το loggedIn
+        const handleStorageChange = () => {
+            setLoggedIn(localStorage.getItem('loggedIn') === 'true');
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
     }, []);
 
     const handleCategoryChange = (categoryId) => {
@@ -52,6 +67,10 @@ function FilterButton({ onFilterChange }) {
         onFilterChange(tempSelectedCategories);
     };
 
+    const handleViewPlanClick = () => {
+        navigate('/planView');
+    };
+
     return (
         <div className="filter-button-container">
             <button
@@ -63,6 +82,15 @@ function FilterButton({ onFilterChange }) {
             >
                 ⚙️ Φίλτρα
             </button>
+
+            {!loggedIn && (
+                <button
+                    className="view-plan-button"
+                    onClick={handleViewPlanClick}
+                >
+                    Προβολή Πλάνου
+                </button>
+            )}
 
             {panelOpen && (
                 <div className="filter-panel">

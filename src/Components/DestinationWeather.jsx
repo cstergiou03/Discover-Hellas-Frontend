@@ -76,8 +76,8 @@ function DestinationWeather({ data }){
                         <h3>{new Date(date).toLocaleDateString("el-GR", { weekday: "long" })}</h3>
                         <p>Μέγιστη: {daily.temperature_2m_max ? daily.temperature_2m_max[index] : "N/A"}°C</p>
                         <p>Ελάχιστη: {daily.temperature_2m_min ? daily.temperature_2m_min[index] : "N/A"}°C</p>
-                        <p>Κωδικός Καιρού: {daily.weathercode ? daily.weathercode[index] : "N/A"}</p>
-                        <p>Εικονίδιο Καιρού: {getWeatherIcon(daily.weathercode ? daily.weathercode[index] : 0)}</p>
+                        <p>Κωδικός Καιρού: {daily.weather_code ? daily.weather_code[index] : "N/A"}</p>
+                        <p>Εικονίδιο Καιρού: {getWeatherIcon(daily.weather_code ? daily.weather_code[index] : 0)}</p>
                     </div>
                 )) : (
                     <p>No weather data available</p>

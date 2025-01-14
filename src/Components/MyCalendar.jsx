@@ -13,7 +13,17 @@ function MyCalendar() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 970); // Θεωρούμε 970px ως όριο για mobile
+        };
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Ελέγχει το αρχικό μέγεθος
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const navigate = useNavigate();
 
     // Λήψη των events από το API
@@ -38,7 +48,8 @@ function MyCalendar() {
             });
     }, []); // Καλείται μόνο μία φορά κατά το πρώτο render
 
-    const handleEventTravelClick = (eventId) => {
+    const handleEventTravelClick = (event) => {
+        const eventId = event.event_id; // Παίρνουμε το id του event
         console.log(`Navigating to event with ID: ${eventId}`);
         navigate(`/event/${eventId}`); // Πλοήγηση στο event με το συγκεκριμένο ID
     };
@@ -60,11 +71,11 @@ function MyCalendar() {
                     events={events}
                     startAccessor="start"
                     endAccessor="end"
-                    titleAccessor="title" // Ορίζουμε το title ως τίτλο του event
-                    defaultView="week"
-                    style={{ height: 700, width: 1400 }}
-                    views={['month', 'week', 'day']}
-                    onSelectEvent={(event) => handleEventTravelClick(event.event_id)} // Πλοήγηση στο event με ένα κλικ
+                    titleAccessor="title"
+                    defaultView={isMobile ? "day" : "week"} // Προβολή "day" για mobile
+                    style={{ height: isMobile ? 700 : 700, width: isMobile ? "100%" : 1400 }}
+                    views={isMobile ? ['day'] : ['month', 'week', 'day']}
+                    onSelectEvent={handleEventTravelClick} // Προσθέτουμε την onClick λειτουργία στο event
                 />
             </div>
             <Footer />

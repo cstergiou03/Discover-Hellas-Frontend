@@ -28,10 +28,16 @@
 /* Grid για προορισμούς */
 .popular-destinations-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Δύο στήλες */
-    grid-auto-rows: auto; /* Αυτόματο ύψος */
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr); /* Τρεις στήλες */
+    grid-template-rows: repeat(3, 1fr); /* Δύο σειρές */
+    grid-gap: 20px;
     justify-items: center;
+}
+
+/* Ρύθμιση για το πρώτο στοιχείο να καταλαμβάνει τις θέσεις 1,1 και 2,1 */
+.popular-destinations-grid .destination-card:first-child {
+    grid-column: span 1; /* Καλύπτει δύο στήλες */
+    grid-row: span 2; /* Καλύπτει δύο σειρές */
 }
 
 /* Styling για τις κάρτες */
@@ -75,7 +81,7 @@
 
 .destination-info h3 {
     font-size: 1.2rem;
-    color: #3498db;
+    color: #a4c991;
     margin-bottom: 5px;
 }
 
@@ -87,7 +93,7 @@
 }
 
 /* Mobile Responsiveness */
-@media (max-width: 1024px) {
+@media (max-width: 950px) {
     .popular-destinations-grid {
         grid-template-columns: 1fr; /* Μία στήλη */
         gap: 15px; /* Λιγότερο κενό */

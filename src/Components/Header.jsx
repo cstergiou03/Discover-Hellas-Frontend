@@ -13,35 +13,40 @@ function Header() {
     const [language, setLanguage] = useState("GR");
     const [categories, setCategories] = useState([]);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false); // Track if screen is mobile
-    const [isMenuOpen, setIsMenuOpen] = useState(false); // Track if mobile menu is open
+    const [isMobile, setIsMobile] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         // Check if loggedIn state is saved in localStorage
-        const storedLoggedIn = localStorage.getItem('loggedIn') === 'true';
+        const storedLoggedIn = localStorage.getItem('loggedIn') === 'true';  // Corrected comparison
         setLoggedIn(storedLoggedIn);
-
+    
         // Fetch categories from API
         fetch("https://olympus-riviera.onrender.com/api/admin/destination/category/get/all")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch((error) => console.error("Error fetching categories:", error));
-
+    
         // Check if screen is mobile (adjust the breakpoint as needed)
         const checkMobile = () => {
             setIsMobile(window.innerWidth <= 970);
         };
-
+    
         checkMobile(); // Initial check
         window.addEventListener('resize', checkMobile); // Update on resize
-
+    
         // Cleanup event listener
         return () => {
             window.removeEventListener('resize', checkMobile);
         };
     }, []);
+
+    useEffect(() => {
+        const storedLoggedIn = localStorage.getItem('loggedIn') === 'true'; // Ελέγξτε αν η τιμή είναι 'true'
+        setLoggedIn(storedLoggedIn);
+    }, []);    
 
     const handleLanguageChange = () => {
         setLanguage((prevLanguage) => (prevLanguage === "GR" ? "EN" : "GR"));
@@ -64,7 +69,7 @@ function Header() {
 
     const handleExperiencelClick = (event) => {
         event.preventDefault();
-        navigate("/experience");
+        navigate("/activities");
     };
 
     const handleProviderlClick = (event) => {
@@ -73,6 +78,9 @@ function Header() {
     };
 
     const handleLoginClick = () => {
+        if (isMobile) {
+            setIsMenuOpen(false);
+        }
         setIsModalOpen(true);
     };
 
@@ -88,6 +96,13 @@ function Header() {
     const handleLoginSuccess = () => {
         setLoggedIn(true);
         localStorage.setItem('loggedIn', 'true');
+    };
+
+    // Logout functionality
+    const handleLogout = () => {
+        setLoggedIn(false);
+        localStorage.setItem('loggedIn', 'false');  // Set loggedIn to false in localStorage
+        navigate("/");  // Optionally navigate to home or any other page after logout
     };
 
     // Toggle the mobile menu
@@ -107,13 +122,13 @@ function Header() {
                             onMouseEnter={() => setIsDropdownOpen(true)}
                             onMouseLeave={() => setIsDropdownOpen(false)}
                         >
-                            <span className="dropdown-title">Προορισμοί</span>
+                            <span className="dropdown-title" onClick={() => navigate("/destination")}>Προορισμοί</span>
                             {isDropdownOpen && (
                                 <ul>
                                     {categories.length > 0 ? (
                                         categories.map((category) => (
                                             <li key={category.category_id}>
-                                                <span onClick={() => navigate(`/experience/${category.category_id}`)}>
+                                                <span onClick={() => navigate(`/destinations/${category.category_id}`)}>
                                                     {category.name}
                                                 </span>
                                             </li>
@@ -126,15 +141,17 @@ function Header() {
                         </div>
                         <a onClick={handleTravelClick}>Οργάνωσε το ταξίδι σου</a>
                         <a onClick={handleCalendarTravelClick}>Εκδηλώσεις</a>
-                        <a onClick={handleExperiencelClick}>Εμπειρίες</a>
+                        <a onClick={handleExperiencelClick}>Δραστηριότητες</a>
                         <a onClick={handleProviderlClick}>Παροχές</a>
-                        <input placeholder="Search..." />
                         <button onClick={handleLanguageChange}>{language}</button>
 
                         {loggedIn ? (
-                            <button className="user-icon" onClick={handleUserIconClick}>
-                                <FontAwesomeIcon icon={faUser} size="lg" />
-                            </button>
+                            <>
+                                <button className="user-icon" onClick={handleUserIconClick}>
+                                    <FontAwesomeIcon icon={faUser} size="lg" />
+                                </button>
+                                <button onClick={handleLogout}>Αποσύνδεση</button>
+                            </>
                         ) : (
                             <button className="login-button" onClick={handleLoginClick}>
                                 Login
@@ -164,16 +181,19 @@ function Header() {
             <nav className={`mobile-nav ${isMenuOpen ? 'open' : ''}`}>
                 <a onClick={handleTravelClick}>Οργάνωσε το ταξίδι σου</a>
                 <a onClick={handleCalendarTravelClick}>Εκδηλώσεις</a>
-                <a onClick={handleExperiencelClick}>Εμπειρίες</a>
+                <a onClick={handleExperiencelClick}>Δραστηριότητες</a>
                 <a onClick={handleProviderlClick}>Παροχές</a>
                 <button onClick={handleLanguageChange}>{language}</button>
                 {loggedIn ? (
-                    <button className="user-icon" onClick={handleUserIconClick}>
-                        <FontAwesomeIcon icon={faUser} size="lg" />
-                    </button>
+                    <>
+                        <button className="user-icon" onClick={handleUserIconClick}>
+                            <FontAwesomeIcon icon={faUser} size="lg" />
+                        </button>
+                        <button onClick={handleLogout}>Αποσύνδεση</button>
+                    </>
                 ) : (
                     <button className="login-button" onClick={handleLoginClick}>
-                        Login
+                        Σύνδεση
                     </button>
                 )}
             </nav>

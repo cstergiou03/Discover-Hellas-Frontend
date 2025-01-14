@@ -22,7 +22,7 @@ function AdminProfile() {
     const [phone, setPhone] = useState('(097) 234-5678');
     const [mobile, setMobile] = useState('(098) 765-4321');
     const [address, setAddress] = useState('Περιοχή Bay, Σαν Φρανσίσκο, Καλιφόρνια');
-    const [verified, setVerified] = useState(false);
+    const [verified, setVerified] = useState(true);
 
     const [eventStatusCounts, setEventStatusCounts] = useState({ APPROVED: 0, PENDING: 0, REJECTED: 0 });
     const [amenityStatusCounts, setAmenityStatusCounts] = useState({ APPROVED: 0, PENDING: 0, REJECTED: 0 });

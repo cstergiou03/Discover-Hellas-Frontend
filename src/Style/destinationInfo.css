@@ -9,11 +9,13 @@
 }
 
 /* Ειδικές ρυθμίσεις για κινητά ή μικρές οθόνες */
-@media (max-width: 820px) {
+@media (max-width: 950px) {
     .destinationInfo-container {
+        width: 100%;
         flex-direction: column; /* Κατακόρυφη διάταξη για κινητά */
         align-items: center; /* Κεντράρισμα των στοιχείων */
         margin-top: 1.5em; /* Μειωμένο top margin */
         margin-bottom: 1.5em; /* Μειωμένο bottom margin */
+        gap: 3em;
     }
 }

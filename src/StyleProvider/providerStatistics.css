@@ -5,3 +5,21 @@
     margin: 20px; /* Για λίγο κενό κάτω από τον τίτλο */
     font-size: 1.9rem; /* Αν θέλεις να αυξήσεις το μέγεθος του τίτλου */
 }
+
+/* Στυλ για κάθε ενότητα */
+.statistics-section {
+    margin-bottom: 50px; /* Αυξάνει το κενό μεταξύ των τμημάτων */
+}
+
+/* Για μικρές οθόνες */
+@media (max-width: 950px) {
+    .statistics-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .statistics-section {
+        margin-bottom: 40px; /* Προσαρμόζει το κενό για μικρές οθόνες */
+    }
+}

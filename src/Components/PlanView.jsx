@@ -22,7 +22,7 @@ function PlanView() {
         legs: [],
     });
 
-    console.log(planId);
+    const navigate = useNavigate();
 
     // Συνάρτηση για την λήψη των δεδομένων
     const fetchData = async () => {
@@ -32,52 +32,61 @@ function PlanView() {
             );
             const destinationsData = await destinationsResponse.json();
             setDestinations(destinationsData);
-    
+
             const amenitiesResponse = await fetch(
                 "https://olympus-riviera.onrender.com/api/amenity/get/all"
             );
             const amenitiesData = await amenitiesResponse.json();
             setAmenities(amenitiesData);
-    
-            // Εδώ δεν ψάχνουμε για το plan μέσω του planId, αλλά το φέρνουμε κατευθείαν
-            const planResponse = await fetch(
-                `https://olympus-riviera.onrender.com/api/plan/${planId}`
-            );
-            const planData = await planResponse.json();
-    
-            if (planData) {
-                // Ταξινόμηση του πλάνου με βάση την ημερομηνία
-                const sortedPlan = planData.plan.sort((a, b) => {
-                    const dateA = new Date(a.date.split('T')[0]);
-                    const dateB = new Date(b.date.split('T')[0]);
-    
-                    if (isNaN(dateA.getTime())) {
-                        console.error("Μη έγκυρη ημερομηνία:", a.date);
-                        return 0;
-                    }
-                    if (isNaN(dateB.getTime())) {
-                        console.error("Μη έγκυρη ημερομηνία:", b.date);
-                        return 0;
-                    }
-    
-                    return dateA - dateB;
-                });
-    
-                setPlan({ ...planData, plan: sortedPlan });
+
+            // Ελέγχουμε αν ο χρήστης είναι συνδεδεμένος
+            const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+            if (isLoggedIn) {
+                // Αν είναι συνδεδεμένος, παίρνουμε το plan από το backend
+                const planResponse = await fetch(
+                    `https://olympus-riviera.onrender.com/api/plan/${planId}`
+                );
+                const planData = await planResponse.json();
+
+                if (planData) {
+                    // Ταξινόμηση του πλάνου με βάση την ημερομηνία
+                    const sortedPlan = planData.plan.sort((a, b) => {
+                        const dateA = new Date(a.date.split('T')[0]);
+                        const dateB = new Date(b.date.split('T')[0]);
+
+                        if (isNaN(dateA.getTime())) {
+                            console.error("Μη έγκυρη ημερομηνία:", a.date);
+                            return 0;
+                        }
+                        if (isNaN(dateB.getTime())) {
+                            console.error("Μη έγκυρη ημερομηνία:", b.date);
+                            return 0;
+                        }
+
+                        return dateA - dateB;
+                    });
+
+                    setPlan({ ...planData, plan: sortedPlan });
+                }
+            } else {
+                // Αν δεν είναι συνδεδεμένος, παίρνουμε το guestPlan από το localStorage
+                const guestPlan = JSON.parse(localStorage.getItem("guestPlan"));
+                if (guestPlan) {
+                    setPlan(guestPlan); // Χρησιμοποιούμε το plan από τον επισκέπτη
+                }
             }
-    
+
             setLoading(false);
         } catch (error) {
             console.error("Error fetching data:", error);
             setLoading(false);
         }
     };
-    
 
     // Κλήση fetchData όταν φορτώνει η σελίδα
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [planId]);
 
     const getEntityDetails = (entityId) => {
         const destination = destinations.find(
@@ -123,65 +132,81 @@ function PlanView() {
 
     const handleDelete = async (entityId) => {
         try {
-            // Διαγραφή από το backend
-            const response = await fetch(
-                "https://olympus-riviera.onrender.com/api/plan/pln_f7714aff/remove",
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        entity_ids: [entityId],
-                    }),
+            const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+    
+            if (isLoggedIn) {
+                // Διαγραφή από το backend
+                const response = await fetch(
+                    "https://olympus-riviera.onrender.com/api/plan/pln_f7714aff/remove",
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            entity_ids: [entityId],
+                        }),
+                    }
+                );
+    
+                if (response.ok) {
+                    // Ανανέωση του πλάνου
+                    setPlan((prevPlan) => ({
+                        ...prevPlan,
+                        plan: prevPlan.plan.filter((entry) => entry.entity_id !== entityId),
+                    }));
+    
+                    // Αφαίρεση marker από το χάρτη
+                    const markerIndex = markers.current.findIndex((m) => m.entityId === entityId);
+                    if (markerIndex !== -1) {
+                        markers.current[markerIndex].marker.setMap(null);
+                        markers.current.splice(markerIndex, 1);
+                    }
+    
+                    if (directionsRenderer) {
+                        directionsRenderer.setDirections({ routes: [] });
+                    }
+    
+                    fetchData(); // Επαναφόρτωση των δεδομένων μετά τη διαγραφή
+                } else {
+                    console.error("Error removing entity from plan:", response);
                 }
-            );
-    
-            if (response.ok) {
-                // Ανανέωση του πλάνου
-                setPlan((prevPlan) => ({
-                    ...prevPlan,
-                    plan: prevPlan.plan.filter((entry) => entry.entity_id !== entityId),
-                }));
-    
-                // Αφαίρεση marker από το χάρτη
-                const markerIndex = markers.current.findIndex((m) => m.entityId === entityId);
-                if (markerIndex !== -1) {
-                    markers.current[markerIndex].marker.setMap(null);
-                    markers.current.splice(markerIndex, 1);
-                }
-    
-                if (directionsRenderer) {
-                    directionsRenderer.setDirections({ routes: [] });
-                }
-    
-                fetchData(); // Επαναφόρτωση των δεδομένων μετά τη διαγραφή
             } else {
-                console.error("Error removing entity from plan:", response);
+                // Διαγραφή από το guestPlan στο localStorage
+                const guestPlan = JSON.parse(localStorage.getItem("guestPlan"));
+                if (guestPlan) {
+                    const updatedPlan = {
+                        ...guestPlan,
+                        plan: guestPlan.plan.filter((entry) => entry.entity_id !== entityId),
+                    };
+                    localStorage.setItem("guestPlan", JSON.stringify(updatedPlan));
+                    setPlan(updatedPlan); // Ανανέωση του UI
+                }
             }
         } catch (error) {
             console.error("Error during delete request:", error);
         }
     };
     
+
     const handleUpdate = async (updatedEntity) => {
-            // Ενημέρωση του πλάνου
-            const postResponse = await fetch(
-                `https://olympus-riviera.onrender.com/api/plan/${planId}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        plan: [updatedEntity],
-                    }),
-                }
-            );
-        
-            const postData = await postResponse.json();
-            setPlan({ ...postData }); // Ενημέρωση του UI χωρίς πλήρη ανανέωση
-    };       
+        // Ενημέρωση του πλάνου
+        const postResponse = await fetch(
+            `https://olympus-riviera.onrender.com/api/plan/${planId}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    plan: [updatedEntity],
+                }),
+            }
+        );
+
+        const postData = await postResponse.json();
+        setPlan({ ...postData }); // Ενημέρωση του UI χωρίς πλήρη ανανέωση
+    };
 
     const calculateRoute = () => {
         if (!plan || !plan.plan || !directionsRenderer || !window.google) return;
@@ -267,7 +292,7 @@ function PlanView() {
                         {plan?.plan?.map((entry, index) => {
                             const entity = getEntityDetails(entry.entity_id);
                             if (!entity) return null;
-    
+
                             return (
                                 <CSSTransition key={index} timeout={500} classNames="fade">
                                     <PlanRecord
@@ -275,9 +300,6 @@ function PlanView() {
                                         entity={entity}
                                         onDelete={handleDelete}
                                         onUpdate={handleUpdate}
-                                        onShowInstructions={(id) => {
-                                            console.log("Οδηγίες για το entity:", id);
-                                        }}
                                         planId={planId}
                                     />
                                 </CSSTransition>
@@ -300,6 +322,7 @@ function PlanView() {
                     />
                 </div>
             </div>
+
             <div className="travel-info-container">
                 <button onClick={calculateRoute} className="more-btn">
                     Υπολόγισε Διαδρομή
@@ -313,7 +336,7 @@ function PlanView() {
                         <h4>Συνολική Διάρκεια</h4>
                         <p>{formatDuration(routeInfo.totalDuration.toFixed(0))}</p>
                     </div>
-    
+
                     <div className="travel-card">
                         <h4>Κόστος Διαδρομής</h4>
                         <p>{routeInfo.totalCost.toFixed(2)} €</p>
@@ -330,7 +353,7 @@ function PlanView() {
                 </div>
             </div>
         </div>
-    );    
+    );
 }
 
 export default PlanView;

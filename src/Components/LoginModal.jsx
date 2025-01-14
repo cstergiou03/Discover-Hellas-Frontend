@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/loginModal.css";
-import * as jwt_decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';  // Σωστή εξαγωγή
 
 function LoginModal({ isOpen, onClose, setLoggedIn }) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [googleSignInError, setGoogleSignInError] = useState("");
     const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
     const googleSignInButtonRef = useRef(null);
@@ -56,13 +54,19 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
     const handleGoogleSignIn = (response) => {
         console.log("Google Response:", response);
-        
+    
         if (response.credential) {
-            console.log("JWT Token:", response);
-            
+            console.log("JWT Token:", response.credential);
+    
             try {
-        
+                // Χρησιμοποιούμε τη σωστή συνάρτηση για την αποκωδικοποίηση
+                const decodedToken = jwtDecode(response.credential);
+    
+                // Κατέγραψε το αποκωδικοποιημένο token στο console
+                console.log("Decoded Token:", decodedToken);
+    
                 setLoggedIn(true);
+    
                 if (provider) {
                     navigate("/provider");
                 } else if (admin) {
@@ -70,26 +74,18 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 } else {
                     onClose();
                 }
+    
+                // Κάνουμε refresh τη σελίδα
+                window.location.reload();  // Αυτό θα κάνει ανανέωση της σελίδας μετά το login
+    
             } catch (error) {
                 console.error("Error decoding the token:", error);
+                setGoogleSignInError("Something went wrong with Google login. Please try again.");
             }
         } else {
             setGoogleSignInError("Something went wrong with Google login. Please try again.");
         }
-    };           
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log("Email:", email);
-        console.log("Password:", password);
-        setLoggedIn(true); // Αλλαγή του `loggedIn` στο Header
-        if (provider) {
-            navigate("/provider"); // Navigate to /provider if provider is true
-        } else {
-            onClose(); // Κλείσιμο του modal
-        }
-    };
-
+    };    
 
     useEffect(() => {
         if (isGoogleScriptLoaded) {
@@ -109,29 +105,12 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                     <button className="close-btn" onClick={onClose}>X</button>
 
                     <h2>Login</h2>
-                    <form onSubmit={handleSubmit}>
-                        <label>Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                        <button type="submit">Login</button>
-                    </form>
 
                     <div ref={googleSignInButtonRef}></div>
                     {googleSignInError && <p style={{ color: "red" }}>{googleSignInError}</p>}
 
                     <div className="register-section">
-                        <p>Δεν έχετε λογαρισμό;<a onClick={handleRegisterTravel}> Δημιουργήστε</a></p>
+                        <p>Δεν έχετε λογαριασμό;<a onClick={handleRegisterTravel}> Δημιουργήστε</a></p>
                     </div>
                 </div>
             </div>
@@ -140,4 +119,3 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 }
 
 export default LoginModal;
-

@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../StyleProvider/providerTable.css";
 
 function ProviderTable({ data, dataType }) {
     const [activeTab, setActiveTab] = useState("APPROVED");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4;
-
+    const [itemsPerPage, setItemsPerPage] = useState(4); // Αρχική τιμή 4
     const navigate = useNavigate();
 
+    // Αλλαγή του αριθμού των στοιχείων ανά σελίδα όταν το μέγεθος της οθόνης είναι μικρότερο από 950px
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 950) {
+                setItemsPerPage(3);
+            } else {
+                setItemsPerPage(4);
+            }
+        };
+
+        // Παρακολούθηση της αλλαγής μεγέθους του παραθύρου
+        window.addEventListener("resize", handleResize);
+        
+        // Αρχική ρύθμιση
+        handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     const filteredData = data.filter(item => item.status === activeTab);
-
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentPageData = filteredData.slice(startIndex, startIndex + itemsPerPage);
 
@@ -32,7 +50,6 @@ function ProviderTable({ data, dataType }) {
         const id = dataType === "amenity" ? item.amenity_id : item.event_id;
         navigate(`/admin/edit-${dataType}/${id}`);
     };
-    
 
     return (
         <div className="provider-table">
@@ -69,7 +86,6 @@ function ProviderTable({ data, dataType }) {
                     )}
                 </div>
             </div>
-
             <div className="pagination">
                 <button onClick={handlePrevPage} disabled={currentPage === 1}>
                     Previous

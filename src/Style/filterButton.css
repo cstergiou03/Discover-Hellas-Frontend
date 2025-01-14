@@ -94,3 +94,24 @@
 .apply-button:hover {
     background-color: #388e3c;
 }
+
+.view-plan-button {
+    position: fixed;
+    bottom: 30px;
+    left: 100px;
+    z-index: 1000;
+    color: white;
+    border: none;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Αυξημένο shadow */
+    background-color: #94dd70;
+    padding: 12px 18px; /* Ελαφρώς μεγαλύτερη padding */
+    border-radius: 10px;
+    font-size: 16px; /* Αυξήσαμε το μέγεθος της γραμματοσειράς */
+    cursor: pointer;
+    transition: all 0.3s ease; /* Προσθέτουμε μεταβατική κίνηση για το hover */
+}
+
+.view-plan-button:hover {
+    background-color: #82c05e; /* Ελαφρώς πιο σκούρο χρώμα κατά το hover */
+    box-shadow: 0 12px 18px rgba(0, 0, 0, 0.3); /* Δυνατότερο shadow στο hover */
+}

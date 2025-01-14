@@ -23,10 +23,11 @@
 
 .header .navigation {
     display: flex;
-    width: 920px;
+    width: fit-content;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    /* justify-content: space-evenly; */
+    gap: 10px;
     font-size: 18px;
     color: blanchedalmond;
     position: relative;
@@ -239,4 +240,9 @@
 .hamburger-button.open span:nth-child(3) {
     transform: rotate(-45deg);
     transform-origin: 0% 100%;
+}
+
+.header, .mobile-header {
+    position: relative; /* Διατηρεί το header πάνω από τα υπόλοιπα */
+    z-index: 1010; /* Αύξησε την τιμή */
 }

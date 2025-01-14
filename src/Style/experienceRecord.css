@@ -15,11 +15,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     display: flex;
-    flex-direction: row; 
+    flex-direction: row;
     gap: 10px;
     justify-content: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 1.1;
+    font-size: 1.1em;
+    word-wrap: break-word; /* Προσθήκη για να σπάει το κείμενο και να παραμένει εντός του container */
+    overflow-wrap: break-word; /* Βοηθάει στην εμφάνιση του κειμένου σωστά μέσα στον περιορισμένο χώρο */
 }
 
 .directions-button, .more-button {
@@ -43,3 +45,25 @@
     box-shadow: 0 0 3px 2px rgb(164, 201, 145, 0.5);
 }
 
+/* Media Query για κινητές συσκευές */
+@media (max-width: 768px) {
+    .experience-record {
+        grid-template-columns: 1fr 1fr; /* Χωρίς 4 στήλες, θα έχει 2 στήλες για μικρές οθόνες */
+        gap: 15px; /* Λίγο περισσότερο κενό μεταξύ των στοιχείων */
+    }
+
+    .record-column {
+        flex-direction: column; /* Τα περιεχόμενα να είναι κατακόρυφα */
+        justify-content: flex-start; /* Το περιεχόμενο θα στοιχίζεται πάνω */
+    }
+
+    .directions-button, .more-button {
+        width: 100%; /* Κάνουμε τα κουμπιά να είναι πλήρους πλάτους */
+        margin-bottom: 10px; /* Προσθήκη απόστασης μεταξύ των κουμπιών */
+    }
+
+    /* Προσαρμογή για τα κουμπιά (να είναι κατακόρυφα) */
+    .record-column button {
+        margin: 5px 0;
+    }
+}

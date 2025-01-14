@@ -15,8 +15,6 @@ function ExperienceRecord({ data }) {
               "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
           ) // Αφαιρούμε οποιοδήποτε κόμμα στο τέλος
     : [];
-
-
     
     return (
         <div className="experience-record">

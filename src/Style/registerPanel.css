@@ -64,5 +64,43 @@
     background-color: rgb(164, 211, 145);
 }
 
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+}
 
+.toggle-switch label {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    margin-right: 10px;
+}
 
+.switch {
+    width: 50px;
+    height: 25px;
+    border-radius: 15px;
+    background-color: #ccc;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.switch.active {
+    background-color: #4caf50;
+}
+
+.slider {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2.5px;
+    left: 2.5px;
+    transition: left 0.3s ease;
+}
+
+.switch.active .slider {
+    left: 27.5px;
+}

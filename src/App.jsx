@@ -34,11 +34,12 @@ function App() {
                 <Route path="/map" element={<MapMain />} />
                 <Route path="/calendar" element={<MyCalendar />} />
                 <Route path="/event/:eventId" element={<Event />} />
-                <Route path="/experience/" element={<ExperienceMain/>}/>
-                <Route path="/experience/:categoryId" element={<ExperienceMain/>}/>
-                <Route path="/amenity" element={<AmenityMain/>}/>
-                <Route path="/amenity/:amenityId" element={<Amenity/>}/>
-                <Route path="/planView/:planId" element={<PlanView/>}/>
+                <Route path="/destination/" element={<ExperienceMain />} />
+                <Route path="/destinations/:categoryId" element={<ExperienceMain />} />
+                <Route path="/amenity" element={<AmenityMain />}/>
+                <Route path="/amenity/:amenityId" element={<Amenity />}/>
+                <Route path="/planView/:planId" element={<PlanView />}/>
+                <Route path="/planView" element={<PlanView />}/>
 
                 <Route path="/register" element={<RegisterPanel/>} />
                 <Route path="/profile" element={<UserProfilePanel/>} />

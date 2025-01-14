@@ -87,7 +87,7 @@
     justify-content: center;
     align-items: center;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 .pagination button {
@@ -106,4 +106,41 @@
 
 .pagination span {
     font-size: 1rem;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 950px) {
+    .table-item {
+        flex-direction: column; /* Στοιχίζουμε τα στοιχεία κάθετα */
+        align-items: flex-start; /* Κεντράρουμε τα στοιχεία στα αριστερά */
+        gap: 10px; /* Μειώνουμε το κενό μεταξύ των στοιχείων */
+        padding: 10px; /* Μειώνουμε το padding */
+    }
+
+    .record-name {
+        font-size: 1rem; /* Μικρότερη γραμματοσειρά */
+    }
+
+    .record-description {
+        font-size: 0.9rem; /* Μικρότερη γραμματοσειρά */
+    }
+
+    .more-btn {
+        align-self: stretch; /* Το κουμπί να καταλαμβάνει όλο το πλάτος */
+        text-align: center; /* Κεντράρουμε το κείμενο */
+    }
+
+    .table {
+        padding: 10px; /* Μειώνουμε το padding γύρω από τον πίνακα */
+    }
+
+    .tabs {
+        flex-wrap: wrap; /* Οι καρτέλες να τυλίγονται αν δεν χωράνε */
+        gap: 10px; /* Μειώνουμε το κενό μεταξύ των tabs */
+    }
+
+    .tab {
+        flex: 1; /* Οι καρτέλες να έχουν ίσο πλάτος */
+        text-align: center; /* Κεντράρουμε το περιεχόμενο */
+    }
 }
