@@ -18,29 +18,46 @@ import {
 import { styled } from "@mui/material/styles";
 import { Delete, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
 
 const StyledCard = styled(Card)(({ theme }) => ({
     marginBottom: theme.spacing(4),
 }));
 
 function UserProfile() {
-    const [fullName, setFullName] = useState("Ιωάννης Παπαδόπουλος");
-    const [email, setEmail] = useState("example@example.com");
+    const [fullName, setFullName] = useState("");
+    const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("(097) 234-5678");
     const [mobile, setMobile] = useState("(098) 765-4321");
     const [address, setAddress] = useState("Αθήνα, Ελλάδα");
     const [plans, setPlans] = useState([]);
     const [newPlanTitle, setNewPlanTitle] = useState("");
+    const [profilePicture, setProfilePicture] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Παίρνουμε το JWT token από το localStorage
+        const token = localStorage.getItem("userToken");
+
+        if (token) {
+            // Αποκωδικοποιούμε το JWT token
+            const decodedToken = jwtDecode(token);
+            console.log(decodedToken);
+            
+            // Ρυθμίζουμε τα πεδία από το αποκωδικοποιημένο token
+            setFullName(decodedToken.name || "Άγνωστο όνομα");
+            setEmail(decodedToken.email || "Άγνωστο email");
+            setProfilePicture(decodedToken.picture || "https://via.placeholder.com/150");
+        }
+
+        // Fetching user's plans
         fetch("https://olympus-riviera.onrender.com/api/plan/user/user_678xyz/plans")
             .then(response => response.json())
             .then(data => {
                 setPlans(data);
             })
             .catch(error => console.error("Error fetching plans:", error));
-    }, [plans]);
+    }, []);
 
     const handleFullNameChange = (event) => setFullName(event.target.value);
     const handleEmailChange = (event) => setEmail(event.target.value);
@@ -118,7 +135,7 @@ function UserProfile() {
                             <CardContent sx={{ textAlign: "center" }}>
                                 <Avatar
                                     alt="User Avatar"
-                                    src="https://via.placeholder.com/150"
+                                    src={profilePicture} // Χρησιμοποιούμε την εικόνα από το JWT
                                     sx={{
                                         width: 150,
                                         height: 150,

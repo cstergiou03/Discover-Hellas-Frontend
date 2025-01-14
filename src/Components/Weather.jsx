@@ -46,7 +46,6 @@ function Weather() {
     const limitedDailyData = daily.time.slice(0, 6);
 
     const getWeatherIcon = (code) => {
-        console.log(code);
         switch (code) {
             case 0:
                 return <FaSun />;

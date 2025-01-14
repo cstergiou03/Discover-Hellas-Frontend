@@ -19,8 +19,13 @@ function Header() {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // Initialize loggedIn state in localStorage to false if not already set
+        if (localStorage.getItem('loggedIn') === null) {
+            localStorage.setItem('loggedIn', 'false');
+        }
+    
         // Check if loggedIn state is saved in localStorage
-        const storedLoggedIn = localStorage.getItem('loggedIn') === 'true';  // Corrected comparison
+        const storedLoggedIn = localStorage.getItem('loggedIn') === 'true';
         setLoggedIn(storedLoggedIn);
     
         // Fetch categories from API
@@ -41,7 +46,7 @@ function Header() {
         return () => {
             window.removeEventListener('resize', checkMobile);
         };
-    }, []);
+    }, []);    
 
     useEffect(() => {
         const storedLoggedIn = localStorage.getItem('loggedIn') === 'true'; // Ελέγξτε αν η τιμή είναι 'true'
@@ -96,13 +101,14 @@ function Header() {
     const handleLoginSuccess = () => {
         setLoggedIn(true);
         localStorage.setItem('loggedIn', 'true');
+        localStorage.removeItem('guestPlan');
     };
 
     // Logout functionality
     const handleLogout = () => {
         setLoggedIn(false);
-        localStorage.setItem('loggedIn', 'false');  // Set loggedIn to false in localStorage
-        navigate("/");  // Optionally navigate to home or any other page after logout
+        localStorage.setItem('loggedIn', 'false');
+        navigate("/");
     };
 
     // Toggle the mobile menu

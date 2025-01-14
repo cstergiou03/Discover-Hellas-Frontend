@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/loginModal.css";
-import { jwtDecode } from 'jwt-decode';  // Σωστή εξαγωγή
 
 function LoginModal({ isOpen, onClose, setLoggedIn }) {
     const [googleSignInError, setGoogleSignInError] = useState("");
@@ -54,19 +53,18 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
     const handleGoogleSignIn = (response) => {
         console.log("Google Response:", response);
-    
+        
         if (response.credential) {
             console.log("JWT Token:", response.credential);
-    
+            
             try {
-                // Χρησιμοποιούμε τη σωστή συνάρτηση για την αποκωδικοποίηση
-                const decodedToken = jwtDecode(response.credential);
+                // Αποθηκεύουμε το JWT token στο localStorage
+                localStorage.setItem("userToken", response.credential);
     
-                // Κατέγραψε το αποκωδικοποιημένο token στο console
-                console.log("Decoded Token:", decodedToken);
-    
+                // Αποθηκεύουμε το status loggedIn
                 setLoggedIn(true);
     
+                // Ανάλογα με τον τύπο χρήστη κάνουμε την πλοήγηση
                 if (provider) {
                     navigate("/provider");
                 } else if (admin) {
@@ -74,12 +72,8 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 } else {
                     onClose();
                 }
-    
-                // Κάνουμε refresh τη σελίδα
-                window.location.reload();  // Αυτό θα κάνει ανανέωση της σελίδας μετά το login
-    
             } catch (error) {
-                console.error("Error decoding the token:", error);
+                console.error("Error storing the token:", error);
                 setGoogleSignInError("Something went wrong with Google login. Please try again.");
             }
         } else {
