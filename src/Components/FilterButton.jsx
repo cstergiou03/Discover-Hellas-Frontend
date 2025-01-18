@@ -10,14 +10,14 @@ function FilterButton({ onFilterChange }) {
     const [panelOpen, setPanelOpen] = useState(false);
     const [loadingDestinations, setLoadingDestinations] = useState(true);
     const [loadingAmenities, setLoadingAmenities] = useState(true);
-    const [loggedIn, setLoggedIn] = useState(localStorage.getItem('loggedIn') === 'true'); // State για το loggedIn
+    const [loggedIn, setLoggedIn] = useState(sessionStorage.getItem('loggedIn') === 'true');
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchDestinationCategories = async () => {
             try {
-                const response = await fetch('https://olympus-riviera.onrender.com/api/admin/destination/category/get/all');
+                const response = await fetch('https://olympus-riviera.onrender.com/api/destination/category/get/all');
                 const data = await response.json();
                 setDestinationCategories(data);
                 setLoadingDestinations(false);
@@ -44,7 +44,7 @@ function FilterButton({ onFilterChange }) {
 
         // Παρακολούθηση αλλαγών στο localStorage για το loggedIn
         const handleStorageChange = () => {
-            setLoggedIn(localStorage.getItem('loggedIn') === 'true');
+            setLoggedIn(sessionStorage.getItem('loggedIn') === 'true');
         };
 
         window.addEventListener('storage', handleStorageChange);

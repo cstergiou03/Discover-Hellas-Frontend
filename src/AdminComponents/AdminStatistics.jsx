@@ -23,7 +23,8 @@ function AdminStatistics() {
     useEffect(() => {
         if (selectedItem === "Amenities") {
             setLoading(true);
-            fetch("https://olympus-riviera.onrender.com/api/admin/amenity/get/all")
+            const url1 = "https://olympus-riviera.onrender.com/api/admin/amenity/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+            fetch(url1)
                 .then((response) => response.json())
                 .then((data) => {
                     setAmenities(data);
@@ -37,7 +38,8 @@ function AdminStatistics() {
 
         if (selectedItem === "Events") {
             setLoading(true);
-            fetch("https://olympus-riviera.onrender.com/api/admin/event/get/all")
+            const url2 = "https://olympus-riviera.onrender.com/api/admin/event/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+            fetch(url2)
                 .then((response) => response.json())
                 .then((data) => {
                     setEvents(data);
@@ -51,10 +53,10 @@ function AdminStatistics() {
 
         if (selectedItem === "DestinationCategories") {
             setLoading(true);
-            fetch("https://olympus-riviera.onrender.com/api/admin/destination/category/get/all")
+            fetch(`https://olympus-riviera.onrender.com/api/destination/category/get/all`)
                 .then((response) => response.json())
                 .then((data) => {
-                    setDestinationCategories(data); // Αποθήκευση των δεδομένων των κατηγοριών προορισμών
+                    setDestinationCategories(data);
                     setLoading(false);
                 })
                 .catch((err) => {
@@ -118,7 +120,7 @@ function AdminStatistics() {
             )}
 
             {/* Στατιστικά */}
-            <h3 onClick={() => handleClick("stats")}>
+            {/* <h3 onClick={() => handleClick("stats")}>
                 Στατιστικά {openSection === "stats" ? "▲" : "▼"}
             </h3>
             {openSection === "stats" && (
@@ -127,7 +129,7 @@ function AdminStatistics() {
                     <h4 onClick={() => handleClick("Stats2")}>Στατιστικά 2</h4>
                     <h4 onClick={() => handleClick("Stats3")}>Στατιστικά 3</h4>
                 </div>
-            )}
+            )} */}
 
             {/* Οντότητες */}
             <h3 onClick={() => handleClick("entity")}>

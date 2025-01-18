@@ -22,8 +22,8 @@ function CategoryForm() {
 
         const url =
             categoryFor === "Προορισμό"
-                ? "https://olympus-riviera.onrender.com/api/admin/destination/category/create"
-                : "https://olympus-riviera.onrender.com/api/admin/amenity/category/create";
+                ? "https://olympus-riviera.onrender.com/api/admin/destination/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                : "https://olympus-riviera.onrender.com/api/admin/amenity/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
 
         const body = {
             name,

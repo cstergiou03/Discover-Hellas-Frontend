@@ -1,15 +1,38 @@
 import React, { useEffect, useState } from "react";
-import "../StyleProvider/profileSidebar.css"; // Πρόσθεσε το σωστό CSS αρχείο
+import "../StyleProvider/profileSidebar.css";
+import { jwtDecode } from 'jwt-decode';
 
 function ProfileSidebar() {
     const [amenitiesCount, setAmenitiesCount] = useState(0);
     const [eventsCount, setEventsCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    const providerId = "provider123"; // Το συγκεκριμένο providerId
+    const [userId, setUserId] = useState("");
+    const [fullName, setFullName] = useState("");
+    const [profilePicture, setProfilePicture] = useState("");
 
     useEffect(() => {
+
+        const token = sessionStorage.getItem("userToken");
+
+        if (token) {
+            try {
+                // Αποκωδικοποιούμε το JWT token
+                const decodedToken = jwtDecode(token);
+
+                // Ρυθμίζουμε τα πεδία από το αποκωδικοποιημένο token
+                const fullName = `${decodedToken.firstName} ${decodedToken.lastName}`; // Συνδυασμός firstName + lastName
+                setFullName(fullName);
+                setProfilePicture(
+                    decodedToken.photo || "https://via.placeholder.com/150"
+                );
+                setUserId(decodedToken.userId);  // Βάζουμε το sub ως user_id
+            } catch (error) {
+                console.error("Error decoding token:", error);
+            }
+        }
+
+
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -23,7 +46,7 @@ function ProfileSidebar() {
                 }
                 const amenitiesData = await amenitiesResponse.json();
                 const filteredAmenities = amenitiesData.filter(
-                    (item) => item.provider_id === providerId
+                    (item) => item.provider_id === userId
                 );
 
                 setAmenitiesCount(filteredAmenities.length);
@@ -37,7 +60,7 @@ function ProfileSidebar() {
                 }
                 const eventsData = await eventsResponse.json();
                 const filteredEvents = eventsData.filter(
-                    (item) => item.organizer_id === providerId
+                    (item) => item.organizer_id === userId
                 );
 
                 setEventsCount(filteredEvents.length);
@@ -57,11 +80,11 @@ function ProfileSidebar() {
             <div className="profile-sidebar">
                 <div className="profile-header">
                     <img
-                        src="../../src/assets/profile.jpg" // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
+                        src={profilePicture} // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
                         alt="Profile"
                         className="profile-photo"
                     />
-                    <div className="profile-name">John Doe</div>
+                    <div className="profile-name">{fullName}</div>
                 </div>
 
                 {/* Εμφανίζουμε το υπόλοιπο UI χωρίς τα metrics */}
@@ -75,11 +98,11 @@ function ProfileSidebar() {
             <div className="profile-sidebar">
                 <div className="profile-header">
                     <img
-                        src="../../src/assets/profile.jpg" // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
+                        src={profilePicture} // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
                         alt="Profile"
                         className="profile-photo"
                     />
-                    <div className="profile-name">John Doe</div>
+                    <div className="profile-name">{fullName}</div>
                 </div>
 
                 {/* Εμφανίζουμε το μήνυμα λάθους */}
@@ -92,11 +115,11 @@ function ProfileSidebar() {
         <div className="profile-sidebar">
             <div className="profile-header">
                 <img
-                    src="../../src/assets/profile.jpg" // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
+                    src={profilePicture} // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
                     alt="Profile"
                     className="profile-photo"
                 />
-                <div className="profile-name">John Doe</div>
+                <div className="profile-name">{fullName}</div>
             </div>
 
             <div className="profile-metrics">

@@ -1,3 +1,4 @@
+/* Εξασφαλίζουμε ότι το main-container είναι πλήρως ευθυγραμμισμένο και καταλαμβάνει το 100% της οθόνης */
 html, body {
     margin: 0;
     padding: 0;
@@ -17,22 +18,46 @@ html, body {
 
 .mid-container {
     display: grid;
-    grid-template-columns: repeat(1, 1fr); /* Δύο στήλες για μεγαλύτερες οθόνες */
-    gap: 1rem; /* Απόσταση μεταξύ των στοιχείων */
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
     width: 100%;
     max-width: 1200px;
     padding: 1rem;
     box-sizing: border-box;
 }
 
-/* Responsive design για οθόνες κινητών */
+/* Εδώ κάνουμε χρήση του Flexbox για να τοποθετήσουμε τα WeatherWidget και PieriaInfo δίπλα-δίπλα με ίσο κενό */
+.inside-mid-container {
+    display: flex;
+    gap: 2rem; /* Ισομοιράζει την απόσταση ανάμεσα στο WeatherWidget και το PieriaInfo */
+    width: 100%;
+    max-width: 1200px; /* Μπορείς να προσαρμόσεις το μέγιστο πλάτος ανάλογα με τις ανάγκες σου */
+}
+
+.weather, .pieria-info {
+    flex: 1; /* Δηλώνει ότι κάθε στοιχείο καταλαμβάνει τον ίδιο χώρο */
+    display: flex;
+    justify-content: center; /* Τοποθετεί το περιεχόμενο στο κέντρο του container */
+}
+
+/* Responsive design για μικρότερες οθόνες */
 @media (max-width: 768px) {
     .mid-container {
-        grid-template-columns: 1fr; /* Μία στήλη για κινητά */
+        grid-template-columns: 1fr;
         padding: 0.5rem;
     }
 
     .main-container {
         padding: 0;
+    }
+
+    .inside-mid-container {
+        flex-direction: column; /* Στη μικρή οθόνη, τα στοιχεία να τοποθετούνται κάθετα */
+        gap: 1rem; /* Απόσταση μεταξύ των στοιχείων κάθετα */
+        width: 100%; /* Διασφαλίζουμε ότι καταλαμβάνουν το πλήρες πλάτος */
+    }
+
+    .weather, .pieria-info {
+        flex: unset; /* Αφαιρούμε την ιδιότητα flex ώστε τα στοιχεία να καταλαμβάνουν το πλάτος που χρειάζονται */
     }
 }

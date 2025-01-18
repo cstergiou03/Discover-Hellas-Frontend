@@ -1,8 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../StyleProvider/eventForm.css";
-import GoogleMapReact from 'google-map-react';
-import Compressor from 'compressorjs';
-import { useNavigate } from 'react-router-dom';
+import Compressor from "compressorjs";
+import { useNavigate } from "react-router-dom";
+import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import { jwtDecode } from "jwt-decode";
+
+const GOOGLE_MAP_LIBRARIES = ["places"];
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 40.0853,
+    lng: 22.3584,
+};
 
 function EventForm() {
     const [formData, setFormData] = useState({
@@ -19,16 +32,29 @@ function EventForm() {
         eventEnd: "",
     });
 
-    const [destinations, setDestinations] = useState([]);
-    const [isCustomLocation, setIsCustomLocation] = useState(false);
-    const markerRef = useRef(null);
+    const autocompleteRef = useRef(null);
     const navigate = useNavigate();
+    const [userId, setUserId] = useState("");
+    const [userToken, setUserToken] = useState();
+
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+        libraries: GOOGLE_MAP_LIBRARIES,
+    });
 
     useEffect(() => {
-        fetch("https://olympus-riviera.onrender.com/api/destination/get/all")
-            .then(response => response.json())
-            .then(data => setDestinations(data))
-            .catch(error => console.error("Error fetching destinations:", error));
+        const token = sessionStorage.getItem("userToken");
+    
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                setUserToken(decodedToken);
+                setUserId(decodedToken.userId);
+            } catch (error) {
+                console.error("Error decoding token:", error);
+                setUserId(""); // set empty or handle error state
+            }
+        }
     }, []);
 
     const handleChange = (e) => {
@@ -39,49 +65,17 @@ function EventForm() {
         });
     };
 
-    const handleLocationChange = ({ lat, lng }) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            latitude: lat,
-            longitude: lng,
-        }));
-    };
-
-    const handleDestinationChange = (e) => {
-        const selectedDestinationName = e.target.value; // Εδώ θα αποθηκεύσουμε το όνομα της τοποθεσίας
-        const selectedDestination = destinations.find(
-            (destination) => destination.name === selectedDestinationName // Αναζητούμε βάση το όνομα
-        );
-
-        if (selectedDestination) {
-            setFormData({
-                ...formData,
-                location: selectedDestination.name, // Αποθήκευση του ονόματος της τοποθεσίας
-                latitude: parseFloat(selectedDestination.latitude),
-                longitude: parseFloat(selectedDestination.longitude),
-            });
+    const handlePlaceSelected = () => {
+        const place = autocompleteRef.current.getPlace();
+        if (place.geometry) {
+            const { lat, lng } = place.geometry.location;
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                latitude: lat(),
+                longitude: lng(),
+                location: place.formatted_address || "",
+            }));
         }
-    };
-
-    const handleApiLoaded = (map, maps) => {
-        map.addListener("click", (event) => {
-            const lat = event.latLng.lat();
-            const lng = event.latLng.lng();
-            console.log("Latitude:", lat, "Longitude:", lng);
-
-            if (markerRef.current) {
-                markerRef.current.setMap(null);
-            }
-
-            const newMarker = new maps.Marker({
-                position: { lat, lng },
-                map,
-                title: "Selected Location",
-            });
-
-            markerRef.current = newMarker;
-            handleLocationChange({ lat, lng });
-        });
     };
 
     const convertImagesToBase64 = (files) => {
@@ -90,40 +84,33 @@ function EventForm() {
                 resolve("");
             }
 
-            const promises = [];
-            files.forEach(file => {
-                promises.push(
-                    new Promise((resolve, reject) => {
-                        new Compressor(file, {
-                            quality: 0.6,
-                            success(result) {
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                    resolve(reader.result);
-                                };
-                                reader.onerror = reject;
-                                reader.readAsDataURL(result);
-                            },
-                            error(err) {
-                                reject(err);
-                            }
-                        });
-                    })
-                );
+            const promises = files.map((file) => {
+                return new Promise((resolve, reject) => {
+                    new Compressor(file, {
+                        quality: 0.8,
+                        success(result) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(result);
+                        },
+                        error(err) {
+                            reject(err);
+                        },
+                    });
+                });
             });
 
             Promise.all(promises)
-                .then(base64Images => resolve(base64Images.join(',')))
+                .then((base64Images) => resolve(base64Images.join(",")))
                 .catch(reject);
         });
     };
-
+    console.log("MALAKAAAA" + sessionStorage.getItem("userToken"));
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const photosBase64 = await convertImagesToBase64(formData.photos);
-        console.log("Base64 Photos:", photosBase64);
-
         if (!photosBase64) {
             alert("Please upload at least one photo.");
             return;
@@ -131,7 +118,7 @@ function EventForm() {
 
         const payload = {
             name: formData.name,
-            organizer_id: "provider123",
+            organizer_id: userId,
             phone: formData.phone,
             email: formData.email,
             event_start: formData.eventStart,
@@ -143,31 +130,36 @@ function EventForm() {
             photos: photosBase64,
         };
 
-        console.log("Payload to send:", payload);
-
-        fetch("https://olympus-riviera.onrender.com/api/provider/event/add-request/create", {
+        
+        const url = "https://olympus-riviera.onrender.com/api/provider/event/add-request/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        fetch(url , {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Response from server:", data);
+            .then((response) => response.json())
+            .then(() => {
                 alert("Event created successfully!");
-                navigate("/provider");
+                // navigate("/provider");
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error submitting the form:", error);
-                alert("Failed to create event.");
+                alert("Event creation failed!");
             });
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+            e.preventDefault();
+        }
     };
 
     return (
         <div className="event-form-container">
             <h1>Create a New Event</h1>
-            <form className="event-form" onSubmit={handleSubmit}>
+            <form className="event-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
                 <label htmlFor="name">Event Name:</label>
                 <input
                     type="text"
@@ -177,7 +169,6 @@ function EventForm() {
                     onChange={handleChange}
                     required
                 />
-
                 <label htmlFor="description">Description:</label>
                 <textarea
                     id="description"
@@ -206,57 +197,46 @@ function EventForm() {
                     onChange={handleChange}
                     required
                 />
-
-                <label htmlFor="customLocation">Custom Location:</label>
-                <select
-                    id="customLocation"
-                    name="customLocation"
-                    value={isCustomLocation ? "Ναι" : "Όχι"} // Ανάλογα με την κατάσταση, το value θα είναι "Ναι" ή "Όχι"
-                    onChange={(e) => setIsCustomLocation(e.target.value === "Ναι")} // Αν η επιλογή είναι "Ναι", τότε η τιμή γίνεται true
-                >
-                    <option value="Όχι">Όχι</option>
-                    <option value="Ναι">Ναι</option>
-                </select>
-
-                {!isCustomLocation && (
-                    <>
-                        <label htmlFor="location">Location (Select from Dropdown):</label>
-                        <select
+    
+                <label htmlFor="location">Search for a Location:</label>
+                {isLoaded ? (
+                    <Autocomplete
+                        onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                        onPlaceChanged={handlePlaceSelected}
+                    >
+                        <input
+                            type="text"
+                            id="location"
                             name="location"
+                            placeholder="Search location..."
                             value={formData.location}
-                            onChange={handleDestinationChange}
-                            required
-                        >
-                            <option value="">Select a location</option>
-                            {destinations.map((destination) => (
-                                <option
-                                    key={destination.destination_id}
-                                    value={destination.name} // Τώρα χρησιμοποιούμε το όνομα ως τιμή
-                                >
-                                    {destination.name}
-                                </option>
-                            ))}
-                        </select>
-                    </>
-                )}
-
-                {isCustomLocation && (
-                    <div style={{ height: '500px', width: '100%' }}>
-                        <GoogleMapReact
-                            bootstrapURLKeys={{
-                                key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
-                            }}
-                            defaultCenter={{
-                                lat: 40.0853,
-                                lng: 22.3584,
-                            }}
-                            defaultZoom={9}
-                            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-                            yesIWantToUseGoogleMapApiInternals
+                            onChange={handleChange}
                         />
-                    </div>
+                    </Autocomplete>
+                ) : (
+                    <p>Loading maps...</p>
                 )}
-
+    
+                <label htmlFor="location">Location (Click on the map to select):</label>
+                {isLoaded ? (
+                    <GoogleMap
+                        mapContainerStyle={containerStyle}
+                        center={{
+                            lat: parseFloat(formData.latitude) || defaultCenter.lat,
+                            lng: parseFloat(formData.longitude) || defaultCenter.lng,
+                        }}
+                        zoom={9}
+                    >
+                        {formData.latitude && formData.longitude && (
+                            <Marker
+                                position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }}
+                            />
+                        )}
+                    </GoogleMap>
+                ) : (
+                    <p>Loading maps...</p>
+                )}
+    
                 <label htmlFor="siteLink">Website Link:</label>
                 <input
                     type="url"
@@ -295,11 +275,13 @@ function EventForm() {
                     multiple
                     onChange={handleChange}
                 />
-
-                <button type="submit" className="submit-button">Submit</button>
+    
+                <button type="submit" className="submit-button">
+                    Submit
+                </button>
             </form>
         </div>
-    );
+    );    
 }
 
 export default EventForm;

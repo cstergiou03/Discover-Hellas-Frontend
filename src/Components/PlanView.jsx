@@ -40,7 +40,7 @@ function PlanView() {
             setAmenities(amenitiesData);
 
             // Ελέγχουμε αν ο χρήστης είναι συνδεδεμένος
-            const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+            const isLoggedIn = sessionStorage.getItem("loggedIn") === "true";
             if (isLoggedIn) {
                 // Αν είναι συνδεδεμένος, παίρνουμε το plan από το backend
                 const planResponse = await fetch(
@@ -132,7 +132,7 @@ function PlanView() {
 
     const handleDelete = async (entityId) => {
         try {
-            const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+            const isLoggedIn = sessionStorage.getItem("loggedIn") === "true";
     
             if (isLoggedIn) {
                 // Διαγραφή από το backend

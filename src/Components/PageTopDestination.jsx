@@ -17,9 +17,6 @@ function PageTopDestination({ data }) {
         }
     })();
 
-    console.log("Data:", data);
-    console.log("Photos Table:", photosTable);
-
     return (
         <div className="main-container">
             <Header />

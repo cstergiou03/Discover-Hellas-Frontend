@@ -2,11 +2,14 @@ import "../Style/registerPanel.css";
 import Header from "./Header";
 import logo from "../../src/assets/logo2.png";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 function RegisterPanel() {
     const [isProvider, setIsProvider] = useState(false);
     const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
     const googleSignUpButtonRef = useRef(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!window.google || !window.google.accounts) {
@@ -41,22 +44,52 @@ function RegisterPanel() {
         }
     };
 
-    const handleGoogleSignUp = (response) => {
+    const handleGoogleSignUp = async (response) => {
         console.log("Google Sign-Up Response:", response);
-
+    
         if (response.credential) {
-            console.log("JWT Token for Sign-Up:", response);
-
+            const jwt_token = response.credential;
+            const role = isProvider ? "PROVIDER" : "REGISTERED"; // Εναλλαγή ρόλου βάσει επιλογής
+            const requestBody = {
+                jwt_token,
+                role,
+            };
+    
             try {
-                // Εδώ μπορείς να διαχειριστείς την εγγραφή
-                console.log("User registered successfully!");
+                const apiResponse = await fetch(
+                    "https://olympus-riviera.onrender.com/api/user/register",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(requestBody),
+                    }
+                );
+    
+                const data = await apiResponse.json();
+    
+                if (apiResponse.ok) {
+                    console.log("User registered successfully:", data);
+    
+                    // Αποθήκευση του jwt_token και loggedIn στο localStorage
+                    localStorage.setItem("token", data.jwt_token);
+                    localStorage.setItem("loggedIn", "true");
+    
+                    console.log("Token saved to localStorage:", data.jwt_token);
+    
+                    // Redirect στη ρίζα (/)
+                    navigate("/");
+                } else {
+                    console.error("Registration failed:", data);
+                }
             } catch (error) {
                 console.error("Error during Google Sign-Up:", error);
             }
         } else {
             console.error("Something went wrong with Google Sign-Up.");
         }
-    };
+    };      
 
     useEffect(() => {
         if (isGoogleScriptLoaded) {

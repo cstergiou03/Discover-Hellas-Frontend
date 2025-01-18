@@ -28,6 +28,10 @@ function ProviderTable({ data, dataType }) {
         };
     }, []);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeTab]);
+
     const filteredData = data.filter((item) => item.status === activeTab);
 
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);

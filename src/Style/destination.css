@@ -1,0 +1,168 @@
+/* Προσθήκη γραμματοσειράς γενικά */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Στυλ για την εικόνα του χρήστη */
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px; /* Δίνει λίγο διάστημα κάτω από την επικεφαλίδα */
+}
+
+.review-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Κάνει την εικόνα κυκλική */
+    object-fit: cover;
+}
+
+/* Στυλ για τη βαθμολογία */
+.review-rating {
+    display: flex;
+    gap: 5px;
+}
+
+/* Στυλ για τα αστέρια βαθμολογίας */
+.star {
+    font-size: 20px;
+    color: #ccc; /* Αρχικά τα αστέρια είναι ανοιχτόχρωμα */
+}
+
+.star.filled {
+    color: #FFD700; /* Χρυσό χρώμα για τα γεμάτα αστέρια */
+}
+
+/* Στυλ για τις κριτικές */
+.review-item {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
+}
+
+.review-item p {
+    margin: 5px 0;
+}
+
+.review-item .review-text {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
+}
+
+.review-item .review-date {
+    font-size: 14px;
+    color: #888;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
+}
+
+/* Στυλ για την λίστα κριτικών */
+.reviews-list {
+    margin-top: 20px;
+    height: 100%; /* Ορίζει το μέγιστο ύψος της λίστας */
+    overflow-y: auto; /* Επιτρέπει το scroll μόνο για τη λίστα των κριτικών */
+}
+
+/* Στυλ για το modal */
+.review-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Γκρίζα θολούρα για το background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Για να είναι πάνω από όλα τα υπόλοιπα */
+}
+
+/* Στυλ για το περιεχόμενο του modal */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    width: 700px;
+    height: 80%;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
+}
+
+/* Στυλ για το κουμπί κλεισίματος του modal */
+.close-modal-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #000;
+}
+
+/* Στυλ για την περιοχή εισαγωγής κριτικής */
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 8px;
+    resize: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
+}
+
+/* Στυλ για τα αστέρια στο rating (στη φόρμα υποβολής κριτικής) */
+.rating-stars {
+    display: flex;
+    font-size: 24px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.rating-stars .star.filled {
+    color: gold;
+}
+
+/* Στυλ για τα κουμπιά υποβολής κριτικής */
+.review-buttons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Στυλ για την περιοχή πληροφοριών της κριτικής */
+.review {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
+}
+
+.review hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.review-text {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.6;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
+}
+
+.review-date {
+    font-size: 14px;
+    color: #888;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
+}

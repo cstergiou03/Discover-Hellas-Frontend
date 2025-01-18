@@ -1,21 +1,79 @@
-.destinationInfo-container {
-    width: 100%;
+.destination-info-container {
     display: flex;
-    flex-direction: row; /* Οριζόντια διάταξη από προεπιλογή */
-    justify-content: space-evenly;
-    align-items: start;
-    margin-top: 3em;
-    margin-bottom: 3em;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin: 20px;
+}
+
+.destination-info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0px;
+}
+
+.destination-info-left-column, .destination-info-right-column {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.destination-info-photo {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.destination-info-left-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.destination-info-right-column {
+    flex: 1;
+}
+
+.destination-info-left-column img {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.destination-info-right-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Εδώ καθορίζουμε τις διαστάσεις του placeholder div */
+.destination-info-white-placeholder {
+    width: 80%; 
+    height: 80%;
+    background-color: white;
+    border-radius: 8px; /* Στρογγυλεμένες γωνίες όπως οι εικόνες */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Ειδικές ρυθμίσεις για κινητά ή μικρές οθόνες */
 @media (max-width: 950px) {
-    .destinationInfo-container {
+    .destination-info-container {
         width: 100%;
         flex-direction: column; /* Κατακόρυφη διάταξη για κινητά */
         align-items: center; /* Κεντράρισμα των στοιχείων */
         margin-top: 1.5em; /* Μειωμένο top margin */
         margin-bottom: 1.5em; /* Μειωμένο bottom margin */
         gap: 3em;
+    }
+
+    /* Για το no-photos να είναι κάθετα τα στοιχεία */
+    .destination-info-row.no-photos {
+        flex-direction: column;
     }
 }

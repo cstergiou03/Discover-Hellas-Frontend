@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from "react";
-import GoogleMapReact from "google-map-react";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "../StyleAdmin/amenityFormAdmin.css";
 import "react-image-gallery/styles/css/image-gallery.css";
+
+const GOOGLE_MAP_LIBRARIES = ["places"];
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 40.0853,
+    lng: 22.3584,
+};
 
 function AmenityFormAdmin() {
     const { amenityId } = useParams();
@@ -25,7 +37,13 @@ function AmenityFormAdmin() {
     const [error, setError] = useState(null);
     const [approvalId, setApprovalId] = useState("");
     const [isNewAmenity, setIsNewAmenity] = useState(false);
+    const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState("");
 
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+        libraries: GOOGLE_MAP_LIBRARIES,
+    });
 
     useEffect(() => {
         // Φόρτωση κατηγοριών
@@ -33,26 +51,28 @@ function AmenityFormAdmin() {
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch(() => setError("Failed to fetch categories."));
-    
+
         // Φορτώνουμε το πρώτο endpoint για το add-request
-        fetch(`https://olympus-riviera.onrender.com/api/admin/approval/amenity/add-request/get/${amenityId}`)
+        const url1 = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/add-request/get/" + `${amenityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        fetch(url1)
             .then(async (response) => {
                 if (response.ok) {
-                    setIsNewAmenity(true); // Αν είναι νέο amenity
+                    setIsNewAmenity(true);
                     return response.json();
                 } else {
                     throw new Error("Failed to fetch add-request."); // Ρίχνουμε σφάλμα για να πάμε στο catch
                 }
             })
             .then((data) => {
+                console.log("EDQWWWWW " + data);
                 const approvalData = data[0] || data; // Αντιμετώπιση του array ή του single object
-                
+
                 if (approvalData) {
                     setApprovalId(approvalData.approval_id); // Αποθηκεύουμε το approval_id αν υπάρχει
-                    const amenityData = approvalData.entity_id 
+                    const amenityData = approvalData.entity_id
                         ? approvalData.entity_id // Για νέο ή επεξεργασμένο όντως
                         : approvalData;
-    
+
                     // Αν το status είναι "APPROVED", πρέπει να φορτώσουμε τα δεδομένα του amenity από άλλο endpoint
                     if (approvalData.status === "PENDING") {
                         fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
@@ -60,13 +80,13 @@ function AmenityFormAdmin() {
                             .then((data) => {
                                 const photosTable = data.photos
                                     ? data.photos
-                                          .split("data:image/jpeg;base64,")
-                                          .filter((photo) => photo.trim() !== "")
-                                          .map((photo) =>
-                                              "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                          )
+                                        .split("data:image/jpeg;base64,")
+                                        .filter((photo) => photo.trim() !== "")
+                                        .map((photo) =>
+                                            "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                        )
                                     : [];
-    
+
                                 setFormData({
                                     name: data.name,
                                     category: data.category_id,
@@ -89,13 +109,13 @@ function AmenityFormAdmin() {
                     } else {
                         const photosTable = amenityData.photos
                             ? amenityData.photos
-                                  .split("data:image/jpeg;base64,")
-                                  .filter((photo) => photo.trim() !== "")
-                                  .map((photo) =>
-                                      "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                  )
+                                .split("data:image/jpeg;base64,")
+                                .filter((photo) => photo.trim() !== "")
+                                .map((photo) =>
+                                    "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                )
                             : [];
-    
+
                         setFormData({
                             name: amenityData.name,
                             category: amenityData.category_id,
@@ -114,9 +134,9 @@ function AmenityFormAdmin() {
             })
             .catch((err) => {
                 // Εδώ γίνεται το fetch για το edit-request αν αποτύχει το πρώτο
-                console.error("Error fetching add-request, trying edit-request:", err);
-    
-                fetch(`https://olympus-riviera.onrender.com/api/admin/approval/amenity/edit-request/get/${amenityId}`)
+                // console.error("Error fetching add-request, trying edit-request:", err);
+                const url2 = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/edit-request/get/" + `${amenityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                fetch(url2)
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error("No matching amenity found for edit.");
@@ -124,14 +144,15 @@ function AmenityFormAdmin() {
                         return response.json();
                     })
                     .then((data) => {
+                        console.log("EDQWWWWW2 " + data);
                         const approvalData = data[0] || data;
-    
+
                         if (approvalData) {
                             setApprovalId(approvalData.approval_id);
-                            const amenityData = approvalData.entity_id 
-                                ? approvalData.entity_id 
+                            const amenityData = approvalData.entity_id
+                                ? approvalData.entity_id
                                 : approvalData;
-    
+
                             // Ελέγχουμε αν το status είναι "APPROVED" για να πάρουμε τα δεδομένα του amenity
                             if (approvalData.status === "PENDING") {
                                 fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
@@ -139,13 +160,13 @@ function AmenityFormAdmin() {
                                     .then((data) => {
                                         const photosTable = data.photos
                                             ? data.photos
-                                                  .split("data:image/jpeg;base64,")
-                                                  .filter((photo) => photo.trim() !== "")
-                                                  .map((photo) =>
-                                                      "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                                  )
+                                                .split("data:image/jpeg;base64,")
+                                                .filter((photo) => photo.trim() !== "")
+                                                .map((photo) =>
+                                                    "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                                )
                                             : [];
-    
+
                                         setFormData({
                                             name: data.name,
                                             category: data.category_id,
@@ -168,13 +189,13 @@ function AmenityFormAdmin() {
                             } else {
                                 const photosTable = amenityData.photos
                                     ? amenityData.photos
-                                          .split("data:image/jpeg;base64,")
-                                          .filter((photo) => photo.trim() !== "")
-                                          .map((photo) =>
-                                              "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                          )
+                                        .split("data:image/jpeg;base64,")
+                                        .filter((photo) => photo.trim() !== "")
+                                        .map((photo) =>
+                                            "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                        )
                                     : [];
-    
+
                                 setFormData({
                                     name: amenityData.name,
                                     category: amenityData.category_id,
@@ -193,20 +214,21 @@ function AmenityFormAdmin() {
                     })
                     .catch((err) => {
                         console.error("Error fetching edit-request, trying amenity data:", err);
-    
+
                         // Εδώ, αν το edit-request αποτύχει, φέρνουμε τα δεδομένα του amenity
                         fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
                             .then((response) => response.json())
                             .then((data) => {
+                                console.log("EDQWWWWW ");
                                 const photosTable = data.photos
                                     ? data.photos
-                                          .split("data:image/jpeg;base64,")
-                                          .filter((photo) => photo.trim() !== "")
-                                          .map((photo) =>
-                                              "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                          )
+                                        .split("data:image/jpeg;base64,")
+                                        .filter((photo) => photo.trim() !== "")
+                                        .map((photo) =>
+                                            "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                        )
                                     : [];
-    
+                                        
                                 setFormData({
                                     name: data.name,
                                     category: data.category_id,
@@ -217,7 +239,7 @@ function AmenityFormAdmin() {
                                     photos: photosTable,
                                     latitude: data.latitude || 40.0853,
                                     longitude: data.longitude || 22.3584,
-                                    status: "APPROVED", // Επειδή τα δεδομένα του amenity είναι πλέον valid
+                                    status: data.status,
                                 });
                                 setLoading(false);
                             })
@@ -228,16 +250,19 @@ function AmenityFormAdmin() {
                             });
                     });
             });
-    }, [amenityId]);       
+    }, [amenityId]);
 
     const handleStatusChange = (status) => {
+        console.log(status);
+        const addUrl = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/add-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const editUrl = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/edit-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         // Επιλέγουμε το κατάλληλο URL ανάλογα με το isNewAmenity
-        const url = isNewAmenity
-            ? `https://olympus-riviera.onrender.com/api/admin/approval/amenity/add-request/get/${approvalId}/updateStatus?status=${status}`
-            : `https://olympus-riviera.onrender.com/api/admin/approval/amenity/edit-request/get/${approvalId}/updateStatus?status=${status}`;
-    
+        const url3 = isNewAmenity
+            ? addUrl
+            : editUrl;
+
         // Αποστολή δεδομένων στον server
-        fetch(url, {
+        fetch(url3, {
             method: "PUT",
         })
             .then((response) => {
@@ -250,7 +275,7 @@ function AmenityFormAdmin() {
             })
             .catch(() => alert("Error updating amenity."));
     };
-    
+
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -260,7 +285,18 @@ function AmenityFormAdmin() {
         thumbnail: photo,
     }));
 
-    console.log(formData);
+    const openRejectModal = () => {
+        setIsRejectModalOpen(true);
+    };
+
+    const closeRejectModal = () => {
+        setIsRejectModalOpen(false);
+    };
+
+    const handleRejectSubmit = () => {
+        handleStatusChange("REJECTED");
+        closeRejectModal();
+    };
 
     return (
         <div className="amenity-form-container">
@@ -283,28 +319,21 @@ function AmenityFormAdmin() {
                 <textarea id="description" name="description" value={formData.description} readOnly />
 
                 <label htmlFor="location">Location:</label>
-                <div style={{ height: "400px", width: "100%" }}>
-                    <GoogleMapReact
-                        bootstrapURLKeys={{
-                            key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
-                        }}
-                        defaultCenter={{
-                            lat: parseFloat(formData.latitude),
-                            lng: parseFloat(formData.longitude),
-                        }}
-                        defaultZoom={15}
-                        yesIWantToUseGoogleMapApiInternals
-                        onGoogleApiLoaded={({ map, maps }) => {
-                            new maps.Marker({
-                                position: {
-                                    lat: parseFloat(formData.latitude),
-                                    lng: parseFloat(formData.longitude),
-                                },
-                                map: map,
-                            });
-                        }}
-                    />
-                </div>
+
+
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={{
+                        lat: parseFloat(formData.latitude) || defaultCenter.lat,
+                        lng: parseFloat(formData.longitude) || defaultCenter.lng,
+                    }}
+                    zoom={9}
+                >
+                    {formData.latitude && formData.longitude && (
+                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                    )}
+                </GoogleMap>
+
 
                 <label htmlFor="phone">Phone:</label>
                 <input type="tel" id="phone" name="phone" value={formData.phone} readOnly />
@@ -326,29 +355,68 @@ function AmenityFormAdmin() {
                     )}
                 </div>
 
+                {formData.status === "REJECTED" && (
+                    <div className="rejection-reason">
+                        <label htmlFor="rejectionReason">Λόγος Απόρριψης:</label>
+                        <textarea
+                            id="rejectionReason"
+                            name="rejectionReason"
+                            value={"Δεν υπάρχει λόγος απόρριψης."}
+                            readOnly
+                        />
+                    </div>
+                )}
+
                 <div className="action-buttons">
                     {/* Εμφάνιση κουμπιών με βάση το status */}
                     {formData.status === "PENDING" && (
                         <>
-                        <button
-                            type="button"
-                            className="more-btn"
-                            onClick={() => handleStatusChange("APPROVED")}
-                        >
-                            Approve
-                        </button>
-                        <button
-                            type="button"
-                            className="more-btn"
-                            onClick={() => handleStatusChange("REJECTED")}
-                        >
-                            Reject
-                        </button>
-                    </>
+                            <button
+                                type="button"
+                                className="more-btn"
+                                onClick={() => handleStatusChange("APPROVED")}
+                            >
+                                Approve
+                            </button>
+                            <button
+                                type="button"
+                                className="more-btn"
+                                onClick={openRejectModal}
+                            >
+                                Reject
+                            </button>
+                        </>
                     )}
                     {formData.status === "REJECTED" && null}
                 </div>
             </form>
+            {isRejectModalOpen && (
+                <div className="reject-modal">
+                    <div className="reject-modal-content">
+                        <div>
+                            <h2>Λόγος Απόρριψης</h2>
+                            <button onClick={closeRejectModal} className="close-modal-button">
+                                ×
+                            </button>
+                        </div>
+                        <textarea
+                            value={rejectionReason}
+                            onChange={(e) => setRejectionReason(e.target.value)}
+                            placeholder="Πληκτρολογήστε τον λόγο απόρριψης εδώ..."
+                            rows={6}
+                            className="reject-reason-textarea"
+                        />
+                        <button
+                            onClick={handleRejectSubmit}
+                            className="submit-reject-button"
+                            disabled={!rejectionReason.trim()}
+                        >
+                            Υποβολή
+                        </button>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }

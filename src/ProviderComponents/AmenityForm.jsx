@@ -1,8 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Εισάγουμε useLocation και useNavigate
-import GoogleMapReact from "google-map-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import Compressor from "compressorjs";
 import "../StyleProvider/amenityForm.css";
+import { jwtDecode } from "jwt-decode";
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 40.0853,
+    lng: 22.3584,
+};
 
 function AmenityForm() {
     const [formData, setFormData] = useState({
@@ -19,11 +30,29 @@ function AmenityForm() {
     });
 
     const [categories, setCategories] = useState([]);
-    const markerRef = useRef(null);
+    const autocompleteRef = useRef(null);
     const navigate = useNavigate();
-    const location = useLocation(); // Λαμβάνουμε το τρέχον URL
+    const location = useLocation();
+    const [userId, setUserId] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+        libraries: ["places"],
+    });
 
     useEffect(() => {
+        const token = sessionStorage.getItem("userToken");
+
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                setUserId(decodedToken.userId);
+            } catch (error) {
+                console.error("Error decoding token:", error);
+            }
+        }
+
         fetch("https://olympus-riviera.onrender.com/api/amenity/category/get/all", {
             method: "GET",
             headers: {
@@ -32,9 +61,7 @@ function AmenityForm() {
         })
             .then((response) => response.json())
             .then((data) => setCategories(data))
-            .catch((error) => {
-                console.error("Error fetching categories:", error);
-            });
+            .catch((error) => console.error("Error fetching categories:", error));
     }, []);
 
     const handleChange = (e) => {
@@ -45,32 +72,17 @@ function AmenityForm() {
         });
     };
 
-    const handleLocationChange = ({ lat, lng }) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            latitude: lat,
-            longitude: lng,
-        }));
-    };
-
-    const handleApiLoaded = (map, maps) => {
-        map.addListener("click", (event) => {
-            const lat = event.latLng.lat();
-            const lng = event.latLng.lng();
-
-            if (markerRef.current) {
-                markerRef.current.setMap(null);
-            }
-
-            const newMarker = new maps.Marker({
-                position: { lat, lng },
-                map,
-                title: "Selected Location",
-            });
-
-            markerRef.current = newMarker;
-            handleLocationChange({ lat, lng });
-        });
+    const handlePlaceSelected = () => {
+        const place = autocompleteRef.current.getPlace();
+        if (place.geometry) {
+            const { lat, lng } = place.geometry.location;
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                latitude: lat(),
+                longitude: lng(),
+                location: place.formatted_address || "",
+            }));
+        }
     };
 
     const convertImagesToBase64 = (files) => {
@@ -104,17 +116,17 @@ function AmenityForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         const photosBase64 = await convertImagesToBase64(formData.photos);
         if (!photosBase64) {
             alert("Please upload at least one photo.");
             return;
         }
-    
+
         const payload = {
             name: formData.name,
             category_id: formData.category,
-            provider_id: "provider123", // Dummy provider ID for now
+            provider_id: userId,
             phone: formData.phone,
             email: formData.email,
             latitude: formData.latitude,
@@ -122,43 +134,51 @@ function AmenityForm() {
             description: formData.description,
             photos: photosBase64,
         };
-    
+
         let apiUrl = "";
         if (location.pathname.includes("/admin/create-amenity")) {
-            apiUrl = "https://olympus-riviera.onrender.com/api/admin/amenity/create";
+            apiUrl = "https://olympus-riviera.onrender.com/api/admin/amenity/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         } else {
-            apiUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/add-request/create";
+            apiUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/add-request/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         }
-    
+
         fetch(apiUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Authorization": `Bearer ${sessionStorage.getItem('userToken')}`,
             },
             body: JSON.stringify(payload),
         })
             .then((response) => response.json())
-            .then((data) => {
+            .then(() => {
                 alert("Amenity processed successfully!");
-                if (location.pathname.includes("/admin")) {
-                    navigate("/admin"); // Redirect admin to /admin
-                } else {
-                    navigate("/provider"); // Redirect provider to /provider
-                }
+                navigate(location.pathname.includes("/admin") ? "/admin" : "/provider");
             })
             .catch((error) => {
-                if (location.pathname.includes("/admin")) {
-                    navigate("/admin"); // Redirect admin to /admin
-                } else {
-                    navigate("/provider"); // Redirect provider to /provider
-                }
+                console.error("Error:", error);
+                navigate(location.pathname.includes("/admin") ? "/admin" : "/provider");
             });
-    };    
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+            e.preventDefault();
+        }
+    };
+
+    if (loadError) {
+        return <div>Error loading maps</div>;
+    }
+
+    if (!isLoaded) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="amenity-form-container">
             <h1>{location.pathname.includes("/admin") ? "Admin - Create Amenity" : "Provider - Create Amenity"}</h1>
-            <form className="amenity-form" onSubmit={handleSubmit}>
+            <form className="amenity-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
                 <label htmlFor="name">Amenity Name:</label>
                 <input
                     type="text"
@@ -194,22 +214,34 @@ function AmenityForm() {
                     required
                 />
 
-                <label htmlFor="location">Location (Click on the map to select):</label>
-                <div style={{ height: "500px", width: "100%" }}>
-                    <GoogleMapReact
-                        bootstrapURLKeys={{
-                            key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
-                        }}
-                        defaultCenter={{
-                            lat: 40.0853,
-                            lng: 22.3584,
-                        }}
-                        defaultZoom={9}
-                        onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-                        yesIWantToUseGoogleMapApiInternals
+                <label htmlFor="location">Search for a Location:</label>
+                <Autocomplete
+                    onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                    onPlaceChanged={handlePlaceSelected}
+                >
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="Search location..."
+                        value={formData.location}
+                        onChange={handleChange}
                     />
-                </div>
+                </Autocomplete>
 
+                <label htmlFor="location">Location: </label>
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={{
+                        lat: parseFloat(formData.latitude) || defaultCenter.lat,
+                        lng: parseFloat(formData.longitude) || defaultCenter.lng,
+                    }}
+                    zoom={9}
+                >
+                    {formData.latitude && formData.longitude && (
+                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                    )}
+                </GoogleMap>
                 <label htmlFor="phone">Phone:</label>
                 <input
                     type="tel"

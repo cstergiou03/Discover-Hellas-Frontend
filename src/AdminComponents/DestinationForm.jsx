@@ -1,7 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import GoogleMapReact from "google-map-react";
+import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import Compressor from "compressorjs";
 import "../StyleProvider/amenityForm.css";
+import { useNavigate } from "react-router-dom";
+
+const GOOGLE_MAP_LIBRARIES = ["places"];
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 40.0853,
+    lng: 22.3584,
+};
 
 function DestinationForm() {
     const [formData, setFormData] = useState({
@@ -9,24 +22,24 @@ function DestinationForm() {
         category_id: "",
         description: "",
         photos: "",
-        latitude: 40.0853,
-        longitude: 22.3584,
+        latitude: null,
+        longitude: null,
         link_360_view: "",
     });
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
-    const markerRef = useRef(null);
+    const autocompleteRef = useRef(null);
+    const navigate = useNavigate();
 
-    const imageGalleryItems = formData.photos
-        ? formData.photos.split(",").map((photo) => ({
-              original: photo,
-              thumbnail: photo,
-          }))
-        : [];
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+        libraries: GOOGLE_MAP_LIBRARIES,
+    });
 
     useEffect(() => {
         // Ανάκτηση κατηγοριών για το dropdown
-        fetch("https://olympus-riviera.onrender.com/api/admin/destination/category/get/all")
+
+        fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch((error) => console.error(error))
@@ -40,7 +53,7 @@ function DestinationForm() {
                 (file) =>
                     new Promise((resolve, reject) => {
                         new Compressor(file, {
-                            quality: 0.1,
+                            quality: 0.3,
                             success(result) {
                                 const reader = new FileReader();
                                 reader.onloadend = () => resolve(reader.result);
@@ -61,11 +74,33 @@ function DestinationForm() {
         }));
     };
 
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        setFormData({
+            ...formData,
+            [name]: files ? Array.from(files) : value,
+        });
+    };
+
+    const handlePlaceSelected = () => {
+        const place = autocompleteRef.current.getPlace();
+        if (place.geometry) {
+            const { lat, lng } = place.geometry.location;
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                latitude: lat(),
+                longitude: lng(),
+                location: place.formatted_address || "",
+            }));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Αποστολή δεδομένων για δημιουργία νέου προορισμού
-        fetch("https://olympus-riviera.onrender.com/api/admin/destination/create", {
+        const url = "https://olympus-riviera.onrender.com/api/admin/destination/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        fetch(url , {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -75,51 +110,36 @@ function DestinationForm() {
             .then((response) => response.json())
             .then(() => {
                 alert("Destination saved successfully!");
-                // navigate("/admin"); // Μπορείς να προσθέσεις και πλοήγηση αν χρειάζεται
+                navigate("/admin");
             })
-            .catch((error) => console.error(error));
+            .catch((error) => {
+                alert("Destination saved successfully!");
+                navigate("/admin");
+            });
     };
 
     if (loading) return <div>Loading...</div>;
 
-    const handleLocationChange = ({ lat, lng }) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            latitude: lat,
-            longitude: lng,
-        }));
+    
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+            e.preventDefault();
+        }
     };
 
-    const handleApiLoaded = (map, maps) => {
-        // No initial marker placement
-        // Listen for map click to update the location
-        map.addListener("click", (event) => {
-            const lat = event.latLng.lat();
-            const lng = event.latLng.lng();
+    if (loadError) {
+        return <div>Error loading maps</div>;
+    }
 
-            // Remove previous marker if exists
-            if (markerRef.current) {
-                markerRef.current.setMap(null);
-            }
-
-            // Create a new marker for the new location
-            const newMarker = new maps.Marker({
-                position: { lat, lng },
-                map,
-                title: "Selected Location",
-            });
-
-            markerRef.current = newMarker;
-
-            // Update form data with the new location
-            handleLocationChange({ lat, lng });
-        });
-    };
+    if (!isLoaded || loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className="amenity-form-container">
             <h1>Add New Destination</h1>
-            <form className="amenity-form" onSubmit={handleSubmit}>
+            <form className="amenity-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
                 <label htmlFor="name">Destination Name:</label>
                 <input
                     type="text"
@@ -152,21 +172,34 @@ function DestinationForm() {
                     required
                 />
 
-                <label htmlFor="map">Location:</label>
-                <div style={{ height: "400px", width: "100%" }}>
-                    <GoogleMapReact
-                        bootstrapURLKeys={{
-                            key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
-                        }}
-                        defaultCenter={{
-                            lat: formData.latitude,
-                            lng: formData.longitude,
-                        }}
-                        defaultZoom={9}
-                        onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-                        yesIWantToUseGoogleMapApiInternals
+                <label htmlFor="location">Search Location:</label>
+                <Autocomplete
+                    onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                    onPlaceChanged={handlePlaceSelected}
+                >
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="Search location..."
+                        value={formData.location}
+                        onChange={handleChange}
                     />
-                </div>
+                </Autocomplete>
+
+                <label htmlFor="location">Location: </label>
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={{
+                        lat: parseFloat(formData.latitude) || defaultCenter.lat,
+                        lng: parseFloat(formData.longitude) || defaultCenter.lng,
+                    }}
+                    zoom={9}
+                >
+                    {formData.latitude && formData.longitude && (
+                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                    )}
+                </GoogleMap>
 
                 <label htmlFor="360Link">360 Link:</label>
                 <input

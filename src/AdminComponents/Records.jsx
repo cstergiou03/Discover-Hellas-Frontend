@@ -13,7 +13,7 @@ function Records({ data }) {
           .filter((photo) => photo.trim() !== "")
           .map((photo) =>
               "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-          ) // Αφαιρούμε οποιοδήποτε κόμμα στο τέλος
+          )
     : [];
 
 

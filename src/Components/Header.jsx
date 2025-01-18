@@ -19,38 +19,33 @@ function Header() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Initialize loggedIn state in localStorage to false if not already set
-        if (localStorage.getItem('loggedIn') === null) {
-            localStorage.setItem('loggedIn', 'false');
+        // Initialize loggedIn state in sessionStorage to false if not already set
+        if (sessionStorage.getItem('userToken') === null) {
+            sessionStorage.setItem('userToken', '');  // Set to empty if no userToken is present
         }
-    
-        // Check if loggedIn state is saved in localStorage
-        const storedLoggedIn = localStorage.getItem('loggedIn') === 'true';
-        setLoggedIn(storedLoggedIn);
-    
+
+        // Check if userToken exists in sessionStorage
+        const storedUserToken = sessionStorage.getItem('userToken');
+        setLoggedIn(!!storedUserToken);  // If there's a userToken, set loggedIn to true
+
         // Fetch categories from API
-        fetch("https://olympus-riviera.onrender.com/api/admin/destination/category/get/all")
+        fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch((error) => console.error("Error fetching categories:", error));
-    
+
         // Check if screen is mobile (adjust the breakpoint as needed)
         const checkMobile = () => {
             setIsMobile(window.innerWidth <= 970);
         };
-    
+
         checkMobile(); // Initial check
         window.addEventListener('resize', checkMobile); // Update on resize
-    
+
         // Cleanup event listener
         return () => {
             window.removeEventListener('resize', checkMobile);
         };
-    }, []);    
-
-    useEffect(() => {
-        const storedLoggedIn = localStorage.getItem('loggedIn') === 'true'; // Ελέγξτε αν η τιμή είναι 'true'
-        setLoggedIn(storedLoggedIn);
     }, []);    
 
     const handleLanguageChange = () => {
@@ -97,19 +92,21 @@ function Header() {
         navigate("/profile");
     };
 
-    // Update loggedIn state and save to localStorage
+    // Update loggedIn state and save to sessionStorage
     const handleLoginSuccess = () => {
         setLoggedIn(true);
-        localStorage.setItem('loggedIn', 'true');
+        sessionStorage.setItem('loggedIn', 'true');
         localStorage.removeItem('guestPlan');
     };
 
     // Logout functionality
     const handleLogout = () => {
         setLoggedIn(false);
-        localStorage.setItem('loggedIn', 'false');
+        sessionStorage.removeItem('userToken');
+        sessionStorage.setItem('loggedIn', 'false');
         navigate("/");
     };
+    
 
     // Toggle the mobile menu
     const toggleMenu = () => {
@@ -160,7 +157,7 @@ function Header() {
                             </>
                         ) : (
                             <button className="login-button" onClick={handleLoginClick}>
-                                Login
+                                Σύνδεση
                             </button>
                         )}
                     </nav>

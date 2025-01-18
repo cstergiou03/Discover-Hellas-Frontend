@@ -3,14 +3,12 @@ import "../Style/experienceRecord.css";
 
 function CategoryRecord({ data, onDelete }) {
     const handleDelete = () => {
-        const url = `https://olympus-riviera.onrender.com/api/admin/destination/category/${data.category_id}`;
+        const url = "https://olympus-riviera.onrender.com/api/admin/destination/category/" + `${data.category_id}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
 
         fetch(url, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                // Αν χρειάζεστε κάποιο token ή authorization, το προσθέτετε εδώ
-                // 'Authorization': `Bearer ${token}`,
             },
         })
         .then(response => {

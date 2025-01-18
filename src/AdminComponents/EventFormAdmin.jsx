@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from "react";
-import GoogleMapReact from "google-map-react";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "../StyleAdmin/amenityFormAdmin.css";
 import "react-image-gallery/styles/css/image-gallery.css";
+
+const GOOGLE_MAP_LIBRARIES = ["places"];
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 40.0853,
+    lng: 22.3584,
+};
 
 function EventFormAdmin() {
     const { eventId } = useParams();
@@ -21,15 +33,24 @@ function EventFormAdmin() {
         siteLink: "",
         event_start: "",
         event_end: "",
-    });    
+        comments: "",
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [approvalId, setApprovalId] = useState("");
     const [approvalData, setApprovalData] = useState(null);
+    const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState("");
+
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+        libraries: GOOGLE_MAP_LIBRARIES,
+    });
 
     useEffect(() => {
         // Φορτώνουμε το πρώτο endpoint για το add-request
-        fetch(`https://olympus-riviera.onrender.com/api/admin/approval/event/add-request/get/${eventId}`)
+        const url1 = "https://olympus-riviera.onrender.com/api/admin/approval/event/add-request/get/" + `${eventId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        fetch(url1)
             .then(async (response) => {
                 if (response.ok) {
                     return response.json();
@@ -51,11 +72,11 @@ function EventFormAdmin() {
                         .then((data) => {
                             const photosTable = data.photos
                                 ? data.photos
-                                      .split("data:image/jpeg;base64,")
-                                      .filter((photo) => photo.trim() !== "")
-                                      .map((photo) =>
-                                          "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                      )
+                                    .split("data:image/jpeg;base64,")
+                                    .filter((photo) => photo.trim() !== "")
+                                    .map((photo) =>
+                                        "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                    )
                                 : [];
 
                             setFormData({
@@ -71,6 +92,7 @@ function EventFormAdmin() {
                                 siteLink: data.siteLink || "",
                                 event_start: data.event_start || "",
                                 event_end: data.event_end || "",
+                                comments: approval.comments,
                             });
                             setLoading(false);
                         })
@@ -83,11 +105,11 @@ function EventFormAdmin() {
                     // Αν το status δεν είναι "PENDING", εμφανίζουμε τα δεδομένα από το approval
                     const photosTable = eventData.photos
                         ? eventData.photos
-                              .split("data:image/jpeg;base64,")
-                              .filter((photo) => photo.trim() !== "")
-                              .map((photo) =>
-                                  "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                              )
+                            .split("data:image/jpeg;base64,")
+                            .filter((photo) => photo.trim() !== "")
+                            .map((photo) =>
+                                "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                            )
                         : [];
 
                     setFormData({
@@ -103,14 +125,14 @@ function EventFormAdmin() {
                         siteLink: eventData.siteLink || "",
                         event_start: eventData.event_start || "",
                         event_end: eventData.event_end || "",
+                        comments: approval.comments,
                     });
                     setLoading(false);
                 }
             })
             .catch((err) => {
-                console.error("Error fetching add-request, trying edit-request:", err);
-
-                fetch(`https://olympus-riviera.onrender.com/api/admin/approval/event/edit-request/get/${eventId}`)
+                const url2 = "https://olympus-riviera.onrender.com/api/admin/approval/event/edit-request/get/" + `${eventId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                fetch(url2)
                     .then((response) => {
                         if (!response.ok) {
                             throw new Error("No matching event found for edit.");
@@ -118,6 +140,7 @@ function EventFormAdmin() {
                         return response.json();
                     })
                     .then((data) => {
+                        console.log("GEIAAAAAAA" + data);
                         const approval = data[0] || data;
                         setApprovalData(approval);
                         setApprovalId(approval.approval_id);
@@ -130,11 +153,11 @@ function EventFormAdmin() {
                                 .then((data) => {
                                     const photosTable = data.photos
                                         ? data.photos
-                                              .split("data:image/jpeg;base64,")
-                                              .filter((photo) => photo.trim() !== "")
-                                              .map((photo) =>
-                                                  "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                              )
+                                            .split("data:image/jpeg;base64,")
+                                            .filter((photo) => photo.trim() !== "")
+                                            .map((photo) =>
+                                                "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                            )
                                         : [];
 
                                     setFormData({
@@ -150,6 +173,7 @@ function EventFormAdmin() {
                                         siteLink: data.siteLink || "",
                                         event_start: data.event_start || "",
                                         event_end: data.event_end || "",
+                                        comments: approval.comments,
                                     });
                                     setLoading(false);
                                 })
@@ -161,11 +185,11 @@ function EventFormAdmin() {
                         } else {
                             const photosTable = eventData.photos
                                 ? eventData.photos
-                                      .split("data:image/jpeg;base64,")
-                                      .filter((photo) => photo.trim() !== "")
-                                      .map((photo) =>
-                                          "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                      )
+                                    .split("data:image/jpeg;base64,")
+                                    .filter((photo) => photo.trim() !== "")
+                                    .map((photo) =>
+                                        "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                    )
                                 : [];
 
                             setFormData({
@@ -181,24 +205,25 @@ function EventFormAdmin() {
                                 siteLink: eventData.siteLink || "",
                                 event_start: eventData.event_start || "",
                                 event_end: eventData.event_end || "",
+                                comments: approval.comments,
                             });
                             setLoading(false);
                         }
                     })
                     .catch((err) => {
                         console.error("Error fetching edit-request, trying event data:", err);
-
+                        console.log(approvalData);
                         // Εδώ φέρνουμε τα δεδομένα του event αν όλα τα προηγούμενα αποτύχουν
                         fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
                             .then((response) => response.json())
                             .then((data) => {
                                 const photosTable = data.photos
                                     ? data.photos
-                                          .split("data:image/jpeg;base64,")
-                                          .filter((photo) => photo.trim() !== "")
-                                          .map((photo) =>
-                                              "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-                                          )
+                                        .split("data:image/jpeg;base64,")
+                                        .filter((photo) => photo.trim() !== "")
+                                        .map((photo) =>
+                                            "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+                                        )
                                     : [];
 
                                 setFormData({
@@ -210,7 +235,7 @@ function EventFormAdmin() {
                                     photos: photosTable,
                                     latitude: data.latitude || 40.0853,
                                     longitude: data.longitude || 22.3584,
-                                    status: "APPROVED",
+                                    status: data.status,
                                     siteLink: data.siteLink || "",
                                     event_start: data.event_start || "",
                                     event_end: data.event_end || "",
@@ -227,12 +252,22 @@ function EventFormAdmin() {
     }, [eventId]);
 
     const handleStatusChange = (status) => {
-        const url = approvalData.approval_type === "Create"
-            ? `https://olympus-riviera.onrender.com/api/admin/approval/event/add-request/get/${approvalId}/updateStatus?status=${status}`
-            : `https://olympus-riviera.onrender.com/api/admin/approval/event/edit-request/get/${approvalId}/updateStatus?status=${status}`;
+        const addUrl = "https://olympus-riviera.onrender.com/api/admin/approval/event/add-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const editUrl ="https://olympus-riviera.onrender.com/api/admin/approval/event/edit-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url3 = approvalData.approval_type === "Create"
+            ? addUrl
+            : editUrl;
 
-        fetch(url, {
+        const requestBody = {
+            status: status,
+            comments: status === "REJECTED" ? rejectionReason.trim() : undefined,
+        };
+        fetch(url3, {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
         })
             .then((response) => {
                 if (response.ok) {
@@ -253,24 +288,18 @@ function EventFormAdmin() {
         thumbnail: photo,
     }));
 
-    const renderActionButtons = () => {
-        if (formData.status === "APPROVED") {
-            return <div></div>;
-        }
-        if (formData.status === "REJECTED") {
-            return <div></div>;
-        }
-    
-        // Αν το status είναι "PENDING" ή οποιοδήποτε άλλο status που επιτρέπει την αλλαγή
-        return (
-            <div className="action-buttons">
-                <button onClick={() => handleStatusChange("APPROVED")} className="more-btn">Approve</button>
-                <button onClick={() => handleStatusChange("REJECTED")} className="more-btn">Reject</button>
-            </div>
-        );
+    const openRejectModal = () => {
+        setIsRejectModalOpen(true);
     };
 
-    console.log(formData.event_start)
+    const closeRejectModal = () => {
+        setIsRejectModalOpen(false);
+    };
+
+    const handleRejectSubmit = () => {
+        handleStatusChange("REJECTED");
+        closeRejectModal();
+    };
 
     const formatDateTimeForInput = (dateTime) => {
         if (!dateTime) return ""; // Επιστροφή κενής τιμής αν δεν υπάρχει
@@ -280,9 +309,9 @@ function EventFormAdmin() {
         const day = String(date.getDate()).padStart(2, "0");
         const hours = String(date.getHours()).padStart(2, "0");
         const minutes = String(date.getMinutes()).padStart(2, "0");
-    
+
         return `${year}-${month}-${day}T${hours}:${minutes}`;
-    };    
+    };
 
     return (
         <div className="event-form-container">
@@ -302,32 +331,23 @@ function EventFormAdmin() {
 
 
                 <label htmlFor="location">Location:</label>
-                <div style={{ height: "400px", width: "100%" }}>
-                    <GoogleMapReact
-                        bootstrapURLKeys={{
-                            key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
-                        }}
-                        defaultCenter={{
-                            lat: parseFloat(formData.latitude),
-                            lng: parseFloat(formData.longitude),
-                        }}
-                        defaultZoom={10}
-                        yesIWantToUseGoogleMapApiInternals
-                        onGoogleApiLoaded={({ map, maps }) => {
-                            new maps.Marker({
-                                position: {
-                                    lat: parseFloat(formData.latitude),
-                                    lng: parseFloat(formData.longitude),
-                                },
-                                map: map,
-                            });
-                        }}
-                    />
-                </div>
+                <GoogleMap
+                    mapContainerStyle={containerStyle}
+                    center={{
+                        lat: parseFloat(formData.latitude) || defaultCenter.lat,
+                        lng: parseFloat(formData.longitude) || defaultCenter.lng,
+                    }}
+                    zoom={9}
+                >
+                    {formData.latitude && formData.longitude && (
+                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                    )}
+                </GoogleMap>
+
 
                 <label htmlFor="phone">Phone:</label>
                 <input type="tel" id="phone" name="phone" value={formData.phone} readOnly />
-                
+
                 <label htmlFor="phone">Website:</label>
                 <input type="web" id="siteLink" name="siteLink" value={formData.siteLink} readOnly />
 
@@ -347,9 +367,68 @@ function EventFormAdmin() {
                         <div>No photos available.</div>
                     )}
                 </div>
-            </form>
 
-            {renderActionButtons()}
+                {formData.status === "REJECTED" && (
+                    <div className="rejection-reason">
+                        <label htmlFor="rejectionReason">Λόγος Απόρριψης:</label>
+                        <textarea
+                            id="rejectionReason"
+                            name="rejectionReason"
+                            value={formData.comments || "Δεν υπάρχει λόγος απόρριψης."}
+                            readOnly
+                        />
+                    </div>
+                )}
+
+                <div className="action-buttons">
+                    {/* Εμφάνιση κουμπιών με βάση το status */}
+                    {formData.status === "PENDING" && (
+                        <>
+                            <button
+                                type="button"
+                                className="more-btn"
+                                onClick={() => handleStatusChange("APPROVED")}
+                            >
+                                Approve
+                            </button>
+                            <button
+                                type="button"
+                                className="more-btn"
+                                onClick={openRejectModal}
+                            >
+                                Reject
+                            </button>
+                        </>
+                    )}
+                    {formData.status === "REJECTED" && null}
+                </div>
+                {isRejectModalOpen && (
+                    <div className="reject-modal">
+                        <div className="reject-modal-content">
+                            <div>
+                                <h2>Λόγος Απόρριψης</h2>
+                                <button onClick={closeRejectModal} className="close-modal-button">
+                                    ×
+                                </button>
+                            </div>
+                            <textarea
+                                value={rejectionReason}
+                                onChange={(e) => setRejectionReason(e.target.value)}
+                                placeholder="Πληκτρολογήστε τον λόγο απόρριψης εδώ..."
+                                rows={6}
+                                className="reject-reason-textarea"
+                            />
+                            <button
+                                onClick={handleRejectSubmit}
+                                className="submit-reject-button"
+                                disabled={!rejectionReason.trim()}
+                            >
+                                Υποβολή
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </form>
         </div>
     );
 }

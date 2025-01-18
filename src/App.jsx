@@ -6,7 +6,6 @@ import MapMain from "./Components/MapMain";
 import MyCalendar from "./Components/MyCalendar";
 import Event from "./Components/Event";
 import ExperienceMain from "./Components/ExperienceMain";
-import RegisterPanel from "./Components/RegisterPanel";
 import AmenityMain from "./Components/AmenityMain";
 import ProviderMainPanel from "./ProviderComponents/ProviderMainPanel";
 import CreateAmenityPanel from "./ProviderComponents/CreateAmenityPanel";
@@ -41,7 +40,6 @@ function App() {
                 <Route path="/planView/:planId" element={<PlanView />}/>
                 <Route path="/planView" element={<PlanView />}/>
 
-                <Route path="/register" element={<RegisterPanel/>} />
                 <Route path="/profile" element={<UserProfilePanel/>} />
 
                 <Route path="/provider" element={<ProviderMainPanel/>} />

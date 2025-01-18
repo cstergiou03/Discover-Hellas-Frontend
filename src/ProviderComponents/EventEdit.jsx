@@ -1,11 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../StyleProvider/eventForm.css";
-import GoogleMapReact from 'google-map-react';
-import Compressor from 'compressorjs';
-import { useNavigate, useParams } from 'react-router-dom';
+import Compressor from "compressorjs";
+import { useNavigate, useParams } from "react-router-dom";
+import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import { jwtDecode } from "jwt-decode";
+
+const GOOGLE_MAP_LIBRARIES = ["places"];
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 40.0853,
+    lng: 22.3584,
+};
 
 function EventEdit() {
-    const { eventId } = useParams();  // Get the eventId from the URL
+    const { eventId } = useParams(); // Get the eventId from the URL
     const [formData, setFormData] = useState({
         name: "",
         description: "",
@@ -13,33 +26,41 @@ function EventEdit() {
         siteLink: "",
         phone: "",
         email: "",
-        photos: "",
+        photos: [],
         latitude: null,
         longitude: null,
         eventStart: "",
         eventEnd: "",
     });
-    const [destinations, setDestinations] = useState([]);
-    const [isCustomLocation, setIsCustomLocation] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const markerRef = useRef(null);
+    const autocompleteRef = useRef(null);
     const navigate = useNavigate();
+    const [userId, setUserId] = useState("");
+
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+        libraries: GOOGLE_MAP_LIBRARIES,
+    });
 
     useEffect(() => {
-        // Fetch destinations list
-        fetch("https://olympus-riviera.onrender.com/api/destination/get/all")
-            .then(response => response.json())
-            .then(data => setDestinations(data))
-            .catch(error => console.error("Error fetching destinations:", error));
+        const token = sessionStorage.getItem("userToken");
+            
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                setUserId(decodedToken.userId);
+            } catch (error) {
+                console.error("Error decoding token:", error);
+                setUserId(""); // set empty or handle error state
+            }
+        }
 
-        // Fetch event data using the provided eventId
         fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 // Convert ISO date strings to the proper format for datetime-local input
                 const formatDate = (dateString) => {
                     const date = new Date(dateString);
-                    return date.toISOString().slice(0, 16);  // Get the date in 'YYYY-MM-DDTHH:MM' format
+                    return date.toISOString().slice(0, 16); // Get the date in 'YYYY-MM-DDTHH:MM' format
                 };
 
                 setFormData({
@@ -49,17 +70,16 @@ function EventEdit() {
                     siteLink: data.siteLink,
                     phone: data.phone,
                     email: data.email,
-                    photos: data.photos ? data.photos.split(',') : [],
+                    photos: data.photos ? data.photos.split(",") : [],
                     latitude: data.latitude,
                     longitude: data.longitude,
-                    eventStart: formatDate(data.event_start),  // Convert event_start to the correct format
-                    eventEnd: formatDate(data.event_end),      // Convert event_end to the correct format
+                    eventStart: formatDate(data.event_start),
+                    eventEnd: formatDate(data.event_end),
                 });
-                // Determine if location is custom based on the latitude and longitude
-                setIsCustomLocation(data.latitude && data.longitude);
+
                 setIsLoading(false);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error fetching event data:", error);
                 setIsLoading(false);
             });
@@ -73,48 +93,17 @@ function EventEdit() {
         });
     };
 
-    const handleLocationChange = ({ lat, lng }) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            latitude: lat,
-            longitude: lng,
-        }));
-    };
-
-    const handleDestinationChange = (e) => {
-        const selectedDestinationName = e.target.value;
-        const selectedDestination = destinations.find(
-            (destination) => destination.name === selectedDestinationName
-        );
-
-        if (selectedDestination) {
-            setFormData({
-                ...formData,
-                location: selectedDestination.name,
-                latitude: parseFloat(selectedDestination.latitude),
-                longitude: parseFloat(selectedDestination.longitude),
-            });
+    const handlePlaceSelected = () => {
+        const place = autocompleteRef.current.getPlace();
+        if (place.geometry) {
+            const { lat, lng } = place.geometry.location;
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                latitude: lat(),
+                longitude: lng(),
+                location: place.formatted_address || "",
+            }));
         }
-    };
-
-    const handleApiLoaded = (map, maps) => {
-        map.addListener("click", (event) => {
-            const lat = event.latLng.lat();
-            const lng = event.latLng.lng();
-
-            if (markerRef.current) {
-                markerRef.current.setMap(null);
-            }
-
-            const newMarker = new maps.Marker({
-                position: { lat, lng },
-                map,
-                title: "Selected Location",
-            });
-
-            markerRef.current = newMarker;
-            handleLocationChange({ lat, lng });
-        });
     };
 
     const convertImagesToBase64 = (files) => {
@@ -123,30 +112,25 @@ function EventEdit() {
                 resolve("");
             }
 
-            const promises = [];
-            files.forEach(file => {
-                promises.push(
-                    new Promise((resolve, reject) => {
-                        new Compressor(file, {
-                            quality: 0.6,
-                            success(result) {
-                                const reader = new FileReader();
-                                reader.onloadend = () => {
-                                    resolve(reader.result);
-                                };
-                                reader.onerror = reject;
-                                reader.readAsDataURL(result);
-                            },
-                            error(err) {
-                                reject(err);
-                            }
-                        });
-                    })
-                );
+            const promises = files.map((file) => {
+                return new Promise((resolve, reject) => {
+                    new Compressor(file, {
+                        quality: 0.8,
+                        success(result) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(result);
+                        },
+                        error(err) {
+                            reject(err);
+                        },
+                    });
+                });
             });
 
             Promise.all(promises)
-                .then(base64Images => resolve(base64Images.join(',')))
+                .then((base64Images) => resolve(base64Images.join(",")))
                 .catch(reject);
         });
     };
@@ -155,8 +139,6 @@ function EventEdit() {
         e.preventDefault();
 
         const photosBase64 = await convertImagesToBase64(formData.photos);
-        console.log("Base64 Photos:", photosBase64);
-
         if (!photosBase64) {
             alert("Please upload at least one photo.");
             return;
@@ -164,7 +146,7 @@ function EventEdit() {
 
         const payload = {
             name: formData.name,
-            organizer_id: "provider123",  // Assuming this is the logged-in provider's ID
+            organizer_id: userId,
             phone: formData.phone,
             email: formData.email,
             event_start: formData.eventStart,
@@ -176,30 +158,29 @@ function EventEdit() {
             photos: photosBase64,
         };
 
-        console.log("Payload to send:", payload);
-
         fetch(`https://olympus-riviera.onrender.com/api/provider/event/${eventId}/update`, {
-            method: "PUT",  // Use PUT for updating the event
+            method: "PUT", // Use PUT for updating the event
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(payload),
         })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Response from server:", data);
+            .then((response) => response.json())
+            .then(() => {
                 alert("Event updated successfully!");
-                navigate("/provider");  // Navigate back to the provider's dashboard
+                navigate("/provider"); // Navigate back to the provider's dashboard
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error submitting the form:", error);
                 alert("Failed to update event.");
             });
     };
 
-    if (isLoading) {
-        return <div>Loading...</div>;  // Display loading message until data is ready
-    }
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+            e.preventDefault();
+        }
+    };
 
     return (
         <div className="event-form-container">
@@ -244,56 +225,44 @@ function EventEdit() {
                     required
                 />
 
-                <label htmlFor="customLocation">Custom Location:</label>
-                <select
-                    id="customLocation"
-                    name="customLocation"
-                    value={isCustomLocation ? "Ναι" : "Όχι"}
-                    onChange={(e) => setIsCustomLocation(e.target.value === "Ναι")}
-                >
-                    <option value="Όχι">Όχι</option>
-                    <option value="Ναι">Ναι</option>
-                </select>
-
-                {!isCustomLocation && (
-                    <>
-                        <label htmlFor="location">Location (Select from Dropdown):</label>
-                        <select
+                <label htmlFor="location">Search for a Location:</label>
+                {isLoaded ? (
+                    <Autocomplete
+                        onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                        onPlaceChanged={handlePlaceSelected}
+                    >
+                        <input
+                            type="text"
+                            id="location"
                             name="location"
+                            placeholder="Search location..."
                             value={formData.location}
-                            onChange={handleDestinationChange}
-                            required
-                        >
-                            <option value="">Select a location</option>
-                            {destinations.map((destination) => (
-                                <option
-                                    key={destination.destination_id}
-                                    value={destination.name}
-                                >
-                                    {destination.name}
-                                </option>
-                            ))}
-                        </select>
-                    </>
-                )}
-
-                {isCustomLocation && (
-                    <div style={{ height: '500px', width: '100%' }}>
-                        <GoogleMapReact
-                            bootstrapURLKeys={{
-                                key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
-                            }}
-                            defaultCenter={{
-                                lat: 40.0853,
-                                lng: 22.3584,
-                            }}
-                            defaultZoom={9}
-                            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-                            yesIWantToUseGoogleMapApiInternals
+                            onChange={handleChange}
                         />
-                    </div>
+                    </Autocomplete>
+                ) : (
+                    <p>Loading maps...</p>
                 )}
-
+    
+                <label htmlFor="location">Location (Click on the map to select):</label>
+                {isLoaded ? (
+                    <GoogleMap
+                        mapContainerStyle={containerStyle}
+                        center={{
+                            lat: parseFloat(formData.latitude) || defaultCenter.lat,
+                            lng: parseFloat(formData.longitude) || defaultCenter.lng,
+                        }}
+                        zoom={9}
+                    >
+                        {formData.latitude && formData.longitude && (
+                            <Marker
+                                position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }}
+                            />
+                        )}
+                    </GoogleMap>
+                ) : (
+                    <p>Loading maps...</p>
+                )}
                 <label htmlFor="siteLink">Website Link:</label>
                 <input
                     type="url"
@@ -333,7 +302,9 @@ function EventEdit() {
                     onChange={handleChange}
                 />
 
-                <button type="submit" className="submit-button">Submit</button>
+                <button type="submit" className="submit-button">
+                    Submit
+                </button>
             </form>
         </div>
     );

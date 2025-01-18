@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Container,
@@ -15,16 +15,57 @@ import {
 } from '@mui/material';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale } from 'chart.js';
+import { jwtDecode } from 'jwt-decode';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
 function ProviderProfile() {
     const [fullname, setFullname] = useState('');
     const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('(097) 234-5678');
-    const [mobile, setMobile] = useState('(098) 765-4321');
-    const [address, setAddress] = useState('Περιοχή Bay, Σαν Φρανσίσκο, Καλιφόρνια');
+    const [phone, setPhone] = useState('');
+    const [mobile, setMobile] = useState('');
+    const [address, setAddress] = useState('');
     const [verified, setVerified] = useState(false);
+    const [userId, setUserId] = useState('');
+    const [profilePicture, setProfilePicture] = useState('');
+    const [filteredAmenities, setAmenities] = useState([]);
+    const [filteredEvents, setEvents] = useState([]);
+
+    useEffect(() => {
+        const token = sessionStorage.getItem('userToken');
+
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                setUserId(decodedToken.userId);
+                setFullname(`${decodedToken.firstName} ${decodedToken.lastName}`);
+                setEmail(decodedToken.email || 'Άγνωστο email');
+                setProfilePicture(decodedToken.photo || 'https://via.placeholder.com/150');
+            } catch (error) {
+                console.error('Error decoding token:', error);
+            }
+        }
+
+        fetch('https://olympus-riviera.onrender.com/api/amenity/get/all')
+            .then((response) => response.json())
+            .then((data) => {
+                const amenities = data.filter((amenity) => amenity.provider_id === userId);
+                setAmenities(amenities);
+            })
+            .catch((err) => {
+                console.error('Error fetching amenities:', err.message);
+            });
+
+        fetch('https://olympus-riviera.onrender.com/api/event/get/all')
+            .then((response) => response.json())
+            .then((data) => {
+                const events = data.filter((event) => event.organizer_id === userId);
+                setEvents(events);
+            })
+            .catch((err) => {
+                console.error('Error fetching events:', err.message);
+            });
+    }, [userId]);
 
     const handleFullnameChange = (event) => setFullname(event.target.value);
     const handleEmailChange = (event) => setEmail(event.target.value);
@@ -36,11 +77,21 @@ function ProviderProfile() {
         alert('Τα στοιχεία σας ενημερώθηκαν επιτυχώς!');
     };
 
-    const data = (approved, pending, rejected) => ({
+    const calculateStatusCounts = (items) => {
+        const approved = items.filter((item) => item.status === 'APPROVED').length;
+        const pending = items.filter((item) => item.status === 'PENDING').length;
+        const rejected = items.filter((item) => item.status === 'REJECTED').length;
+        return { approved, pending, rejected };
+    };
+
+    const amenitiesData = calculateStatusCounts(filteredAmenities);
+    const eventsData = calculateStatusCounts(filteredEvents);
+
+    const createChartData = (counts) => ({
         labels: ['ΕΓΚΡΙΘΗΚΑΝ', 'ΣΕ ΑΝΑΜΟΝΗ', 'ΑΠΟΡΡΙΦΘΗΚΑΝ'],
         datasets: [
             {
-                data: [approved, pending, rejected],
+                data: [counts.approved, counts.pending, counts.rejected],
                 backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
                 borderColor: ['#28a745', '#ffc107', '#dc3545'],
                 borderWidth: 1,
@@ -66,7 +117,7 @@ function ProviderProfile() {
                             <CardContent sx={{ textAlign: 'center' }}>
                                 <CardMedia
                                     component="img"
-                                    image="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                                    image={profilePicture}
                                     alt="avatar"
                                     sx={{
                                         width: 150,
@@ -165,7 +216,7 @@ function ProviderProfile() {
                                         <Typography variant="h6" gutterBottom>
                                             Παροχές (Amenity)
                                         </Typography>
-                                        <Pie data={data(50, 30, 20)} />
+                                        <Pie data={createChartData(amenitiesData)} />
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -176,7 +227,7 @@ function ProviderProfile() {
                                         <Typography variant="h6" gutterBottom>
                                             Εκδηλώσεις (Events)
                                         </Typography>
-                                        <Pie data={data(60, 25, 15)} />
+                                        <Pie data={createChartData(eventsData)} />
                                     </CardContent>
                                 </Card>
                             </Grid>

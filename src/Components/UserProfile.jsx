@@ -27,37 +27,62 @@ const StyledCard = styled(Card)(({ theme }) => ({
 function UserProfile() {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("(097) 234-5678");
-    const [mobile, setMobile] = useState("(098) 765-4321");
-    const [address, setAddress] = useState("Αθήνα, Ελλάδα");
+    const [phone, setPhone] = useState("");
+    const [mobile, setMobile] = useState("");
+    const [address, setAddress] = useState("");
     const [plans, setPlans] = useState([]);
     const [newPlanTitle, setNewPlanTitle] = useState("");
     const [profilePicture, setProfilePicture] = useState("");
     const navigate = useNavigate();
+    const [userId, setUserId] = useState("");
 
     useEffect(() => {
-        // Παίρνουμε το JWT token από το localStorage
-        const token = localStorage.getItem("userToken");
+        // Παίρνουμε το JWT token από το sessionStorage
+        const token = sessionStorage.getItem("userToken");
 
         if (token) {
-            // Αποκωδικοποιούμε το JWT token
-            const decodedToken = jwtDecode(token);
-            console.log(decodedToken);
-            
-            // Ρυθμίζουμε τα πεδία από το αποκωδικοποιημένο token
-            setFullName(decodedToken.name || "Άγνωστο όνομα");
-            setEmail(decodedToken.email || "Άγνωστο email");
-            setProfilePicture(decodedToken.picture || "https://via.placeholder.com/150");
+            try {
+                // Αποκωδικοποιούμε το JWT token
+                const decodedToken = jwtDecode(token);
+                console.log("Decoded Token:", decodedToken);
+
+                // Ρυθμίζουμε τα πεδία από το αποκωδικοποιημένο token
+                const fullName = `${decodedToken.firstName} ${decodedToken.lastName}`; // Συνδυασμός firstName + lastName
+                setFullName(fullName);
+                setEmail(decodedToken.email || "Άγνωστο email");
+                setProfilePicture(
+                    decodedToken.photo || "https://via.placeholder.com/150"
+                );
+                setUserId(decodedToken.userId);  // Βάζουμε το sub ως user_id
+                console.log(userId);
+            } catch (error) {
+                console.error("Error decoding token:", error);
+            }
         }
 
         // Fetching user's plans
-        fetch("https://olympus-riviera.onrender.com/api/plan/user/user_678xyz/plans")
-            .then(response => response.json())
-            .then(data => {
-                setPlans(data);
-            })
-            .catch(error => console.error("Error fetching plans:", error));
-    }, []);
+        if (userId) {
+            fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setPlans(data);
+                })
+                .catch((error) => console.error("Error fetching plans:", error));
+        }
+    }, [userId]); // Βάζουμε το userId σαν εξάρτηση για να κάνουμε fetch τα πλάνα όταν το userId είναι έτοιμο
+    
+    useEffect(() => {
+        if (userId) {
+            fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setPlans(data);
+                })
+                .catch((error) => console.error("Error fetching plans:", error));
+        }
+    }, [plans]); // Βάζουμε το userId σαν εξάρτηση για να κάνουμε fetch τα πλάνα όταν το userId είναι έτοιμο
+
+
 
     const handleFullNameChange = (event) => setFullName(event.target.value);
     const handleEmailChange = (event) => setEmail(event.target.value);
@@ -73,18 +98,18 @@ function UserProfile() {
         const newPlan = {
             title: newPlanTitle,
             plan: [],  // Στέλνεις το κενό array για το πεδίο plan
-            user_id: "user_678xyz"
+            user_id: userId, // Χρησιμοποιούμε το decodedToken.sub ως user_id
         };
 
         fetch("https://olympus-riviera.onrender.com/api/plan/create", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(newPlan)
+            body: JSON.stringify(newPlan),
         })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 setPlans([...plans, data]);
                 alert("Το νέο πλάνο δημιουργήθηκε με επιτυχία!");
             });
@@ -93,22 +118,22 @@ function UserProfile() {
 
     const handleDeletePlan = (planId) => {
         fetch(`https://olympus-riviera.onrender.com/api/plan/${planId}`, {
-            method: "DELETE"
+            method: "DELETE",
         })
-            .then(response => {
+            .then((response) => {
                 if (response.ok) {
                     // Αν η διαγραφή ήταν επιτυχής, ανανεώνουμε τη λίστα πλάνων
-                    fetch("https://olympus-riviera.onrender.com/api/plan/user/user_678xyz/plans")
-                        .then(response => response.json())
-                        .then(data => {
-                            setPlans(data);  // Ενημέρωση της λίστας με τα νέα δεδομένα
+                    fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            setPlans(data); // Ενημέρωση της λίστας με τα νέα δεδομένα
                         })
-                        .catch(error => console.error("Error fetching plans:", error));
+                        .catch((error) => console.error("Error fetching plans:", error));
                 } else {
                     console.error("Error deleting plan:", response.statusText);
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error("Error deleting plan:", error);
             });
     };
@@ -124,7 +149,7 @@ function UserProfile() {
                 flexDirection: "column", // For vertical stacking
                 alignItems: "center",
                 justifyContent: "center",
-                marginTop: "20px"
+                marginTop: "20px",
             }}
         >
             <Container maxWidth="md">
@@ -286,7 +311,6 @@ function UserProfile() {
                     </CardContent>
                 </Card>
             </Container>
-
         </Box>
     );
 }

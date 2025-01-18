@@ -1,48 +1,97 @@
-.weather-container {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.weather-widget {
+    font-family: Arial, sans-serif;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.weather-widget h1 {
     text-align: center;
-    margin: 2em auto;
-    padding: 1em;
-    background-color: #f0f8ff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-}
-
-.weather-title {
-    font-size: 1.8rem;
-    color: #a4c991;
-    margin-bottom: 1em;
-}
-
-.weather-summary {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 1em;
-}
-
-.weather-day {
-    background: #ffffff;
-    padding: 1em;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 180px;
-}
-
-.weather-day h3 {
-    font-size: 1.2rem;
     color: #333;
-    margin-bottom: 0.5em;
 }
 
-.weather-day p {
-    font-size: 1rem;
-    color: #555;
-    margin: 0.2em 0;
+.forecast-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
+
+.today-forecast {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.today-forecast h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.weather-icon {
+    font-size: 48px;
+    margin: 10px 0;
+}
+
+.weather-description {
+    font-size: 18px;
+    color: #666;
+}
+
+.temperature {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+}
+
+.low-temperature {
+    font-size: 14px;
+    color: #666;
+}
+
+.next-days-forecast {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.day-forecast {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    flex: 1;
+}
+
+.day-name {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.day-forecast .weather-icon {
+    font-size: 24px;
+}
+
+.day-forecast .temperature {
+    font-size: 18px;
+}
+
+.day-forecast .low-temperature {
+    font-size: 12px;
+}
+
+@media (max-width: 600px) {
+    .next-days-forecast {
+        flex-direction: column;
+    }
+}
+
+
 
 @media (max-width: 970px) {
     .weather-day {

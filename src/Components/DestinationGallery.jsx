@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../Style/destinationGallery.css";
 
 function DestinationGallery({ data }) {
     const [currentPage, setCurrentPage] = useState(0);
-    const photosPerPage = 4;
+    const [selectedPhoto, setSelectedPhoto] = useState(null); // Αποθήκευση της επιλεγμένης φωτογραφίας
+    const photosPerPage = 6;
 
     // Επεξεργασία φωτογραφιών
     const photos = Array.isArray(data)
@@ -35,11 +36,25 @@ function DestinationGallery({ data }) {
         }
     };
 
+    // Ανοίγουμε το modal με την επιλεγμένη φωτογραφία
+    const openModal = (photo) => {
+        setSelectedPhoto(photo);
+    };
+
+    // Κλείνουμε το modal
+    const closeModal = () => {
+        setSelectedPhoto(null);
+    };
+
     return (
         <div className="gallery-container">
             <div className="photo-grid">
                 {currentPhotos.concat(emptyPhotos).map((photo, index) => (
-                    <div key={index} className="photo-item">
+                    <div
+                        key={index}
+                        className="photo-item"
+                        onClick={() => photo && openModal(photo)} // Άνοιγμα modal αν υπάρχει φωτογραφία
+                    >
                         {photo ? (
                             <img src={photo} alt={`Photo ${index + 1}`} />
                         ) : (
@@ -64,6 +79,18 @@ function DestinationGallery({ data }) {
                     Load More
                 </button>
             </div>
+
+            {/* Modal για εμφάνιση μεγαλύτερης φωτογραφίας */}
+            {selectedPhoto && (
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <img src={selectedPhoto} alt="Selected" />
+                        <button className="close-modal" onClick={closeModal}>
+                            &times; {/* Κουμπί κλεισίματος */}
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

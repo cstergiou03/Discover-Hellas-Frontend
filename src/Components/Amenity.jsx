@@ -11,6 +11,7 @@ function Amenity() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [mapKey, setMapKey] = useState(Date.now());
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,6 +49,15 @@ function Amenity() {
         fetchData();
     }, [amenityId]);
 
+    useEffect(() => {
+        if (data) {
+            // Change the key only when the data is loaded
+            setMapKey(Date.now());
+        }
+    }, [data]);
+
+    console.log(data);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -81,6 +91,7 @@ function Amenity() {
             <div className="event-map-and-info">
                 <div className="event-map-container">
                     <GoogleMapReact
+                        key={mapKey}
                         bootstrapURLKeys={{
                             key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
                         }}
@@ -94,10 +105,32 @@ function Amenity() {
                     />
                 </div>
 
-                <div className="event-info-right">
-                    <button className="guide-button" onClick={handleDirectionsClick}>
-                        Οδηγίες
-                    </button>
+                <div className="event-map-and-info">
+                    <div className="event-map-container">
+                        <GoogleMapReact
+                            bootstrapURLKeys={{
+                                key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+                            }}
+                            defaultZoom={10}
+                            defaultCenter={{
+                                lat: 40.0853,
+                                lng: 22.3584,
+                            }}
+                            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+                            yesIWantToUseGoogleMapApiInternals
+                        />
+                    </div>
+
+                    <div className="event-info-right">
+                        <div className="event-info-container">
+                            <h1>Πληροφορίες</h1>
+                            <p><strong>Τηλέφωνο Επικοινωνίας:</strong> {data.phone}</p>
+                            <p><strong>Email:</strong> {data.email}</p>
+                        </div>
+                        <button className="guide-button" onClick={handleDirectionsClick}>
+                            Οδηγίες
+                        </button>
+                    </div>
                 </div>
             </div>
             <Footer />

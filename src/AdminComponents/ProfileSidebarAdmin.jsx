@@ -1,13 +1,36 @@
 import React, { useEffect, useState } from "react";
 import "../StyleAdmin/profileSidebarAdmin.css";
+import { jwtDecode } from 'jwt-decode';
 
 function ProfileSidebarAdmin() {
     const [amenitiesCount, setAmenitiesCount] = useState(0);
     const [eventsCount, setEventsCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [fullName, setFullName] = useState("");
+    const [profilePicture, setProfilePicture] = useState("");
 
     useEffect(() => {
+
+        const token = sessionStorage.getItem("userToken");
+
+        if (token) {
+            try {
+                // Αποκωδικοποιούμε το JWT token
+                const decodedToken = jwtDecode(token);
+                console.log("Decoded Token:", decodedToken);
+
+                // Ρυθμίζουμε τα πεδία από το αποκωδικοποιημένο token
+                const fullName = `${decodedToken.firstName} ${decodedToken.lastName}`; // Συνδυασμός firstName + lastName
+                setFullName(fullName);
+                setProfilePicture(
+                    decodedToken.photo || "https://via.placeholder.com/150"
+                );
+            } catch (error) {
+                console.error("Error decoding token:", error);
+            }
+        }
+
         const fetchData = async () => {
             try {
                 setLoading(true);
@@ -47,11 +70,11 @@ function ProfileSidebarAdmin() {
             <div className="profile-sidebar">
                 <div className="profile-header">
                     <img
-                        src="../../src/assets/profile.jpg" // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
+                        src={profilePicture}
                         alt="Profile"
                         className="profile-photo"
                     />
-                    <div className="profile-name">John Doe</div>
+                    <div className="profile-name">{fullName}</div>
                 </div>
 
                 {/* Εμφανίζουμε το υπόλοιπο UI χωρίς τα metrics */}
@@ -65,11 +88,11 @@ function ProfileSidebarAdmin() {
             <div className="profile-sidebar">
                 <div className="profile-header">
                     <img
-                        src="../../src/assets/profile.jpg" // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
+                        src={profilePicture}
                         alt="Profile"
                         className="profile-photo"
                     />
-                    <div className="profile-name">John Doe</div>
+                    <div className="profile-name">{fullName}</div>
                 </div>
 
                 {/* Εμφανίζουμε το μήνυμα λάθους */}
@@ -82,11 +105,11 @@ function ProfileSidebarAdmin() {
         <div className="profile-sidebar">
             <div className="profile-header">
                 <img
-                    src="../../src/assets/profile.jpg" // Ενημέρωσε τη διαδρομή αν είναι διαφορετική
+                    src={profilePicture}
                     alt="Profile"
                     className="profile-photo"
                 />
-                <div className="profile-name">John Doe</div>
+                <div className="profile-name">{fullName}</div>
             </div>
 
             <div className="profile-metrics">

@@ -2,7 +2,7 @@ import "../Style/popularAmenity.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-function PopularAmenity() {
+function PopularDestination() {
     const navigate = useNavigate();
     const [destinations, setDestinations] = useState([]);
     const [statistics, setStatistics] = useState([]);
@@ -14,7 +14,6 @@ function PopularAmenity() {
             try {
                 setLoading(true);
 
-                // Fetch destinations
                 const destinationsResponse = await fetch(
                     "https://olympus-riviera.onrender.com/api/destination/get/all"
                 );
@@ -24,9 +23,8 @@ function PopularAmenity() {
                 const destinationsData = await destinationsResponse.json();
                 setDestinations(destinationsData);
 
-                // Fetch statistics
                 const statisticsResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/admin/statistics/get/all"
+                    "https://olympus-riviera.onrender.com/api/destination/statistics/get/all"
                 );
                 if (!statisticsResponse.ok) {
                     throw new Error("Failed to fetch statistics");
@@ -125,4 +123,4 @@ function PopularAmenity() {
     );
 }
 
-export default PopularAmenity;
+export default PopularDestination;

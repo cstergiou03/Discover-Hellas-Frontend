@@ -2,9 +2,9 @@ import Footer from "./Footer.jsx";
 import PageTop from "./PageTop.jsx";
 import StatSection from "./StatSection.jsx";
 import PieriaInfo from "./PieriaInfo";
-import Weather from "./Weather.jsx";
+import WeatherWidget from "./Weather.jsx";
 import "../Style/mainPanel.css";
-import PopularAmenity from "./PopularAmenity.jsx";
+import PopularDestination from "./PopularDestination.jsx";
 
 function MainPanel() {
     return (
@@ -12,9 +12,11 @@ function MainPanel() {
             <PageTop />
             <div className="mid-container">
                 <div className="stat-section"><StatSection /></div>
-                <div className="pieria-info"><PieriaInfo /></div>
-                <div className="weather"><Weather /></div>
-                <div className="popular-amenity"><PopularAmenity /></div>
+                <div className="inside-mid-container">
+                    <div className="weather"><WeatherWidget/></div>
+                    <div className="pieria-info"><PieriaInfo /></div>
+                </div>
+                <div className="popular-amenity"><PopularDestination /></div>
             </div>
             <Footer />
         </div>

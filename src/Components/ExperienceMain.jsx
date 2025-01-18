@@ -35,7 +35,7 @@ function ExperienceMain() {
 
     // Fetch categories
     useEffect(() => {
-        fetch("https://olympus-riviera.onrender.com/api/admin/destination/category/get/all")
+        fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all")
             .then((response) => response.json())
             .then((data) => {
                 const categoriesWithAll = [{ category_id: "all", name: "All" }, ...data];

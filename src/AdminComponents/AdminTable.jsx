@@ -29,6 +29,10 @@ function ProviderTable({ data, dataType }) {
         };
     }, []);
 
+    useEffect(() => {
+            setCurrentPage(1);
+    }, [activeTab]);
+
     const filteredData = data.filter(item => item.status === activeTab);
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -71,7 +75,7 @@ function ProviderTable({ data, dataType }) {
                         currentPageData.map(item => (
                             <div className="table-item" key={item.id}>
                                 <div className="record-name">{item.name}</div>
-                                <div className="record-description">{item.description}</div>
+                                {/* <div className="record-description">{item.description}</div> */}
                                 
                                 <button 
                                     onClick={() => handleEditClick(item)}
