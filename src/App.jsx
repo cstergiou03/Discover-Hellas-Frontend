@@ -20,21 +20,28 @@ import CreateAmenityAdminPanel from "./AdminComponents/CreateAmenityAdminPanel";
 import EventView from "./AdminComponents/EventView";
 import DestinationView from "./AdminComponents/DestinationView";
 import DestinationEditView from "./AdminComponents/DestinationEditView";
+import ActivityView from "./AdminComponents/ActivityView";
+import ActivityEditView from "./AdminComponents/ActivityEditView";
 import CategoryView from "./AdminComponents/CategoryView";
 import PlanView from "./Components/PlanView";
 import AdminProfilePanel from "./AdminComponents/AdminProfilePanel";
+import ReviewView from "./AdminComponents/ReviewView";
+import Activity from "./Components/Activity"
+import ActivityList from "./Components/ActivityList";
 
 function App() {
     return (
         <Router>
             <Routes>
                 <Route path="/" element={<MainPanel />} />
+                <Route path="/destination/" element={<ExperienceMain />} />
                 <Route path="/destination/:destinationId" element={<Destination />} />
+                <Route path="/destinations/:categoryId" element={<ExperienceMain />} />
+                <Route path="/activity/" element={<ActivityList />} />
+                <Route path="/activity/:activityId" element={<Activity />} />
                 <Route path="/map" element={<MapMain />} />
                 <Route path="/calendar" element={<MyCalendar />} />
-                <Route path="/event/:eventId" element={<Event />} />
-                <Route path="/destination/" element={<ExperienceMain />} />
-                <Route path="/destinations/:categoryId" element={<ExperienceMain />} />
+                <Route path="/event/:eventId" element={<Event />} />                
                 <Route path="/amenity" element={<AmenityMain />}/>
                 <Route path="/amenity/:amenityId" element={<Amenity />}/>
                 <Route path="/planView/:planId" element={<PlanView />}/>
@@ -52,9 +59,12 @@ function App() {
                 <Route path="/admin" element={<AdminMainPanel/>} />
                 <Route path="/admin/edit-amenity/:amenityId" element={<AmenityView/>} />
                 <Route path="/admin/edit-event/:eventId" element={<EventView/>} />
+                <Route path="/admin/edit-review/:reviewId" element={<ReviewView/>} />
                 <Route path="/admin/create-amenity" element={<CreateAmenityAdminPanel/>} />
                 <Route path="/admin/create-destination" element={<DestinationView/>} />
                 <Route path="/admin/edit-destination/:destinationID" element={<DestinationEditView/>} />
+                <Route path="/admin/create-activity" element={<ActivityView/>} />
+                <Route path="/admin/edit-activity/:activityId" element={<ActivityEditView/>} />
                 <Route path="/admin/create-category" element={<CategoryView/>} />
                 <Route path="/admin/profile" element={<AdminProfilePanel/>} />
             </Routes>

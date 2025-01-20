@@ -138,9 +138,9 @@ function DestinationForm() {
 
     return (
         <div className="amenity-form-container">
-            <h1>Add New Destination</h1>
+            <h1>Προσθήκη Νέου Προορισμού</h1>
             <form className="amenity-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
-                <label htmlFor="name">Destination Name:</label>
+                <label htmlFor="name">Όνομα Προορισμού:</label>
                 <input
                     type="text"
                     id="name"
@@ -149,14 +149,14 @@ function DestinationForm() {
                     required
                 />
 
-                <label htmlFor="category">Category:</label>
+                <label htmlFor="category">Κατηγορία:</label>
                 <select
                     id="category"
                     value={formData.category_id}
                     onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                     required
                 >
-                    <option value="">Select a category</option>
+                    <option value="">Διαλέξτε Κατηγορία</option>
                     {categories.map((cat) => (
                         <option key={cat.category_id} value={cat.category_id}>
                             {cat.name}
@@ -164,7 +164,7 @@ function DestinationForm() {
                     ))}
                 </select>
 
-                <label htmlFor="description">Description:</label>
+                <label htmlFor="description">Περιγραφή:</label>
                 <textarea
                     id="description"
                     value={formData.description}
@@ -172,7 +172,7 @@ function DestinationForm() {
                     required
                 />
 
-                <label htmlFor="location">Search Location:</label>
+                <label htmlFor="location">Αναζήτηση Τοποθεσίας:</label>
                 <Autocomplete
                     onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
                     onPlaceChanged={handlePlaceSelected}
@@ -187,7 +187,7 @@ function DestinationForm() {
                     />
                 </Autocomplete>
 
-                <label htmlFor="location">Location: </label>
+                <label htmlFor="location">Τοποθεσία: </label>
                 <GoogleMap
                     mapContainerStyle={containerStyle}
                     center={{
@@ -209,11 +209,11 @@ function DestinationForm() {
                     onChange={(e) => setFormData({ ...formData, link_360_view: e.target.value })}
                 />
 
-                <label htmlFor="photos">Photos:</label>
+                <label htmlFor="photos">Φωτογραφίες:</label>
                 <input type="file" multiple onChange={handlePhotoChange} />
 
                 <button className="more-btn" type="submit">
-                    Add Destination
+                    Προθήκη Προορισμού
                 </button>
             </form>
         </div>

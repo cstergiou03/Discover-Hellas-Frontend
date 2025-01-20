@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import "../StyleAdmin/adminStatistics.css";
 import AdminTable from "./AdminTable";
 import DestinationsTable from "./DestinationsTable";
-import CategoriesTable from "./CategoriesTable";  // Εισάγουμε το CategoriesTable
+import ActivitiesTable from "./ActivitiesTable";
+import CategoriesTable from "./CategoriesTable";
+import ReviewsTable from "./ReviewsTable";
 
 function AdminStatistics() {
     const [selectedItem, setSelectedItem] = useState(null); // Επιλογή στοιχείου από το ListBox
@@ -11,8 +13,10 @@ function AdminStatistics() {
     const [events, setEvents] = useState([]); // Δεδομένα για events
     const [destinationCategories, setDestinationCategories] = useState([]); // Δεδομένα για destination categories
     const [amenityCategories, setAmenityCategories] = useState([]); // Δεδομένα για destination categories
+    const [activityCategories, setActivityCategories] = useState([]); // Δεδομένα για destination categories
     const [loading, setLoading] = useState(false); // Κατάσταση φόρτωσης
     const [error, setError] = useState(null); // Κατάσταση λάθους
+    const [reviews, setReviews] = useState([]);
 
     const handleClick = (item) => {
         setSelectedItem(item); // Ορισμός της επιλεγμένης επιλογής
@@ -70,7 +74,7 @@ function AdminStatistics() {
             fetch("https://olympus-riviera.onrender.com/api/amenity/category/get/all")
                 .then((response) => response.json())
                 .then((data) => {
-                    setAmenityCategories(data); // Αποθήκευση των δεδομένων των κατηγοριών προορισμών
+                    setAmenityCategories(data);
                     setLoading(false);
                 })
                 .catch((err) => {
@@ -78,6 +82,35 @@ function AdminStatistics() {
                     setLoading(false);
                 });
         }
+
+        if (selectedItem === "ActivityCategories") {
+            setLoading(true);
+            fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all")
+                .then((response) => response.json())
+                .then((data) => {
+                    setActivityCategories(data);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    setError("Σφάλμα κατά τη φόρτωση των κατηγοριών δραστηριοτήτων.");
+                    setLoading(false);
+                });
+        }
+
+        if (selectedItem === "Reviews") {
+            setLoading(true);
+            fetch("https://olympus-riviera.onrender.com/api/admin/feedback/evaluation/get/all?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setReviews(data);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    setError("Σφάλμα κατά τη φόρτωση των κατηγοριών προορισμών.");
+                    setLoading(false);
+                });
+        }
+
     }, [selectedItem]);
 
     const renderContent = () => {
@@ -93,11 +126,17 @@ function AdminStatistics() {
             case "Events":
                 return <AdminTable data={events} dataType="event" />;
             case "Destinations":
-                return <DestinationsTable data={events} dataType="event" />;
+                return <DestinationsTable />;
+            case "Activities":
+                return <ActivitiesTable />;
             case "DestinationCategories":
                 return <CategoriesTable data={destinationCategories} dataType="destinationCategory" />;
             case "AmenityCategories":
                 return <CategoriesTable data={amenityCategories} dataType="amenityCategory" />;
+            case "ActivityCategories":
+                return <CategoriesTable data={activityCategories} dataType="activityCategories" />;
+            case "Reviews":
+                return <ReviewsTable data={reviews} dataType="review" />;
             default:
                 return <div>Επιλέξτε μια επιλογή από τη λίστα για να δείτε δεδομένα.</div>;
         }
@@ -116,6 +155,7 @@ function AdminStatistics() {
                     <h4 onClick={() => handleClick("Amenities")}>Παροχές</h4>
                     <h4 onClick={() => handleClick("Events")}>Εκδηλώσεις</h4>
                     <h4 onClick={() => handleClick("Users")}>Χρήστες</h4>
+                    <h4 onClick={() => handleClick("Reviews")}>Σχόλια</h4>
                 </div>
             )}
 
@@ -149,6 +189,7 @@ function AdminStatistics() {
             {openSection === "cat" && (
                 <div className="section-content">
                     <h4 onClick={() => handleClick("DestinationCategories")}>Κατηγορίες Προορισμών</h4>
+                    <h4 onClick={() => handleClick("ActivityCategories")}>Κατηγορίες Δραστηριοτήτων</h4>
                     <h4 onClick={() => handleClick("AmenityCategories")}>Κατηγορίες Παροχών</h4>
                 </div>
             )}

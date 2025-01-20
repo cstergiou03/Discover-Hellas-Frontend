@@ -69,7 +69,7 @@ function Header() {
 
     const handleExperiencelClick = (event) => {
         event.preventDefault();
-        navigate("/activities");
+        navigate("/activity");
     };
 
     const handleProviderlClick = (event) => {

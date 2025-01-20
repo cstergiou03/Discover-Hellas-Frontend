@@ -211,9 +211,16 @@ function EventFormAdmin() {
                         }
                     })
                     .catch((err) => {
-                        console.error("Error fetching edit-request, trying event data:", err);
-                        console.log(approvalData);
-                        // Εδώ φέρνουμε τα δεδομένα του event αν όλα τα προηγούμενα αποτύχουν
+                        console.error("Error fetching edit-request, trying amenity data:", err);
+
+                        const approvalUrl = `https://olympus-riviera.onrender.com/api/admin/approval/${eventId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                        fetch(approvalUrl)
+                            .then((response) => response.json())
+                            .then((data) => {
+                                const approvalData = data[0] || data;
+                                setRejectionReason(approvalData.comments);
+                        })
+
                         fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
                             .then((response) => response.json())
                             .then((data) => {
@@ -259,8 +266,7 @@ function EventFormAdmin() {
             : editUrl;
 
         const requestBody = {
-            status: status,
-            comments: status === "REJECTED" ? rejectionReason.trim() : undefined,
+            comments: status === "REJECTED" ? rejectionReason : "",
         };
         fetch(url3, {
             method: "PUT",
@@ -374,7 +380,7 @@ function EventFormAdmin() {
                         <textarea
                             id="rejectionReason"
                             name="rejectionReason"
-                            value={formData.comments || "Δεν υπάρχει λόγος απόρριψης."}
+                            value={rejectionReason || "Δεν υπάρχει λόγος απόρριψης."}
                             readOnly
                         />
                     </div>

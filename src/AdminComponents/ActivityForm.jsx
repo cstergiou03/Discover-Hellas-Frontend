@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import Compressor from "compressorjs";
-import { useParams, useNavigate } from "react-router-dom";
 import "../StyleProvider/amenityForm.css";
+import { useNavigate } from "react-router-dom";
 
 const GOOGLE_MAP_LIBRARIES = ["places"];
 
@@ -16,22 +16,19 @@ const defaultCenter = {
     lng: 22.3584,
 };
 
-function EditDestination() {
-    const { destinationID } = useParams();
+function ActivityForm() {
     const [formData, setFormData] = useState({
         name: "",
         category_id: "",
         description: "",
         photos: "",
-        latitude: "",
-        longitude: "",
-        link_360_view: "",
+        latitude: null,
+        longitude: null,
     });
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
-    const markerRef = useRef(null);
-    const navigate = useNavigate();
     const autocompleteRef = useRef(null);
+    const navigate = useNavigate();
 
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
@@ -39,37 +36,14 @@ function EditDestination() {
     });
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Ανάκτηση του προορισμού με το destinationID για την επεξεργασία
-                if (destinationID) {
-                    const response = await fetch(`https://olympus-riviera.onrender.com/api/destination/${destinationID}`);
-                    const data = await response.json();
-                    setFormData({
-                        name: data.name,
-                        category_id: data.category_id,
-                        description: data.description,
-                        latitude: data.latitude,
-                        longitude: data.longitude,
-                        photos: data.photos || "",
-                        link_360_view: data.link_360_view || "",
-                    });
-                }
+        // Ανάκτηση κατηγοριών για το dropdown
 
-                // Ανάκτηση κατηγοριών για το dropdown
-                const categoriesResponse = await fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all");
-                const categoriesData = await categoriesResponse.json();
-                setCategories(categoriesData);
-
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false); 
-            }
-        };
-
-        fetchData();
-    }, [destinationID]);
+        fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all")
+            .then((response) => response.json())
+            .then((data) => setCategories(data))
+            .catch((error) => console.error(error))
+            .finally(() => setLoading(false));
+    }, []);
 
     const handlePhotoChange = async (e) => {
         const files = Array.from(e.target.files);
@@ -78,7 +52,7 @@ function EditDestination() {
                 (file) =>
                     new Promise((resolve, reject) => {
                         new Compressor(file, {
-                            quality: 0.8,
+                            quality: 0.3,
                             success(result) {
                                 const reader = new FileReader();
                                 reader.onloadend = () => resolve(reader.result);
@@ -95,55 +69,8 @@ function EditDestination() {
 
         setFormData((prev) => ({
             ...prev,
-            photos: base64Images.join(",") // Set the new photos, overwriting any previous ones
+            photos: prev.photos ? `${prev.photos},${base64Images.join(",")}` : base64Images.join(","),
         }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        // Αποστολή δεδομένων για ενημέρωση του προορισμού
-        const url = "https://olympus-riviera.onrender.com/api/admin/destination/" + `${destinationID}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
-        fetch(url , {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),  // Αποστολή των δεδομένων με το πεδίο photos που περιλαμβάνει τις φωτογραφίες σε Base64
-        })
-            .then((response) => response.json())
-            .then(() => {
-                alert("Destination updated successfully!");
-                navigate("/admin");
-            })
-            .catch((error) => {
-                console.error(error);
-                alert("Destination updated successfully!");
-                navigate("/admin");
-            });
-    };
-
-    const handleDelete = async () => {
-        if (window.confirm("Are you sure you want to delete this destination?")) {
-            const url = "https://olympus-riviera.onrender.com/api/admin/destination/" + `${destinationID}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
-            fetch(url , {
-                method: "DELETE",
-            })
-                .then((response) => {
-                    if (response.ok) {
-                        alert("Destination deleted successfully!");
-                        navigate("/admin");
-                    } else {
-                        alert("Destination deleted successfully!");
-                        navigate("/admin");
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                    alert("Destination deleted successfully!");
-                    navigate("/admin");
-                });
-        }
     };
 
     const handleChange = (e) => {
@@ -167,6 +94,33 @@ function EditDestination() {
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Αποστολή δεδομένων για δημιουργία νέου προορισμού
+        const url = "https://olympus-riviera.onrender.com/api/admin/activity/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        fetch(url , {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),  // Αποστολή των δεδομένων με το πεδίο photos που περιλαμβάνει τις φωτογραφίες σε Base64
+        })
+            .then((response) => response.json())
+            .then(() => {
+                alert("Activity saved successfully!");
+                navigate("/admin");
+            })
+            .catch((error) => {
+                alert("Activity saved successfully!");
+                navigate("/admin");
+            });
+    };
+
+    if (loading) return <div>Loading...</div>;
+
+    
+
     const handleKeyDown = (e) => {
         if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
             e.preventDefault();
@@ -183,9 +137,9 @@ function EditDestination() {
 
     return (
         <div className="amenity-form-container">
-            <h1>Επεξεργασία Προορισμού</h1>
+            <h1>Προθήκη Νέας Δραστηριότητας</h1>
             <form className="amenity-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
-                <label htmlFor="name">Όνομα Προορισμού:</label>
+                <label htmlFor="name">Όνομα Δραστηριότητας:</label>
                 <input
                     type="text"
                     id="name"
@@ -246,31 +200,15 @@ function EditDestination() {
                     )}
                 </GoogleMap>
 
-                <label htmlFor="360Link">360 Link:</label>
-                <input
-                    // type="url"
-                    id="360Link"
-                    value={formData.link_360_view}
-                    onChange={(e) => setFormData({ ...formData, link_360_view: e.target.value })}
-                />
-
-                <label htmlFor="photos">Photos:</label>
+                <label htmlFor="photos">Φωτογραφίες:</label>
                 <input type="file" multiple onChange={handlePhotoChange} />
 
                 <button className="more-btn" type="submit">
-                    Ενημέρωση Προορισμού
-                </button>
-                <button
-                    className="more-btn"
-                    type="button"
-                    style={{ backgroundColor: "red" }}
-                    onClick={handleDelete}
-                >
-                    Διαγραφή Προορισμού
+                    Προθήκη Δραστηριότητας
                 </button>
             </form>
         </div>
     );
 }
 
-export default EditDestination;
+export default ActivityForm;

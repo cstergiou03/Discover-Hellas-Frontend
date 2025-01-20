@@ -12,58 +12,53 @@ function ProfileSidebar() {
     const [profilePicture, setProfilePicture] = useState("");
 
     useEffect(() => {
-
         const token = sessionStorage.getItem("userToken");
 
         if (token) {
             try {
-                // Αποκωδικοποιούμε το JWT token
                 const decodedToken = jwtDecode(token);
-
-                // Ρυθμίζουμε τα πεδία από το αποκωδικοποιημένο token
-                const fullName = `${decodedToken.firstName} ${decodedToken.lastName}`; // Συνδυασμός firstName + lastName
+                const fullName = `${decodedToken.firstName} ${decodedToken.lastName}`;
                 setFullName(fullName);
                 setProfilePicture(
                     decodedToken.photo || "https://via.placeholder.com/150"
                 );
-                setUserId(decodedToken.userId);  // Βάζουμε το sub ως user_id
+                setUserId(decodedToken.userId);
             } catch (error) {
                 console.error("Error decoding token:", error);
             }
         }
+    }, []);
 
+    useEffect(() => {
+        if (!userId) return;
 
         const fetchData = async () => {
             try {
                 setLoading(true);
 
-                // Fetch Amenities
+                const amenityUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                console.log(amenityUrl);
                 const amenitiesResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/amenity/get/all"
+                    amenityUrl
                 );
                 if (!amenitiesResponse.ok) {
                     throw new Error("Failed to fetch amenities data");
                 }
                 const amenitiesData = await amenitiesResponse.json();
-                const filteredAmenities = amenitiesData.filter(
-                    (item) => item.provider_id === userId
-                );
 
-                setAmenitiesCount(filteredAmenities.length);
+                setAmenitiesCount(amenitiesData.length);
 
-                // Fetch Events
+                const eventUrl = "https://olympus-riviera.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                console.log(eventUrl);
                 const eventsResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/event/get/all"
+                    eventUrl
                 );
                 if (!eventsResponse.ok) {
                     throw new Error("Failed to fetch events data");
                 }
                 const eventsData = await eventsResponse.json();
-                const filteredEvents = eventsData.filter(
-                    (item) => item.organizer_id === userId
-                );
 
-                setEventsCount(filteredEvents.length);
+                setEventsCount(eventsData.length);
 
             } catch (err) {
                 setError(err.message);
@@ -73,7 +68,7 @@ function ProfileSidebar() {
         };
 
         fetchData();
-    }, []);
+    }, [userId]);
 
     if (loading) {
         return (

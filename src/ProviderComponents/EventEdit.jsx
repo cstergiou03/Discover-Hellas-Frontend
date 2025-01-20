@@ -35,6 +35,8 @@ function EventEdit() {
     const autocompleteRef = useRef(null);
     const navigate = useNavigate();
     const [userId, setUserId] = useState("");
+    const [rejectionReason, setRejectionReason] = useState("");
+    const [status, setStatus] = useState("");
 
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
@@ -58,6 +60,7 @@ function EventEdit() {
             .then((response) => response.json())
             .then((data) => {
                 // Convert ISO date strings to the proper format for datetime-local input
+                setStatus(data.status);
                 const formatDate = (dateString) => {
                     const date = new Date(dateString);
                     return date.toISOString().slice(0, 16); // Get the date in 'YYYY-MM-DDTHH:MM' format
@@ -77,21 +80,39 @@ function EventEdit() {
                     eventEnd: formatDate(data.event_end),
                 });
 
-                setIsLoading(false);
+                if(data.status === "REJECTED"){
+                    const approvalUrl = `https://olympus-riviera.onrender.com/api/provider/approval/${eventId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                    console.log(approvalUrl);
+                        fetch(approvalUrl)
+                            .then((response) => response.json())
+                            .then((data) => {
+                                const approvalData = data[0] || data;
+                                setRejectionReason(approvalData.comments);
+                            })
+                }
             })
             .catch((error) => {
                 console.error("Error fetching event data:", error);
-                setIsLoading(false);
             });
     }, [eventId]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        setFormData({
-            ...formData,
-            [name]: files ? Array.from(files) : value,
-        });
+    
+        if (name === "photos") {
+            const newFiles = files ? Array.from(files) : [];
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                photos: [...prevFormData.photos, ...newFiles],
+            }));
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
     };
+    
 
     const handlePlaceSelected = () => {
         const place = autocompleteRef.current.getPlace();
@@ -110,30 +131,41 @@ function EventEdit() {
         return new Promise((resolve, reject) => {
             if (!files || files.length === 0) {
                 resolve("");
+                return;
             }
-
+    
             const promises = files.map((file) => {
-                return new Promise((resolve, reject) => {
-                    new Compressor(file, {
-                        quality: 0.8,
-                        success(result) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => resolve(reader.result);
-                            reader.onerror = reject;
-                            reader.readAsDataURL(result);
-                        },
-                        error(err) {
-                            reject(err);
-                        },
+                // Check if the file is already a Base64 string or a URL
+                if (typeof file === "string") {
+                    // Skip processing and directly include the URL
+                    return Promise.resolve(file);
+                } else if (file instanceof File || file instanceof Blob) {
+                    // Process the File or Blob object
+                    return new Promise((resolve, reject) => {
+                        new Compressor(file, {
+                            quality: 0.7,
+                            success(result) {
+                                const reader = new FileReader();
+                                reader.onloadend = () => resolve(reader.result);
+                                reader.onerror = reject;
+                                reader.readAsDataURL(result);
+                            },
+                            error(err) {
+                                reject(err);
+                            },
+                        });
                     });
-                });
+                } else {
+                    return Promise.reject(new Error("Invalid file type"));
+                }
             });
-
+    
             Promise.all(promises)
                 .then((base64Images) => resolve(base64Images.join(",")))
                 .catch(reject);
         });
     };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -158,8 +190,9 @@ function EventEdit() {
             photos: photosBase64,
         };
 
-        fetch(`https://olympus-riviera.onrender.com/api/provider/event/${eventId}/update`, {
-            method: "PUT", // Use PUT for updating the event
+        const url = "https://olympus-riviera.onrender.com/api/provider/event/edit-request/create/" + `${eventId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
+        fetch(url, {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -168,11 +201,11 @@ function EventEdit() {
             .then((response) => response.json())
             .then(() => {
                 alert("Event updated successfully!");
-                navigate("/provider"); // Navigate back to the provider's dashboard
+                navigate("/provider");
             })
             .catch((error) => {
-                console.error("Error submitting the form:", error);
                 alert("Failed to update event.");
+                navigate("/provider");
             });
     };
 
@@ -301,6 +334,18 @@ function EventEdit() {
                     multiple
                     onChange={handleChange}
                 />
+
+                {status === "REJECTED" && (
+                    <div className="rejection-reason">
+                        <label htmlFor="rejectionReason">Λόγος Απόρριψης:</label>
+                        <textarea
+                            id="rejectionReason"
+                            name="rejectionReason"
+                            value={rejectionReason || "Δεν υπάρχει λόγος απόρριψης"}
+                            readOnly
+                        />
+                    </div>
+                )}
 
                 <button type="submit" className="submit-button">
                     Submit

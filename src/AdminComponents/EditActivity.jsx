@@ -16,8 +16,8 @@ const defaultCenter = {
     lng: 22.3584,
 };
 
-function EditDestination() {
-    const { destinationID } = useParams();
+function EditActivity() {
+    const { activityId } = useParams();
     const [formData, setFormData] = useState({
         name: "",
         category_id: "",
@@ -25,7 +25,6 @@ function EditDestination() {
         photos: "",
         latitude: "",
         longitude: "",
-        link_360_view: "",
     });
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -42,8 +41,8 @@ function EditDestination() {
         const fetchData = async () => {
             try {
                 // Ανάκτηση του προορισμού με το destinationID για την επεξεργασία
-                if (destinationID) {
-                    const response = await fetch(`https://olympus-riviera.onrender.com/api/destination/${destinationID}`);
+                if (activityId) {
+                    const response = await fetch(`https://olympus-riviera.onrender.com/api/activity/${activityId}`);
                     const data = await response.json();
                     setFormData({
                         name: data.name,
@@ -57,7 +56,7 @@ function EditDestination() {
                 }
 
                 // Ανάκτηση κατηγοριών για το dropdown
-                const categoriesResponse = await fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all");
+                const categoriesResponse = await fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all");
                 const categoriesData = await categoriesResponse.json();
                 setCategories(categoriesData);
 
@@ -69,7 +68,7 @@ function EditDestination() {
         };
 
         fetchData();
-    }, [destinationID]);
+    }, [activityId]);
 
     const handlePhotoChange = async (e) => {
         const files = Array.from(e.target.files);
@@ -103,7 +102,7 @@ function EditDestination() {
         e.preventDefault();
 
         // Αποστολή δεδομένων για ενημέρωση του προορισμού
-        const url = "https://olympus-riviera.onrender.com/api/admin/destination/" + `${destinationID}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url = "https://olympus-riviera.onrender.com/api/admin/activity/" + `${activityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url , {
             method: "PUT",
             headers: {
@@ -125,7 +124,7 @@ function EditDestination() {
 
     const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this destination?")) {
-            const url = "https://olympus-riviera.onrender.com/api/admin/destination/" + `${destinationID}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+            const url = "https://olympus-riviera.onrender.com/api/admin/activity/" + `${activityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
             fetch(url , {
                 method: "DELETE",
             })
@@ -183,9 +182,9 @@ function EditDestination() {
 
     return (
         <div className="amenity-form-container">
-            <h1>Επεξεργασία Προορισμού</h1>
+            <h1>Επεξεργασία Δραστηριότητας</h1>
             <form className="amenity-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
-                <label htmlFor="name">Όνομα Προορισμού:</label>
+                <label htmlFor="name">Όνομα Δραστηριότητας:</label>
                 <input
                     type="text"
                     id="name"
@@ -246,19 +245,11 @@ function EditDestination() {
                     )}
                 </GoogleMap>
 
-                <label htmlFor="360Link">360 Link:</label>
-                <input
-                    // type="url"
-                    id="360Link"
-                    value={formData.link_360_view}
-                    onChange={(e) => setFormData({ ...formData, link_360_view: e.target.value })}
-                />
-
-                <label htmlFor="photos">Photos:</label>
+                <label htmlFor="photos">Φωτογραφίες:</label>
                 <input type="file" multiple onChange={handlePhotoChange} />
 
                 <button className="more-btn" type="submit">
-                    Ενημέρωση Προορισμού
+                    Ενημέρωση Δραστηριότητας
                 </button>
                 <button
                     className="more-btn"
@@ -266,11 +257,11 @@ function EditDestination() {
                     style={{ backgroundColor: "red" }}
                     onClick={handleDelete}
                 >
-                    Διαγραφή Προορισμού
+                    Διαγραφή Δραστηριότητας
                 </button>
             </form>
         </div>
     );
 }
 
-export default EditDestination;
+export default EditActivity;

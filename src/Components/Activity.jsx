@@ -10,8 +10,8 @@ import { jwtDecode } from 'jwt-decode';
 import { FaUser } from "react-icons/fa";
 import LoginModal from "./LoginModal";
 
-function Destination() {
-    const { destinationId } = useParams();
+function Activity() {
+    const { activityId } = useParams();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -41,7 +41,7 @@ function Destination() {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/destination/${destinationId}`
+                    `https://olympus-riviera.onrender.com/api/activity/${activityId}`
                 );
                 if (!response.ok) {
                     throw new Error("Failed to fetch data");
@@ -56,13 +56,13 @@ function Destination() {
         };
 
         fetchData();
-    }, [destinationId]);
+    }, [activityId]);
 
     useEffect(() => {
         const fetchReviews = async () => {
             try {
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/feedback/get/${destinationId}/evaluation/get/all`
+                    `https://olympus-riviera.onrender.com/api/feedback/get/${activityId}/evaluation/get/all`
                 );
                 if (!response.ok) {
                     throw new Error("Failed to fetch reviews");
@@ -76,7 +76,7 @@ function Destination() {
         };
 
         fetchReviews();
-    }, [destinationId]);
+    }, [activityId]);
 
 
     useEffect(() => {
@@ -156,8 +156,8 @@ function Destination() {
 
         const reviewPayload = {
             user_id: userId,
-            entity_id: destinationId,
-            entity_type: "DESTINATION",
+            entity_id: activityId,
+            entity_type: "ACTIVITY",
             rating,
             comment: reviewText,
             view: "false",
@@ -357,4 +357,4 @@ function Destination() {
     );
 }
 
-export default Destination;
+export default Activity;

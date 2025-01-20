@@ -32,35 +32,42 @@ function ProviderProfile() {
     const [filteredEvents, setEvents] = useState([]);
 
     useEffect(() => {
-        const token = sessionStorage.getItem('userToken');
-
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                setUserId(decodedToken.userId);
-                setFullname(`${decodedToken.firstName} ${decodedToken.lastName}`);
-                setEmail(decodedToken.email || 'Άγνωστο email');
-                setProfilePicture(decodedToken.photo || 'https://via.placeholder.com/150');
-            } catch (error) {
-                console.error('Error decoding token:', error);
+            const token = sessionStorage.getItem("userToken");
+    
+            if (token) {
+                try {
+                    
+                    const decodedToken = jwtDecode(token);
+                    console.log(decodedToken);
+                    setFullname(decodedToken.firstName + " " + decodedToken.lastName);
+                    setEmail(decodedToken.email);
+                    setProfilePicture(decodedToken.photo);
+                    setUserId(decodedToken.userId);
+                } catch (error) {
+                    console.error("Error decoding token:", error);
+                }
             }
-        }
+    }, [userId])
 
-        fetch('https://olympus-riviera.onrender.com/api/amenity/get/all')
+    useEffect(() => {
+        if (!userId) return;
+
+        const amenityUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+        console.log(amenityUrl)
+        fetch(amenityUrl)
             .then((response) => response.json())
             .then((data) => {
-                const amenities = data.filter((amenity) => amenity.provider_id === userId);
-                setAmenities(amenities);
+                setAmenities(data);
             })
             .catch((err) => {
                 console.error('Error fetching amenities:', err.message);
             });
-
-        fetch('https://olympus-riviera.onrender.com/api/event/get/all')
+            
+        const eventUrl = "https://olympus-riviera.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+        fetch(eventUrl)
             .then((response) => response.json())
             .then((data) => {
-                const events = data.filter((event) => event.organizer_id === userId);
-                setEvents(events);
+                setEvents(data);
             })
             .catch((err) => {
                 console.error('Error fetching events:', err.message);

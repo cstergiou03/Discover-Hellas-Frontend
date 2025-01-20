@@ -1,25 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/experienceRecord.css";
 
-function Records({ data }) {
+function ActivityRecord({ data }) {
     const navigate = useNavigate();
-
-    // Υπολογισμός entity_id και type
-    const entity_id = data.destination_id || data.activity_id;
-    const entity_type = data.destination_id ? "destination" : "activity";
 
     const googleMapsLink = `https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
     
     const photosTable = data.photos
-        ? data.photos
-              .split("data:image/jpeg;base64,")
-              .filter((photo) => photo.trim() !== "")
-              .map((photo) =>
-                  "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
-              )
-        : [];
-
+    ? data.photos
+          .split("data:image/jpeg;base64,")
+          .filter((photo) => photo.trim() !== "")
+          .map((photo) =>
+              "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
+          ) // Αφαιρούμε οποιοδήποτε κόμμα στο τέλος
+    : [];
+    
     return (
         <div className="experience-record">
             <div className="record-column">{data.name}</div>
@@ -27,16 +23,21 @@ function Records({ data }) {
             <div className="record-column">
                 {photosTable.length > 0 ? (
                     <img
-                        src={photosTable[1]}
+                        src={photosTable[0]}
                         className="record-image"
-                        alt="Experience"
                     />
                 ) : null}
             </div>
             <div className="record-column">
                 <button
-                    onClick={() => navigate(`/admin/edit-${entity_type}/${entity_id}`)}
-                    className="more-btn"
+                    onClick={() => window.open(googleMapsLink, "_blank")}
+                    className="directions-button"
+                >
+                    Οδηγίες
+                </button>
+                <button
+                    onClick={() => navigate(`/activity/${data.activity_id}`)}
+                    className="more-button"
                 >
                     Περισσότερα
                 </button>
@@ -45,4 +46,4 @@ function Records({ data }) {
     );
 }
 
-export default Records;
+export default ActivityRecord;

@@ -24,28 +24,33 @@ function ProviderStatistics() {
                 console.error("Error decoding token:", error);
             }
         }
+    }, [userId])
 
-        fetch("https://olympus-riviera.onrender.com/api/amenity/get/all")
+    useEffect(() => {
+        if (!userId) return;
+    
+        const amenityUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+        fetch(amenityUrl)
             .then((response) => response.json())
             .then((data) => {
-                const filteredAmenities = data.filter((amenity) => amenity.provider_id === userId);
-                setAmenities(filteredAmenities);
+                setAmenities(data);
+                setLoading(false);
             })
             .catch((err) => {
                 setError("Error fetching amenities: " + err.message);
             });
-
-        fetch("https://olympus-riviera.onrender.com/api/event/get/all")
+    
+        const eventUrl = "https://olympus-riviera.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+        fetch(eventUrl)
             .then((response) => response.json())
             .then((data) => {
-                const filteredEvents = data.filter((event) => event.organizer_id === userId);
-                setEvents(filteredEvents);
+                setEvents(data);
                 setLoading(false);
             })
             .catch((err) => {
                 setError("Error fetching events: " + err.message);
             });
-    }, [userId]);
+    }, [userId]);    
 
     if (loading) {
         return <div>Loading...</div>;

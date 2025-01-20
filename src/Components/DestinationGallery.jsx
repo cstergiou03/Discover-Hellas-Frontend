@@ -82,8 +82,8 @@ function DestinationGallery({ data }) {
 
             {/* Modal για εμφάνιση μεγαλύτερης φωτογραφίας */}
             {selectedPhoto && (
-                <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-overlay-photos" onClick={closeModal}>
+                    <div className="modal-content-photos" onClick={(e) => e.stopPropagation()}>
                         <img src={selectedPhoto} alt="Selected" />
                         <button className="close-modal" onClick={closeModal}>
                             &times; {/* Κουμπί κλεισίματος */}

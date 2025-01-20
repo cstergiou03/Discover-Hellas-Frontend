@@ -110,7 +110,7 @@
 }
 
 /* Modal Overlay - Γκρι φόντο */
-.modal-overlay {
+.modal-overlay-photos {
     position: fixed;
     top: 0;
     left: 0;
@@ -124,19 +124,19 @@
 }
 
 /* Ρύθμιση για το περιεχόμενο του modal */
-.modal-content {
+.modal-content-photos {
     position: relative;
     max-width: 90%;
     max-height: 90%;
     overflow: hidden;
     background-color: #fff;
-    padding: 20px;
+    padding: 15x;
     border-radius: 8px;
 }
 
-.modal-content img {
+.modal-content-photos img {
     width: 100%;
-    height: auto;
+    height: 90%;
     display: block;
     border-radius: 8px;
 }

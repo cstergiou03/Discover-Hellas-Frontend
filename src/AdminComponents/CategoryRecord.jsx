@@ -1,9 +1,9 @@
 import React from "react";
 import "../Style/experienceRecord.css";
 
-function CategoryRecord({ data, onDelete }) {
+function CategoryRecord({ data, type, onDelete }) {
     const handleDelete = () => {
-        const url = "https://olympus-riviera.onrender.com/api/admin/destination/category/" + `${data.category_id}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url = `https://olympus-riviera.onrender.com/api/admin/${type}/category/` + `${data.category_id}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
 
         fetch(url, {
             method: 'DELETE',

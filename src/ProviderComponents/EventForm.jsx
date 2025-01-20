@@ -142,11 +142,12 @@ function EventForm() {
             .then((response) => response.json())
             .then(() => {
                 alert("Event created successfully!");
-                // navigate("/provider");
+                navigate("/provider");
             })
             .catch((error) => {
                 console.error("Error submitting the form:", error);
                 alert("Event creation failed!");
+                navigate("/provider");
             });
     };
 

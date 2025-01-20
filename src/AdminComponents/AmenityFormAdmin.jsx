@@ -153,7 +153,6 @@ function AmenityFormAdmin() {
                                 ? approvalData.entity_id
                                 : approvalData;
 
-                            // Ελέγχουμε αν το status είναι "APPROVED" για να πάρουμε τα δεδομένα του amenity
                             if (approvalData.status === "PENDING") {
                                 fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
                                     .then((response) => response.json())
@@ -215,7 +214,14 @@ function AmenityFormAdmin() {
                     .catch((err) => {
                         console.error("Error fetching edit-request, trying amenity data:", err);
 
-                        // Εδώ, αν το edit-request αποτύχει, φέρνουμε τα δεδομένα του amenity
+                        const approvalUrl = `https://olympus-riviera.onrender.com/api/admin/approval/${amenityId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                        fetch(approvalUrl)
+                            .then((response) => response.json())
+                            .then((data) => {
+                                const approvalData = data[0] || data;
+                                setRejectionReason(approvalData.comments);
+                            })
+                       
                         fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
                             .then((response) => response.json())
                             .then((data) => {
@@ -228,7 +234,6 @@ function AmenityFormAdmin() {
                                             "data:image/jpeg;base64," + photo.trim().replace(/,$/, "")
                                         )
                                     : [];
-                                        
                                 setFormData({
                                     name: data.name,
                                     category: data.category_id,
@@ -253,17 +258,23 @@ function AmenityFormAdmin() {
     }, [amenityId]);
 
     const handleStatusChange = (status) => {
-        console.log(status);
+        console.log(approvalId)
         const addUrl = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/add-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         const editUrl = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/edit-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
-        // Επιλέγουμε το κατάλληλο URL ανάλογα με το isNewAmenity
+        
         const url3 = isNewAmenity
             ? addUrl
             : editUrl;
-
-        // Αποστολή δεδομένων στον server
+        console.log(url3);
+        const requestBody = {
+            comments: status === "REJECTED" ? rejectionReason : "",
+        };
         fetch(url3, {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
         })
             .then((response) => {
                 if (response.ok) {
@@ -361,7 +372,7 @@ function AmenityFormAdmin() {
                         <textarea
                             id="rejectionReason"
                             name="rejectionReason"
-                            value={"Δεν υπάρχει λόγος απόρριψης."}
+                            value={rejectionReason || "Δεν υπάρχει λόγος απόρριψης"}
                             readOnly
                         />
                     </div>

@@ -16,15 +16,16 @@ function CategoryForm() {
         const { name, description, categoryFor } = formData;
 
         if (!name || !description || !categoryFor) {
-            alert("Please fill in all fields.");
+            alert("Παρακαλώ συμπληρώστε όλα τα πεδία.");
             return;
         }
 
         const url =
             categoryFor === "Προορισμό"
                 ? "https://olympus-riviera.onrender.com/api/admin/destination/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                : categoryFor === "Δραστηριότητα"
+                ? "https://olympus-riviera.onrender.com/api/admin/activity/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                 : "https://olympus-riviera.onrender.com/api/admin/amenity/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
-
         const body = {
             name,
             description,
@@ -81,6 +82,7 @@ function CategoryForm() {
                 >
                     <option value="">Επιλέξτε κατηγορία</option>
                     <option value="Προορισμό">Προορισμό</option>
+                    <option value="Δραστηριότητα">Δραστηριότητα</option>
                     <option value="Παροχή">Παροχή</option>
                 </select>
 

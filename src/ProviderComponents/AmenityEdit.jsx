@@ -34,6 +34,8 @@ function AmenityEdit() {
     const [loading, setLoading] = useState(true);
     const autocompleteRef = useRef(null);
     const navigate = useNavigate();
+    const [rejectionReason, setRejectionReason] = useState("");
+    const [status, setStatus] = useState("");
 
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
@@ -51,6 +53,7 @@ function AmenityEdit() {
         fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
             .then((response) => response.json())
             .then((data) => {
+                setStatus(data.status);
                 const initialData = {
                     name: data.name,
                     category: data.category_id,
@@ -62,8 +65,20 @@ function AmenityEdit() {
                     longitude: data.longitude,
                     location: data.location || "",
                 };
+
                 setFormData(initialData);
                 setInitialFormData(initialData);
+
+                if(data.status === "REJECTED"){
+                    const approvalUrl = `https://olympus-riviera.onrender.com/api/provider/approval/${amenityId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                    console.log(approvalUrl);
+                        fetch(approvalUrl)
+                            .then((response) => response.json())
+                            .then((data) => {
+                                const approvalData = data[0] || data;
+                                setRejectionReason(approvalData.comments);
+                            })
+                }
                 setLoading(false);
             })
             .catch((error) => {
@@ -203,6 +218,18 @@ function AmenityEdit() {
 
                 <label htmlFor="photos">Photos:</label>
                 <input type="file" id="photos" name="photos" accept="image/*" multiple onChange={handleChange} />
+
+                {status === "REJECTED" && (
+                    <div className="rejection-reason">
+                        <label htmlFor="rejectionReason">Λόγος Απόρριψης:</label>
+                        <textarea
+                            id="rejectionReason"
+                            name="rejectionReason"
+                            value={rejectionReason || "Δεν υπάρχει λόγος απόρριψης"}
+                            readOnly
+                        />
+                    </div>
+                )}
 
                 <button type="submit" className="submit-button">Update Amenity</button>
             </form>
