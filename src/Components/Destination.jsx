@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import PageTopDestination from "./PageTopDestination";
 import DestinationInfo from "./DestinationInfo";
@@ -9,6 +9,17 @@ import "../Style/destination.css";
 import { jwtDecode } from 'jwt-decode';
 import { FaUser } from "react-icons/fa";
 import LoginModal from "./LoginModal";
+import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 40.0853,
+    lng: 22.3584,
+};
 
 function Destination() {
     const { destinationId } = useParams();
@@ -23,6 +34,10 @@ function Destination() {
     const [reviews, setReviews] = useState([]);
     const [userId, setUserId] = useState();
     const [showLoginModal, setShowLoginModal] = useState(false);
+
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+    });
 
     useEffect(() => {
         const token = sessionStorage.getItem("userToken");
@@ -267,6 +282,10 @@ function Destination() {
         return;
     }
 
+    const onLoad = (marker) => {
+        console.log("marker: ", marker);
+      };
+
     return (
         <div>
             <PageTopDestination data={data} />
@@ -276,32 +295,37 @@ function Destination() {
             {/* <div className="iframe-container">
                 <iframe 
                     src="http://195.130.106.58/scan/e2c37e7e-eace-4b55-a96b-4ab7406c0c35?alt=0.115&long=1.417&apt=75&fullscr=false&nbors=6&dataset=cube" 
-                    width="100%" 
+                    width="80%" 
                     height="500px" 
                     frameBorder="0" 
                     allowFullScreen
                     title="TruView Virtual Tour"
                 ></iframe>
-            </div> */}
+            </div>  */}
 
             <div className="event-map-and-info">
                 <div className="event-map-container">
-                    {data.latitude && data.longitude ? (
-                        <GoogleMapReact
+                    {isLoaded ? (
+                        <GoogleMap
                             key={mapKey}
-                            bootstrapURLKeys={{
-                                key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+                            mapContainerStyle={containerStyle}
+                            center={{
+                                lat: parseFloat(data.latitude) || defaultCenter.lat,
+                                lng: parseFloat(data.longitude) || defaultCenter.lng,
                             }}
-                            defaultZoom={10}
-                            defaultCenter={{
-                                lat: parseFloat(data.latitude),
-                                lng: parseFloat(data.longitude),
-                            }}
-                            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-                            yesIWantToUseGoogleMapApiInternals
-                        />
+                            zoom={9}
+                        >
+                            {data.latitude && data.longitude && (
+                                <MarkerF
+                                    position={{
+                                        lat: parseFloat(data.latitude),
+                                        lng: parseFloat(data.longitude),
+                                    }}
+                                />
+                            )}
+                        </GoogleMap>
                     ) : (
-                        <div>Δεν υπάρχουν διαθέσιμες συντεταγμένες για τον χάρτη.</div>
+                        <div>Loading map...</div>
                     )}
                 </div>
                 <div className="event-info-right">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "../StyleAdmin/amenityFormAdmin.css";
@@ -311,12 +311,12 @@ function AmenityFormAdmin() {
 
     return (
         <div className="amenity-form-container">
-            <h1>View Amenity</h1>
+            <h1>Παροχή</h1>
             <form className="amenity-form">
-                <label htmlFor="name">Amenity Name:</label>
+                <label htmlFor="name">'Ονομα Παροής:</label>
                 <input type="text" id="name" name="name" value={formData.name} readOnly />
 
-                <label htmlFor="category">Category:</label>
+                <label htmlFor="category">Κατηγορία:</label>
                 <select id="category" name="category" value={formData.category} disabled>
                     <option value="">Select a category</option>
                     {categories.map((category) => (
@@ -326,10 +326,10 @@ function AmenityFormAdmin() {
                     ))}
                 </select>
 
-                <label htmlFor="description">Description:</label>
+                <label htmlFor="description">Περιγραφή:</label>
                 <textarea id="description" name="description" value={formData.description} readOnly />
 
-                <label htmlFor="location">Location:</label>
+                <label htmlFor="location">Τοποθεσία:</label>
 
 
                 <GoogleMap
@@ -341,7 +341,7 @@ function AmenityFormAdmin() {
                     zoom={9}
                 >
                     {formData.latitude && formData.longitude && (
-                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                        <MarkerF position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
                     )}
                 </GoogleMap>
 

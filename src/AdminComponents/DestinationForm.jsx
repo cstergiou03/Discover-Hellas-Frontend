@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, Marker, Autocomplete, useJsApiLoader, MarkerF } from "@react-google-maps/api";
 import Compressor from "compressorjs";
 import "../StyleProvider/amenityForm.css";
 import { useNavigate } from "react-router-dom";
@@ -197,7 +197,7 @@ function DestinationForm() {
                     zoom={9}
                 >
                     {formData.latitude && formData.longitude && (
-                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                        <MarkerF position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
                     )}
                 </GoogleMap>
 

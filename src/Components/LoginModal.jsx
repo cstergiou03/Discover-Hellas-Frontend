@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/loginModal.css";
 import { jwtDecode } from 'jwt-decode';
+import { useAuth } from "../Context/AuthContext";
 
 function LoginModal({ isOpen, onClose, setLoggedIn }) {
     const [googleError, setGoogleError] = useState("");
@@ -9,6 +10,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
     const googleSignUpButtonRef = useRef(null);
 
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
 
     useEffect(() => {
@@ -73,7 +75,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
             try {
                 const jwt_token = response.credential;
     
-                // Κάνε το POST request στο backend για το login
+                // Κάνουμε το POST request στο backend για το login
                 const apiResponse = await fetch("https://olympus-riviera.onrender.com/api/user/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -83,19 +85,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 const data = await apiResponse.json();
     
                 if (apiResponse.ok) {
-                    // Αν η απάντηση είναι επιτυχής, αποθήκευσε το νέο jwt_token στο sessionStorage
-                    sessionStorage.setItem("userToken", data.jwt_token);  // Αποθήκευση του token στο sessionStorage
-                    const decodedToken = jwtDecode(data.jwt_token);
-
-                    // Ελέγξτε το πεδίο "role" στην απάντηση και κάνετε navigate στην κατάλληλη διαδρομή
-                    if (decodedToken.role === "REGISTERED") {
-                        navigate("/"); // Αν ο ρόλος είναι "REGISTERED", πήγαινε στην αρχική σελίδα
-                    } else if (decodedToken.role === "PROVIDER") {
-                        navigate("/provider"); // Αν ο ρόλος είναι "PROVIDER", πήγαινε στη σελίδα παρόχου
-                    } else if (decodedToken.role === "ADMIN") {
-                        navigate("/admin"); // Αν ο ρόλος είναι "ADMIN", πήγαινε στη σελίδα διαχείρισης
-                    }
-    
+                    login(data.jwt_token); // Καλούμε την μέθοδο login του AuthContext
                     setLoggedIn(true);
                     onClose();
                 } else {
@@ -108,7 +98,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
         } else {
             setGoogleError("Something went wrong with Google login. Please try again.");
         }
-    };    
+    };         
 
     const handleGoogleSignUp = async (response) => {
         if (response.credential) {
@@ -129,8 +119,8 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
                 const data = await apiResponse.json();
                 if (apiResponse.ok) {
-                    sessionStorage.setItem("token", data.jwt_token);  // Χρησιμοποιούμε sessionStorage
-                    sessionStorage.setItem("loggedIn", "true");  // Χρησιμοποιούμε sessionStorage
+                    sessionStorage.setItem("token", data.jwt_token);
+                    sessionStorage.setItem("loggedIn", "true");
                     navigate("/");
                 } else {
                     setGoogleError("Registration failed. Please try again.");

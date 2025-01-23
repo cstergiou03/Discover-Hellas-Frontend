@@ -166,3 +166,10 @@ textarea {
     color: #888;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Εφαρμογή γραμματοσειράς */
 }
+
+.iframe-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2em;
+}

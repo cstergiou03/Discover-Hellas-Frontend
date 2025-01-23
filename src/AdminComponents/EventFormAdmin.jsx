@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, Marker, MarkerF, useJsApiLoader } from "@react-google-maps/api";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageGallery from "react-image-gallery";
 import "../StyleAdmin/amenityFormAdmin.css";
@@ -346,7 +346,7 @@ function EventFormAdmin() {
                     zoom={9}
                 >
                     {formData.latitude && formData.longitude && (
-                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                        <MarkerF position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
                     )}
                 </GoogleMap>
 

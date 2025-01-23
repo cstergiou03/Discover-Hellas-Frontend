@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import Compressor from "compressorjs";
 import "../StyleProvider/amenityForm.css";
 import { jwtDecode } from "jwt-decode";
@@ -177,9 +177,9 @@ function AmenityForm() {
 
     return (
         <div className="amenity-form-container">
-            <h1>{location.pathname.includes("/admin") ? "Admin - Create Amenity" : "Provider - Create Amenity"}</h1>
+            <h1>{location.pathname.includes("/admin") ? "ΠΟΤΑΠ - Δημιουργία Παροχής" : "Πάροχος - Δημιουργία Παροχής"}</h1>
             <form className="amenity-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
-                <label htmlFor="name">Amenity Name:</label>
+                <label htmlFor="name">Όνομα Παροχής:</label>
                 <input
                     type="text"
                     id="name"
@@ -189,7 +189,7 @@ function AmenityForm() {
                     required
                 />
 
-                <label htmlFor="category">Category:</label>
+                <label htmlFor="category">Κατηγορία:</label>
                 <select
                     id="category"
                     name="category"
@@ -197,7 +197,7 @@ function AmenityForm() {
                     onChange={handleChange}
                     required
                 >
-                    <option value="">Select a category</option>
+                    <option value="">Διαλέξτε Κατηγορίες</option>
                     {categories.map((category) => (
                         <option key={category.category_id} value={category.category_id}>
                             {category.name}
@@ -205,7 +205,7 @@ function AmenityForm() {
                     ))}
                 </select>
 
-                <label htmlFor="description">Description:</label>
+                <label htmlFor="description">Περιγραφή:</label>
                 <textarea
                     id="description"
                     name="description"
@@ -214,7 +214,7 @@ function AmenityForm() {
                     required
                 />
 
-                <label htmlFor="location">Search for a Location:</label>
+                <label htmlFor="location">Άναζήτηση Τοποθεσίας:</label>
                 <Autocomplete
                     onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
                     onPlaceChanged={handlePlaceSelected}
@@ -229,7 +229,7 @@ function AmenityForm() {
                     />
                 </Autocomplete>
 
-                <label htmlFor="location">Location: </label>
+                <label htmlFor="location">Τοποθεσία: </label>
                 <GoogleMap
                     mapContainerStyle={containerStyle}
                     center={{
@@ -239,10 +239,10 @@ function AmenityForm() {
                     zoom={9}
                 >
                     {formData.latitude && formData.longitude && (
-                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                        <MarkerF position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
                     )}
                 </GoogleMap>
-                <label htmlFor="phone">Phone:</label>
+                <label htmlFor="phone">Τηλέφωνο:</label>
                 <input
                     type="tel"
                     id="phone"
@@ -262,7 +262,7 @@ function AmenityForm() {
                     required
                 />
 
-                <label htmlFor="photos">Photos:</label>
+                <label htmlFor="photos">Φωτογραφίες:</label>
                 <input
                     type="file"
                     id="photos"

@@ -4,7 +4,17 @@ import PageTopDestination from "./PageTopDestination";
 import DestinationInfo from "./DestinationInfo";
 import Footer from "./Footer";
 import DestinationsGallery from "./DestinationGallery";
-import GoogleMapReact from "google-map-react";
+import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 40.0853,
+    lng: 22.3584,
+};
 
 function Amenity() {
     const { amenityId } = useParams();
@@ -12,6 +22,10 @@ function Amenity() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [mapKey, setMapKey] = useState(Date.now());
+
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -89,7 +103,7 @@ function Amenity() {
             <DestinationInfo data={data} />
             <DestinationsGallery data={data.photosTable} /> {/* Ενημερώνουμε το Gallery */}
             <div className="event-map-and-info">
-                <div className="event-map-container">
+                {/* <div className="event-map-container">
                     <GoogleMapReact
                         key={mapKey}
                         bootstrapURLKeys={{
@@ -103,22 +117,30 @@ function Amenity() {
                         onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
                         yesIWantToUseGoogleMapApiInternals
                     />
-                </div>
-
-                <div className="event-map-and-info">
+                </div> */}
                     <div className="event-map-container">
-                        <GoogleMapReact
-                            bootstrapURLKeys={{
-                                key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
-                            }}
-                            defaultZoom={10}
-                            defaultCenter={{
-                                lat: 40.0853,
-                                lng: 22.3584,
-                            }}
-                            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-                            yesIWantToUseGoogleMapApiInternals
-                        />
+                        {isLoaded ? (
+                            <GoogleMap
+                                key={mapKey}
+                                mapContainerStyle={containerStyle}
+                                center={{
+                                    lat: parseFloat(data.latitude) || defaultCenter.lat,
+                                    lng: parseFloat(data.longitude) || defaultCenter.lng,
+                                }}
+                                zoom={9}
+                            >
+                                {data.latitude && data.longitude && (
+                                    <MarkerF
+                                        position={{
+                                            lat: parseFloat(data.latitude),
+                                            lng: parseFloat(data.longitude),
+                                        }}
+                                    />
+                                )}
+                            </GoogleMap>
+                        ) : (
+                            <div>Loading map...</div>
+                        )}
                     </div>
 
                     <div className="event-info-right">
@@ -132,7 +154,6 @@ function Amenity() {
                         </button>
                     </div>
                 </div>
-            </div>
             <Footer />
         </div>
     );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../StyleProvider/amenityForm.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 
 // Σταθερή μεταβλητή για τις βιβλιοθήκες του Google Maps
 const GOOGLE_MAP_LIBRARIES = ["places"];
@@ -206,7 +206,7 @@ function AmenityEdit() {
                     zoom={9}
                 >
                     {formData.latitude && formData.longitude && (
-                        <Marker position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
+                        <MarkerF position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
                     )}
                 </GoogleMap>
 

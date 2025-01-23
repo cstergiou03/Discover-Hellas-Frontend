@@ -64,7 +64,7 @@ function CategoryForm() {
         <div className="amenity-form-container">
             <h1>Create Category</h1>
             <form className="amenity-form" onSubmit={handleSubmit}>
-                <label htmlFor="name">Category Name:</label>
+                <label htmlFor="name">Όνομα Κατηγορίας:</label>
                 <input
                     type="text"
                     id="name"
@@ -86,7 +86,7 @@ function CategoryForm() {
                     <option value="Παροχή">Παροχή</option>
                 </select>
 
-                <label htmlFor="description">Description:</label>
+                <label htmlFor="description">Περιγραφή:</label>
                 <textarea
                     id="description"
                     name="description"
@@ -96,7 +96,7 @@ function CategoryForm() {
 
                 <div className="action-buttons">
                     <button type="submit" className="more-btn">
-                        Create Category
+                        Δημιουργία Κατηγορίας
                     </button>
                 </div>
             </form>

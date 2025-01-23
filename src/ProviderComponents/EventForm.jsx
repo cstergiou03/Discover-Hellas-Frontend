@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../StyleProvider/eventForm.css";
 import Compressor from "compressorjs";
 import { useNavigate } from "react-router-dom";
-import { GoogleMap, Marker, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import { jwtDecode } from "jwt-decode";
 
 const GOOGLE_MAP_LIBRARIES = ["places"];
@@ -229,7 +229,7 @@ function EventForm() {
                         zoom={9}
                     >
                         {formData.latitude && formData.longitude && (
-                            <Marker
+                            <MarkerF
                                 position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }}
                             />
                         )}

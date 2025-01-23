@@ -137,7 +137,7 @@ function PlanView() {
             if (isLoggedIn) {
                 // Διαγραφή από το backend
                 const response = await fetch(
-                    "https://olympus-riviera.onrender.com/api/plan/pln_f7714aff/remove",
+                    `https://olympus-riviera.onrender.com/api/plan/${planId}/remove`,
                     {
                         method: "PUT",
                         headers: {
