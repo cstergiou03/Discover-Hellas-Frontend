@@ -14,7 +14,8 @@ import {
     ListItemText,
     ListItemSecondaryAction,
     IconButton,
-} from "@mui/material";
+    Chip,
+}from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Delete, ArrowForward } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -35,6 +36,10 @@ function UserProfile() {
     const [profilePicture, setProfilePicture] = useState("");
     const navigate = useNavigate();
     const [userId, setUserId] = useState("");
+    const [preferences, setPreferences] = useState([]);
+    const [selectedPrefrences, setSelectedPrefrencies] = useState([]);
+    const [hobbies, setHobbies] = useState([]);
+    const [selectedHobbies, setSelectedHobbies] = useState([]);
 
     useEffect(() => {
         // Παίρνουμε το JWT token από το sessionStorage
@@ -69,6 +74,20 @@ function UserProfile() {
                 })
                 .catch((error) => console.error("Error fetching plans:", error));
         }
+
+        fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all")
+            .then((response) => response.json())
+            .then((data) => {
+                setPreferences(data); // Αποθηκεύουμε όλες τις κατηγορίες
+            })
+            .catch((error) => console.error("Error fetching categories:", error));
+
+        fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all")
+            .then((response) => response.json())
+            .then((data) => {
+                setHobbies(data); // Αποθηκεύουμε όλες τις κατηγορίες
+            })
+            .catch((error) => console.error("Error fetching categories:", error));
     }, [userId]); // Βάζουμε το userId σαν εξάρτηση για να κάνουμε fetch τα πλάνα όταν το userId είναι έτοιμο
     
     useEffect(() => {
@@ -140,6 +159,22 @@ function UserProfile() {
 
     const handlePlanDetails = (planId) => {
         navigate(`/planView/${planId}`);
+    };
+
+    const handlePreferenceSelect = (categoryId) => {
+        setSelectedPrefrencies((prev) =>
+            prev.includes(categoryId)
+                ? prev.filter((id) => id !== categoryId) // Αφαίρεση αν υπάρχει ήδη
+                : [...prev, categoryId] // Προσθήκη αν δεν υπάρχει
+        );
+    };
+
+    const handleHobbieSelect = (categoryId) => {
+        setSelectedHobbies((prev) =>
+            prev.includes(categoryId)
+                ? prev.filter((id) => id !== categoryId) // Αφαίρεση αν υπάρχει ήδη
+                : [...prev, categoryId] // Προσθήκη αν δεν υπάρχει
+        );
     };
 
     return (
@@ -240,6 +275,58 @@ function UserProfile() {
                         </StyledCard>
                     </Grid>
                 </Grid>
+            </Container>
+
+            <Container maxWidth="md" sx={{ mt: 4 }}>
+                {/* Category Selection */}
+                <Card sx={{ mb: 4 }}>
+                    <CardContent>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                            Προτιμήσεις
+                        </Typography>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                            {preferences.map((preference) => (
+                                <Chip
+                                    key={preference.category_id}
+                                    label={preference.name}
+                                    color={
+                                        selectedPrefrences.includes(preference.category_id)
+                                            ? "primary"
+                                            : "default"
+                                    }
+                                    onClick={() => handlePreferenceSelect(preference.category_id)}
+                                    clickable
+                                />
+                            ))}
+                        </Box>
+                    </CardContent>
+                </Card>
+            </Container>
+
+            <Container maxWidth="md" sx={{ mt: 4 }}>
+                {/* Category Selection */}
+                <Card sx={{ mb: 4 }}>
+                    <CardContent>
+                        <Typography variant="h6" sx={{ mb: 2 }}>
+                            Hobbies
+                        </Typography>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                            {hobbies.map((hobbie) => (
+                                <Chip
+                                    key={hobbie.category_id}
+                                    label={hobbie.name}
+                                    color={
+                                        selectedHobbies.includes(hobbie.category_id)
+                                            ? "primary"
+                                            : "default"
+                                    }
+                                    onClick={() => handleHobbieSelect(hobbie.category_id)}
+                                    clickable
+                                />
+                            ))}
+                        </Box>
+                    </CardContent>
+                </Card>
             </Container>
 
             {/* Travel Plans Section */}

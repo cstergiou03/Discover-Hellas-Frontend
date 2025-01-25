@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
                 if (decodedToken.exp < currentTime) {
                     console.warn("Token expired");
                     sessionStorage.removeItem("userToken");
+                    sessionStorage.setItem("loggedIn", false);
                     setUser(null);
                     navigate("/"); // Ανακατεύθυνση αν το token είναι ληγμένο
                 } else {
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
         // Redirect με βάση τον ρόλο
         if (decodedToken.role === "REGISTERED") {
-            navigate("/"); // Στην αρχική σελίδα για χρήστες "REGISTERED"
+            // navigate("/"); // Στην αρχική σελίδα για χρήστες "REGISTERED"
         } else if (decodedToken.role === "PROVIDER") {
             navigate("/provider"); // Στη σελίδα του παρόχου για χρήστες "PROVIDER"
         } else if (decodedToken.role === "ADMIN") {

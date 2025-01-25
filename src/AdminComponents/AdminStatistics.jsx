@@ -5,6 +5,7 @@ import DestinationsTable from "./DestinationsTable";
 import ActivitiesTable from "./ActivitiesTable";
 import CategoriesTable from "./CategoriesTable";
 import ReviewsTable from "./ReviewsTable";
+import ProviderTable from "./AdminTable";
 
 function AdminStatistics() {
     const [selectedItem, setSelectedItem] = useState(null); // Επιλογή στοιχείου από το ListBox
@@ -137,6 +138,8 @@ function AdminStatistics() {
                 return <CategoriesTable data={activityCategories} dataType="activityCategories" />;
             case "Reviews":
                 return <ReviewsTable data={reviews} dataType="review" />;
+            case "Users":
+                return <ProviderTable/>;
             default:
                 return <div>Επιλέξτε μια επιλογή από τη λίστα για να δείτε δεδομένα.</div>;
         }

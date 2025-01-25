@@ -34,6 +34,7 @@ function Destination() {
     const [reviews, setReviews] = useState([]);
     const [userId, setUserId] = useState();
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
 
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",

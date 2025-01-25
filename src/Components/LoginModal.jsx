@@ -86,7 +86,8 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
     
                 if (apiResponse.ok) {
                     login(data.jwt_token); // Καλούμε την μέθοδο login του AuthContext
-                    setLoggedIn(true);
+                    sessionStorage.setItem("loggedIn", "true");
+                    location.reload();
                     onClose();
                 } else {
                     setGoogleError("Login failed. Please try again.");
@@ -121,7 +122,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 if (apiResponse.ok) {
                     sessionStorage.setItem("token", data.jwt_token);
                     sessionStorage.setItem("loggedIn", "true");
-                    navigate("/");
+                    // navigate("/");
                 } else {
                     setGoogleError("Registration failed. Please try again.");
                 }

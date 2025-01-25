@@ -16,6 +16,7 @@ import {
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale } from 'chart.js';
 import { jwtDecode } from 'jwt-decode';
+import Compressor from 'compressorjs';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale);
 
@@ -30,23 +31,24 @@ function ProviderProfile() {
     const [profilePicture, setProfilePicture] = useState('');
     const [filteredAmenities, setAmenities] = useState([]);
     const [filteredEvents, setEvents] = useState([]);
+    const [files, setFiles] = useState([]);
 
     useEffect(() => {
-            const token = sessionStorage.getItem("userToken");
-    
-            if (token) {
-                try {
-                    
-                    const decodedToken = jwtDecode(token);
-                    console.log(decodedToken);
-                    setFullname(decodedToken.firstName + " " + decodedToken.lastName);
-                    setEmail(decodedToken.email);
-                    setProfilePicture(decodedToken.photo);
-                    setUserId(decodedToken.userId);
-                } catch (error) {
-                    console.error("Error decoding token:", error);
-                }
+        const token = sessionStorage.getItem("userToken");
+
+        if (token) {
+            try {
+
+                const decodedToken = jwtDecode(token);
+                console.log(decodedToken);
+                setFullname(decodedToken.firstName + " " + decodedToken.lastName);
+                setEmail(decodedToken.email);
+                setProfilePicture(decodedToken.photo);
+                setUserId(decodedToken.userId);
+            } catch (error) {
+                console.error("Error decoding token:", error);
             }
+        }
     }, [userId])
 
     useEffect(() => {
@@ -62,7 +64,7 @@ function ProviderProfile() {
             .catch((err) => {
                 console.error('Error fetching amenities:', err.message);
             });
-            
+
         const eventUrl = "https://olympus-riviera.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         fetch(eventUrl)
             .then((response) => response.json())
@@ -106,6 +108,64 @@ function ProviderProfile() {
         ],
     });
 
+    const handleFileChange = async (event) => {
+        const selectedFiles = Array.from(event.target.files);
+    
+        // Λειτουργία μετατροπής ενός αρχείου σε Base64
+        const convertToBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        };
+    
+        const compressAndConvertFile = async (file) => {
+            if (file.type.startsWith("image")) {
+                return new Promise((resolve, reject) => {
+                    new Compressor(file, {
+                        quality: 0.6, // Ποιότητα εικόνας από 0 (χαμηλή ποιότητα) έως 1 (υψηλή ποιότητα)
+                        maxWidth: 800, // Μέγιστο πλάτος
+                        maxHeight: 800, // Μέγιστο ύψος
+                        success(result) {
+                            convertToBase64(result).then((base64) => {
+                                resolve(base64);
+                            }).catch((error) => reject(error));
+                        },
+                        error(err) {
+                            reject(err);
+                        }
+                    });
+                });
+            } else if (file.type === "application/pdf") {
+                return await convertToBase64(file);  // Όπως το κάνατε για τα PDF
+            } else {
+                console.warn(`Το αρχείο ${file.name} δεν είναι εικόνα ή PDF.`);
+                return null;
+            }
+        };
+    
+        const base64Files = await Promise.all(
+            selectedFiles.map(async (file) => {
+                return await compressAndConvertFile(file);
+            })
+        );
+    
+        // Φιλτράρουμε τα null (μη έγκυρα αρχεία) και προσθέτουμε στο state
+        setFiles((prevFiles) => [...prevFiles, ...base64Files.filter((file) => file !== null)]);
+        console.log("Updated files array:", [...files, ...base64Files.filter((file) => file !== null)]);
+    };    
+        
+    const handleFileSubmit = () => {
+        if (files.length > 0) {
+            alert(`${files.length} αρχεία επιλέχθηκαν για υποβολή.`);
+            // Εδώ μπορείς να ανεβάσεις τα αρχεία μέσω fetch/axios
+        } else {
+            alert("Παρακαλώ επιλέξτε αρχεία.");
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -142,21 +202,33 @@ function ProviderProfile() {
                             </CardContent>
                         </Card>
 
-                        <Card sx={{ mt: 4 }}>
+                        <Card sx={{ mt: 4, backgroundColor: 'transparent', boxShadow: 'none' }}>
                             <CardContent>
                                 {verified ? (
                                     <Typography color="success.main" textAlign="center">
                                         Η ταυτοποίηση έχει ολοκληρωθεί
                                     </Typography>
                                 ) : (
-                                    <Box textAlign="center">
-                                        <Typography gutterBottom>
-                                            Παρακαλώ υποβάλετε τα απαιτούμενα έγγραφα:
-                                        </Typography>
-                                        <Input type="file" multiple sx={{ mb: 2 }} />
-                                        <Button variant="contained" color="primary">
-                                            Υποβολή Αρχείων
-                                        </Button>
+                                    <Box>
+                                        {[1, 2, 3].map((license, index) => (
+                                            <Card sx={{ mb: 2 }} key={index}>
+                                                <CardContent>
+                                                    <Typography gutterBottom>
+                                                        Άδεια {license}:
+                                                    </Typography>
+                                                    <Input
+                                                        type="file"
+                                                        onChange={(e) => handleFileChange(e, index)}
+                                                        fullWidth
+                                                    />
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                        <Box textAlign="center">
+                                            <Button variant="contained" color="primary" onClick={handleFileSubmit}>
+                                                Υποβολή Αρχείων
+                                            </Button>
+                                        </Box>
                                     </Box>
                                 )}
                             </CardContent>

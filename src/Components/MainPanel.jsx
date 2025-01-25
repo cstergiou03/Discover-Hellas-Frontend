@@ -1,3 +1,4 @@
+import React from "react";
 import Footer from "./Footer.jsx";
 import PageTop from "./PageTop.jsx";
 import StatSection from "./StatSection.jsx";
@@ -5,8 +6,13 @@ import PieriaInfo from "./PieriaInfo";
 import WeatherWidget from "./Weather.jsx";
 import "../Style/mainPanel.css";
 import PopularDestination from "./PopularDestination.jsx";
+import DestinationCards from "./DestinationCards.jsx";
+import ActivityCards from "./ActivityCards.jsx";
 
 function MainPanel() {
+    
+    const loggedIn = sessionStorage.getItem("loggedIn") === "true";
+
     return (
         <div className="main-container">
             <PageTop />
@@ -17,6 +23,12 @@ function MainPanel() {
                     <div className="pieria-info"><PieriaInfo /></div>
                 </div>
                 <div className="popular-amenity"><PopularDestination /></div>
+                {loggedIn && (
+                    <>
+                        <DestinationCards />
+                        <ActivityCards />
+                    </>
+                )}
             </div>
             <Footer />
         </div>

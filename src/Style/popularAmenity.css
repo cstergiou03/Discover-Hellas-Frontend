@@ -4,9 +4,7 @@
     margin: 0 auto;
     padding: 20px;
     text-align: left;
-    background-color: #f8f8f8;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;  
 }
 
 .popular-destinations-container h2 {

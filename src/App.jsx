@@ -30,6 +30,7 @@ import ActivityView from "./AdminComponents/ActivityView";
 import ActivityEditView from "./AdminComponents/ActivityEditView";
 import CategoryView from "./AdminComponents/CategoryView";
 import AdminProfilePanel from "./AdminComponents/AdminProfilePanel";
+import ProviderApproval from "./AdminComponents/ProviderApproval"
 
 // Εισαγωγή των components του Provider
 import ProviderMainPanel from "./ProviderComponents/ProviderMainPanel";
@@ -236,6 +237,16 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+                    <Route 
+                        path="/admin/provider-approval/" 
+                        element={
+                            <ProtectedRoute 
+                                allowedRoles={["ADMIN"]}
+                                disallowedRoles={["PROVIDER", "REGISTERED"]}>
+                                <ProviderApproval />
+                            </ProtectedRoute>
+                        } 
+                        />
                     <Route path="/forbidden" element={<Forbidden />} />
                 </Routes>
             </AuthProvider>
@@ -294,7 +305,6 @@ export default App;
 //                 <Route path="/amenity/:amenityId" element={<Amenity />}/>
 //                 <Route path="/planView/:planId" element={<PlanView />}/>
 //                 <Route path="/planView" element={<PlanView />}/>
-
 //                 <Route path="/profile" element={<UserProfilePanel/>} />
 
 //                 <Route path="/provider" element={<ProviderMainPanel/>} />
@@ -315,6 +325,7 @@ export default App;
 //                 <Route path="/admin/edit-activity/:activityId" element={<ActivityEditView/>} />
 //                 <Route path="/admin/create-category" element={<CategoryView/>} />
 //                 <Route path="/admin/profile" element={<AdminProfilePanel/>} />
+//                 <Route path="/admin/provider-approval/:userId" element={<ProviderApproval/>} />
 //             </Routes>
 //         </Router>
 //     );
