@@ -138,26 +138,6 @@ function AdminProfile() {
                                 </Button>
                             </CardContent>
                         </Card>
-
-                        <Card sx={{ mt: 4 }}>
-                            <CardContent>
-                                {verified ? (
-                                    <Typography color="success.main" textAlign="center">
-                                        Η ταυτοποίηση έχει ολοκληρωθεί
-                                    </Typography>
-                                ) : (
-                                    <Box textAlign="center">
-                                        <Typography gutterBottom>
-                                            Παρακαλώ υποβάλετε τα απαιτούμενα έγγραφα:
-                                        </Typography>
-                                        <Input type="file" multiple sx={{ mb: 2 }} />
-                                        <Button variant="contained" color="primary">
-                                            Υποβολή Αρχείων
-                                        </Button>
-                                    </Box>
-                                )}
-                            </CardContent>
-                        </Card>
                     </Grid>
 
                     <Grid item xs={12} md={8}>
@@ -182,7 +162,7 @@ function AdminProfile() {
                                             variant="outlined"
                                         />
                                     </Grid>
-                                    <Grid item xs={12} md={6}>
+                                    {/* <Grid item xs={12} md={6}>
                                         <TextField
                                             fullWidth
                                             label="Τηλέφωνο"
@@ -208,7 +188,7 @@ function AdminProfile() {
                                             onChange={handleAddressChange}
                                             variant="outlined"
                                         />
-                                    </Grid>
+                                    </Grid> */}
                                 </Grid>
                             </CardContent>
                         </Card>

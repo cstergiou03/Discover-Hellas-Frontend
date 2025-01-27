@@ -3,15 +3,18 @@ import { useNavigate } from "react-router-dom";
 import "../StyleProvider/providerSidebar.css";
 import logo from "../assets/logo2.png";
 import { FaBars } from 'react-icons/fa';
+import { jwtDecode } from 'jwt-decode';
 
 function ProviderSidebar() {
     const [collapsed, setCollapsed] = useState(window.innerWidth < 950); // Αρχική κατάσταση ανάλογα με το πλάτος
+    const [userStatus, setUserStatus] = useState("");  // Αποθήκευση του status του χρήστη
+    const [userId, setUserId] = useState("");
     const navigate = useNavigate();
 
     const menuItems = [
         { name: "Home", icon: "🏠", path: "/provider" },
-        { name: "Καταχώρηση Παροχής", icon: "🍽️", path: "/provider/create-amenity" },
-        { name: "Καταχώρηση Εκδήλωσης", icon: "🎭", path: "/provider/create-event" },
+        { name: "Καταχώρηση Παροχής", icon: "🍽️", path: "/provider/create-amenity", disabled: false },
+        { name: "Καταχώρηση Εκδήλωσης", icon: "🎭", path: "/provider/create-event", disabled: false },
         { name: "Profile", icon: "👤", path: "/provider/profile" },
     ];
 
@@ -42,6 +45,36 @@ function ProviderSidebar() {
         };
     }, []);
 
+    useEffect(() => {
+        const token = sessionStorage.getItem("userToken");
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                setUserId(decodedToken.userId);
+
+                // Κάνουμε GET το αίτημα για το status του χρήστη
+                fetch(`https://olympus-riviera.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        setUserStatus(data.status);  // Αποθηκεύουμε το status του χρήστη
+                    })
+                    .catch((err) => {
+                        console.error('Error fetching user data:', err.message);
+                    });
+            } catch (error) {
+                console.error("Error decoding token:", error);
+            }
+        }
+    }, [userId]);
+
+    // Ενημέρωση των menuItems αν το status είναι "PENDING"
+    const updatedMenuItems = menuItems.map((item) => {
+        if (userStatus === "PENDING" || userStatus === "REJECTED" && (item.name === "Καταχώρηση Παροχής" || item.name === "Καταχώρηση Εκδήλωσης")) {
+            return { ...item, disabled: true };  // Απενεργοποιούμε τα συγκεκριμένα items
+        }
+        return item;
+    });
+
     const handleLogout = () => {
         // Αποσύνδεση χρήστη και καθαρισμός του session
         sessionStorage.removeItem('userToken');
@@ -57,11 +90,12 @@ function ProviderSidebar() {
                 </button>
             </div>
             <div className="menu">
-                {menuItems.map((item, index) => (
+                {updatedMenuItems.map((item, index) => (
                     <div
                         key={index}
                         className="menu-item"
-                        onClick={() => handleNavigation(item.path)}
+                        onClick={() => !item.disabled && handleNavigation(item.path)}  // Απενεργοποιούμε την κίνηση αν είναι disabled
+                        style={item.disabled ? { cursor: 'not-allowed', opacity: 0.5 } : {}}  // Αν είναι disabled, το κάνουμε όχι clickable
                     >
                         <span className="menu-icon">{item.icon}</span>
                         {!collapsed && <span className="menu-text">{item.name}</span>}

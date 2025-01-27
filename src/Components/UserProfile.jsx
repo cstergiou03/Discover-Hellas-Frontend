@@ -58,7 +58,7 @@ function UserProfile() {
                 setProfilePicture(
                     decodedToken.photo || "https://via.placeholder.com/150"
                 );
-                setUserId(decodedToken.userId);  // Βάζουμε το sub ως user_id
+                setUserId(decodedToken.userId);
                 console.log(userId);
             } catch (error) {
                 console.error("Error decoding token:", error);
@@ -71,8 +71,27 @@ function UserProfile() {
                 .then((response) => response.json())
                 .then((data) => {
                     setPlans(data);
+                    console.log(data);
                 })
                 .catch((error) => console.error("Error fetching plans:", error));
+
+            fetch(`https://olympus-riviera.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch user data");
+                    }
+                    return response.json();
+                })
+                .then((userData) => {
+                    console.log("asjfnbaksdjf ", userData);
+                    setPhone(userData.phone || "");
+                    setAddress(userData.address || "");
+                    setSelectedPrefrencies(userData.preferences[0]?.DestinationCategories || []);
+                    setSelectedHobbies(userData.hobbies[0]?.ActivityCategories || []);
+                })
+                .catch((error) => {
+                    console.error("Error fetching user data:", error);
+                });
         }
 
         fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all")
@@ -110,8 +129,47 @@ function UserProfile() {
     const handleAddressChange = (event) => setAddress(event.target.value);
 
     const handleUpdate = () => {
-        alert("Τα στοιχεία σας ενημερώθηκαν επιτυχώς!");
-    };
+        const updateData = {
+            phone: phone, // Προσθήκη του πεδίου phone
+            address: address, // Προσθήκη του πεδίου address
+            hobbies: [
+                {
+                    ActivityCategories: selectedHobbies,
+                },
+            ],
+            preferences: [
+                {
+                    DestinationCategories: selectedPrefrences,
+                },
+            ],
+        };
+    
+        console.log(JSON.stringify(updateData));
+    
+        fetch(
+            `https://olympus-riviera.onrender.com/api/user/updateProfile/Registered/${userId}` +
+                "?Authorization=Bearer%20" +
+                `${sessionStorage.getItem("userToken")}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updateData),
+            }
+        )
+            .then((response) => {
+                if (response.ok) {
+                    alert("Τα στοιχεία σας ενημερώθηκαν επιτυχώς!");
+                } else {
+                    alert("Υπήρξε κάποιο σφάλμα κατά την ενημέρωση των στοιχείων.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error updating profile:", error);
+                alert("Υπήρξε κάποιο σφάλμα κατά την ενημέρωση των στοιχείων.");
+            });
+    };      
 
     const handleCreatePlan = () => {
         const newPlan = {
@@ -252,14 +310,6 @@ function UserProfile() {
                                             label="Τηλέφωνο"
                                             value={phone}
                                             onChange={handlePhoneChange}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Κινητό"
-                                            value={mobile}
-                                            onChange={handleMobileChange}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>

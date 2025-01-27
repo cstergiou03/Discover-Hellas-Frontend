@@ -5,9 +5,9 @@ import { useAuth } from "./AuthContext";
 const ProtectedRoute = ({ children, allowedRoles, disallowedRoles }) => {
     const { user } = useAuth();
 
-    console.log("User in ProtectedRoute:", user); // Για debugging
-    console.log("Allowed Roles:", allowedRoles);
-    console.log("Disallowed Roles:", disallowedRoles);
+    // console.log("User in ProtectedRoute:", user); // Για debugging
+    // console.log("Allowed Roles:", allowedRoles);
+    // console.log("Disallowed Roles:", disallowedRoles);
 
     // Αν δεν υπάρχει χρήστης, ανακατεύθυνση στην αρχική σελίδα
     if (!user) {

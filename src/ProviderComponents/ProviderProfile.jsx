@@ -25,6 +25,7 @@ function ProviderProfile() {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [mobile, setMobile] = useState('');
+    const [tin, setTin] = useState('');
     const [address, setAddress] = useState('');
     const [verified, setVerified] = useState(false);
     const [userId, setUserId] = useState('');
@@ -32,6 +33,7 @@ function ProviderProfile() {
     const [filteredAmenities, setAmenities] = useState([]);
     const [filteredEvents, setEvents] = useState([]);
     const [files, setFiles] = useState([]);
+    const [status, setStatus] = useState("");
 
     useEffect(() => {
         const token = sessionStorage.getItem("userToken");
@@ -45,6 +47,21 @@ function ProviderProfile() {
                 setEmail(decodedToken.email);
                 setProfilePicture(decodedToken.photo);
                 setUserId(decodedToken.userId);
+
+                fetch(`https://olympus-riviera.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+
+                )
+                    .then((response) => response.json())
+                    .then((data) => {
+                        setPhone(data.phone);
+                        setAddress(data.address);
+                        setTin(data.tin);
+                        setStatus(data.status);
+                    })
+                    .catch((err) => {
+                        console.error('Error fetching profile data:', err.message);
+                    });
+
             } catch (error) {
                 console.error("Error decoding token:", error);
             }
@@ -79,11 +96,31 @@ function ProviderProfile() {
     const handleFullnameChange = (event) => setFullname(event.target.value);
     const handleEmailChange = (event) => setEmail(event.target.value);
     const handlePhoneChange = (event) => setPhone(event.target.value);
-    const handleMobileChange = (event) => setMobile(event.target.value);
     const handleAddressChange = (event) => setAddress(event.target.value);
+    const handleTinChange = (event) => setTin(event.target.value);
 
     const handleUpdate = () => {
-        alert('Τα στοιχεία σας ενημερώθηκαν επιτυχώς!');
+        const updatedData = {
+            phone,
+            address,
+            tin, // Στέλνουμε το νέο πεδίο ΑΦΜ
+        };
+
+        fetch(`https://olympus-riviera.onrender.com/api/user/updateProfile/Provider/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedData),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                alert('Τα στοιχεία σας ενημερώθηκαν επιτυχώς!');
+            })
+            .catch((error) => {
+                console.error("Error updating data:", error);
+                alert("Παρουσιάστηκε σφάλμα κατά την ενημέρωση των στοιχείων.");
+            });
     };
 
     const calculateStatusCounts = (items) => {
@@ -110,7 +147,7 @@ function ProviderProfile() {
 
     const handleFileChange = async (event) => {
         const selectedFiles = Array.from(event.target.files);
-    
+
         // Λειτουργία μετατροπής ενός αρχείου σε Base64
         const convertToBase64 = (file) => {
             return new Promise((resolve, reject) => {
@@ -120,7 +157,7 @@ function ProviderProfile() {
                 reader.onerror = (error) => reject(error);
             });
         };
-    
+
         const compressAndConvertFile = async (file) => {
             if (file.type.startsWith("image")) {
                 return new Promise((resolve, reject) => {
@@ -145,22 +182,41 @@ function ProviderProfile() {
                 return null;
             }
         };
-    
+
         const base64Files = await Promise.all(
             selectedFiles.map(async (file) => {
                 return await compressAndConvertFile(file);
             })
         );
-    
+
         // Φιλτράρουμε τα null (μη έγκυρα αρχεία) και προσθέτουμε στο state
         setFiles((prevFiles) => [...prevFiles, ...base64Files.filter((file) => file !== null)]);
         console.log("Updated files array:", [...files, ...base64Files.filter((file) => file !== null)]);
-    };    
-        
+    };
+
     const handleFileSubmit = () => {
         if (files.length > 0) {
-            alert(`${files.length} αρχεία επιλέχθηκαν για υποβολή.`);
-            // Εδώ μπορείς να ανεβάσεις τα αρχεία μέσω fetch/axios
+            // Send PUT request to submit files (Base64 strings)
+            const requestBody = {
+                legal_document_id: files[0], // Assuming the first file is the legal document
+                legal_document_tin: files[1], // Assuming the second file is the TIN
+            };
+
+            fetch(`https://olympus-riviera.onrender.com/api/user/updateProfile/Provider/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    alert('Τα αρχεία υποβλήθηκαν επιτυχώς!');
+                })
+                .catch((error) => {
+                    console.error("Error submitting files:", error);
+                    alert("Παρουσιάστηκε σφάλμα κατά την υποβολή των αρχείων.");
+                });
         } else {
             alert("Παρακαλώ επιλέξτε αρχεία.");
         }
@@ -186,53 +242,49 @@ function ProviderProfile() {
                                     component="img"
                                     image={profilePicture}
                                     alt="avatar"
-                                    sx={{
-                                        width: 150,
-                                        height: 150,
-                                        borderRadius: '50%',
-                                        margin: '0 auto 20px',
-                                    }}
+                                    sx={{ width: 150, height: 150, borderRadius: '50%', margin: '0 auto 20px' }}
                                 />
-                                <Typography variant="h5" gutterBottom>
-                                    {fullname}
-                                </Typography>
-                                <Button variant="contained" color="primary" onClick={handleUpdate}>
-                                    Ενημέρωση Στοιχείων
-                                </Button>
+                                <Typography variant="h5" gutterBottom>{fullname}</Typography>
+                                <Button variant="contained" color="primary" onClick={handleUpdate}>Ενημέρωση Στοιχείων</Button>
                             </CardContent>
                         </Card>
 
                         <Card sx={{ mt: 4, backgroundColor: 'transparent', boxShadow: 'none' }}>
                             <CardContent>
-                                {verified ? (
-                                    <Typography color="success.main" textAlign="center">
-                                        Η ταυτοποίηση έχει ολοκληρωθεί
-                                    </Typography>
-                                ) : (
+                                {/* Αν το status είναι approved, εμφανίζουμε το μήνυμα αντί για τα αρχεία */}
+                                {status === "APPROVED" && (
+                                    <Box textAlign="center">
+                                        <Typography variant="h6" color="success.main">
+                                            Έχετε εγκριθεί!
+                                        </Typography>
+                                    </Box>
+                                )}
+                                {status !== "APPROVED" && (
                                     <Box>
-                                        {[1, 2, 3].map((license, index) => (
-                                            <Card sx={{ mb: 2 }} key={index}>
-                                                <CardContent>
-                                                    <Typography gutterBottom>
-                                                        Άδεια {license}:
-                                                    </Typography>
-                                                    <Input
-                                                        type="file"
-                                                        onChange={(e) => handleFileChange(e, index)}
-                                                        fullWidth
-                                                    />
-                                                </CardContent>
-                                            </Card>
-                                        ))}
+                                        <Card sx={{ mb: 2 }}>
+                                            <CardContent>
+                                                <Typography gutterBottom>Άδεια Νομικού Εγγράφου:</Typography>
+                                                <Input type="file" onChange={handleFileChange} fullWidth />
+                                            </CardContent>
+                                        </Card>
+
+                                        <Card sx={{ mb: 2 }}>
+                                            <CardContent>
+                                                <Typography gutterBottom>Άδεια ΑΦΜ:</Typography>
+                                                <Input type="file" onChange={handleFileChange} fullWidth />
+                                            </CardContent>
+                                        </Card>
+
                                         <Box textAlign="center">
-                                            <Button variant="contained" color="primary" onClick={handleFileSubmit}>
-                                                Υποβολή Αρχείων
-                                            </Button>
+                                            <Button variant="contained" color="primary" onClick={handleFileSubmit}>Υποβολή Αρχείων</Button>
                                         </Box>
                                     </Box>
                                 )}
+                                {/* Αν το status είναι approved, εμφανίζουμε το μήνυμα */}
+                                
                             </CardContent>
                         </Card>
+
                     </Grid>
 
                     <Grid item xs={12} md={8}>
@@ -269,9 +321,9 @@ function ProviderProfile() {
                                     <Grid item xs={12} md={6}>
                                         <TextField
                                             fullWidth
-                                            label="Κινητό"
-                                            value={mobile}
-                                            onChange={handleMobileChange}
+                                            label="ΑΦΜ"
+                                            value={tin} // Χρησιμοποιούμε το taxId για ΑΦΜ
+                                            onChange={handleTinChange}
                                             variant="outlined"
                                         />
                                     </Grid>

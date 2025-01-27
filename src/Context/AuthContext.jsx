@@ -12,12 +12,12 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const storedToken = sessionStorage.getItem("userToken");
 
-        console.log("Stored Token:", storedToken); // Για debugging
+        // console.log("Stored Token:", storedToken); // Για debugging
 
         if (storedToken) {
             try {
                 const decodedToken = jwtDecode(storedToken);
-                console.log("Decoded Token:", decodedToken);
+                // console.log("Decoded Token:", decodedToken);
 
                 // Ελέγχουμε αν το token έχει λήξει
                 const currentTime = Date.now() / 1000;

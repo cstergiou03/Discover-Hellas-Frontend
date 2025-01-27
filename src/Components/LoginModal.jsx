@@ -85,12 +85,34 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 const data = await apiResponse.json();
     
                 if (apiResponse.ok) {
-                    login(data.jwt_token); // Καλούμε την μέθοδο login του AuthContext
+                    login(data.jwt_token);
                     sessionStorage.setItem("loggedIn", "true");
                     location.reload();
                     onClose();
                 } else {
-                    setGoogleError("Login failed. Please try again.");
+                    const role = "REGISTERED";
+                    const requestBody = { jwt_token, role };
+    
+                    const registerResponse = await fetch(
+                        "https://olympus-riviera.onrender.com/api/user/register",
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(requestBody),
+                        }
+                    );
+    
+                    if (registerResponse.ok) {
+                        const registerData = await registerResponse.json();
+                        // login(registerData.jwt_token);
+                        // sessionStorage.setItem("userToken", registerData.jwt_token);
+                        // sessionStorage.setItem("loggedIn", "true");
+                        alert("Ο χρήστης δημιουργήθηκε με επιτυχία μπορείτε πλέον να συνδεθείτε");
+                        // location.reload();
+                        onClose();
+                    } else {
+                        setGoogleError("Registration failed. Please try again.");
+                    }
                 }
             } catch (error) {
                 console.error("Login error:", error);
@@ -99,7 +121,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
         } else {
             setGoogleError("Something went wrong with Google login. Please try again.");
         }
-    };         
+    };            
 
     const handleGoogleSignUp = async (response) => {
         if (response.credential) {
@@ -120,9 +142,10 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
                 const data = await apiResponse.json();
                 if (apiResponse.ok) {
-                    sessionStorage.setItem("token", data.jwt_token);
-                    sessionStorage.setItem("loggedIn", "true");
-                    // navigate("/");
+                    // sessionStorage.setItem("userToken", data.jwt_token);
+                    // sessionStorage.setItem("loggedIn", "true");
+                    // login(data.jwt_token);
+                    alert("Ο χρήστης δημιουργήθηκε με επιτυχία μπορείτε πλέον να συνδεθείτε");
                 } else {
                     setGoogleError("Registration failed. Please try again.");
                 }

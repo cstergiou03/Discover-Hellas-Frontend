@@ -6,6 +6,7 @@ import ActivitiesTable from "./ActivitiesTable";
 import CategoriesTable from "./CategoriesTable";
 import ReviewsTable from "./ReviewsTable";
 import ProviderTable from "./AdminTable";
+import ProviderApprovalTable from "./ProviderApprovalTable";
 
 function AdminStatistics() {
     const [selectedItem, setSelectedItem] = useState(null); // Επιλογή στοιχείου από το ListBox
@@ -18,6 +19,7 @@ function AdminStatistics() {
     const [loading, setLoading] = useState(false); // Κατάσταση φόρτωσης
     const [error, setError] = useState(null); // Κατάσταση λάθους
     const [reviews, setReviews] = useState([]);
+    const [providers, setProviders] = useState([]);
 
     const handleClick = (item) => {
         setSelectedItem(item); // Ορισμός της επιλεγμένης επιλογής
@@ -112,6 +114,20 @@ function AdminStatistics() {
                 });
         }
 
+        if (selectedItem === "Users") {
+            setLoading(true);
+            fetch("https://olympus-riviera.onrender.com/api/admin/providers/get/all?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setProviders(data);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    setError("Σφάλμα κατά τη φόρτωση των κατηγοριών προορισμών.");
+                    setLoading(false);
+                });
+        }
+
     }, [selectedItem]);
 
     const renderContent = () => {
@@ -139,7 +155,7 @@ function AdminStatistics() {
             case "Reviews":
                 return <ReviewsTable data={reviews} dataType="review" />;
             case "Users":
-                return <ProviderTable/>;
+                return <ProviderApprovalTable data={providers} dataType="providers"/>;
             default:
                 return <div>Επιλέξτε μια επιλογή από τη λίστα για να δείτε δεδομένα.</div>;
         }

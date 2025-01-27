@@ -18,7 +18,6 @@ function ProfileSidebarAdmin() {
             try {
                 // Αποκωδικοποιούμε το JWT token
                 const decodedToken = jwtDecode(token);
-                console.log("Decoded Token:", decodedToken);
 
                 // Ρυθμίζουμε τα πεδία από το αποκωδικοποιημένο token
                 const fullName = `${decodedToken.firstName} ${decodedToken.lastName}`; // Συνδυασμός firstName + lastName

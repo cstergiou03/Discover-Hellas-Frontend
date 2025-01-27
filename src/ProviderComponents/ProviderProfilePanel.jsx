@@ -1,7 +1,7 @@
 import React from 'react';
 import "../StyleProvider/userProfilePanel.css"
-import ProviderProfile from './ProviderProfile'; // το component του User Profile
-import ProviderSidebar from './ProviderSidebar'; // το component του Sidebar
+import ProviderProfile from './ProviderProfile';
+import ProviderSidebar from './ProviderSidebar';
 
 function UserProfilePanel() {
   return (

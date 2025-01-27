@@ -238,7 +238,7 @@ function App() {
                         }
                     />
                     <Route 
-                        path="/admin/provider-approval/" 
+                        path="/admin/provider-approval/:providerId" 
                         element={
                             <ProtectedRoute 
                                 allowedRoles={["ADMIN"]}
