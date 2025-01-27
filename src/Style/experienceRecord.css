@@ -45,6 +45,13 @@
     box-shadow: 0 0 3px 2px rgb(164, 201, 145, 0.5);
 }
 
+.experience-record.visited {
+    width: 95%;
+    border: 2px solid green;
+    background-color: #e6ffe6;
+    transition: background-color 0.3s ease;
+}
+
 /* Media Query για κινητές συσκευές */
 @media (max-width: 768px) {
     .experience-record {

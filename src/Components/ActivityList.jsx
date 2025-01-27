@@ -5,6 +5,7 @@ import PageTopDestination from "./PageTopDestination";
 import Footer from "./Footer";
 import ExperienceData from "../../src/assets/activityData.json";
 import ActivityRecord from "./ActivityRecord";
+import { jwtDecode } from "jwt-decode";
 
 function ActivityList() {
     const { categoryId } = useParams();
@@ -15,6 +16,7 @@ function ActivityList() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("all");
+    const [visitedEntities, setVisitedEntities] = useState([]);
 
     const destinationsPerPage = 5;
     const PageTopData = ExperienceData;
@@ -32,6 +34,45 @@ function ActivityList() {
                 setLoading(false);
             });
     }, []);
+
+    useEffect(() => {
+        const fetchVisitedEntities = async () => {
+            try {
+                const userToken = sessionStorage.getItem("userToken");
+
+                if (!userToken) {
+                    console.error("User token not found in sessionStorage");
+                    return;
+                }
+
+                const decodedToken = jwtDecode(userToken);
+                const userId = decodedToken.userId;
+
+                const response = await fetch(
+                    `https://olympus-riviera.onrender.com/api/user/visit/all/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
+                );
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log("Full result:", result);
+
+                // Εφόσον το result είναι πίνακας, παίρνουμε το πρώτο στοιχείο
+                if (Array.isArray(result) && result.length > 0) {
+                    const visits = result[0].visits; // Εδώ παίρνουμε τα visits
+                    console.log("Visited entities:", visits);
+                    setVisitedEntities(visits);
+                } else {
+                    console.error("Unexpected result format or empty array");
+                }
+            } catch (error) {
+                console.error("Error fetching visited entities:", error);
+            }
+        };
+        fetchVisitedEntities();
+    }, [destinations]);
 
     // Fetch categories
     useEffect(() => {
@@ -132,7 +173,13 @@ function ActivityList() {
             ) : (
                 <div className="experience-table">
                     {currentDestinations.map((destination) => (
-                        <ActivityRecord key={destination.destination_id} data={destination} />
+                        <ActivityRecord
+                            key={destination.activity_id}
+                            data={destination}
+                            isVisited={visitedEntities.some(
+                                (visit) => visit.entity_id === destination.activity_id
+                            )}
+                        />
                     ))}
                 </div>
             )}

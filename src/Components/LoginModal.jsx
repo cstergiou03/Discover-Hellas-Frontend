@@ -8,7 +8,6 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
     const [googleError, setGoogleError] = useState("");
     const googleSignInButtonRef = useRef(null);
     const googleSignUpButtonRef = useRef(null);
-    const [googleResponse, setGoogleResponse] = useState("")
 
     const navigate = useNavigate();
     const { login } = useAuth();
@@ -86,9 +85,8 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 if (apiResponse.ok) {
                     login(data.jwt_token);
                     sessionStorage.setItem("loggedIn", "true");
-                    // location.reload();
+                    location.reload();
                     onClose();
-                    console.log("Google Login Response:", response);
                 } else {
                     const role = "REGISTERED";
                     const requestBody = { jwt_token, role };

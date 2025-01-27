@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/experienceRecord.css";
 
-function ActivityRecord({ data }) {
+function ActivityRecord({ data, isVisited }) {
     const navigate = useNavigate();
 
     const googleMapsLink = `https://www.google.com/maps?q=${data.latitude},${data.longitude}`;
@@ -17,14 +17,18 @@ function ActivityRecord({ data }) {
     : [];
     
     return (
-        <div className="experience-record">
-            <div className="record-column">{data.name}</div>
+        <div className={`experience-record ${isVisited ? "visited" : ""}`}>
+            <div className="record-column">
+                {data.name} 
+                {isVisited && <span className="checkmark">✅</span>}
+            </div>
             <div className="record-column">{data.description}</div>
             <div className="record-column">
                 {photosTable.length > 0 ? (
                     <img
                         src={photosTable[0]}
                         className="record-image"
+                        alt="experience"
                     />
                 ) : null}
             </div>
