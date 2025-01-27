@@ -92,7 +92,6 @@ function DestinationCards() {
         };
 
         fetchDestinations();
-        console.log("sad");
     }, [preferences]);
 
     // Function to get the first image from base64 data
