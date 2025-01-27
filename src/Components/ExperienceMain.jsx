@@ -38,41 +38,54 @@ function ExperienceMain() {
     useEffect(() => {
         const fetchVisitedEntities = async () => {
             try {
-                const userToken = sessionStorage.getItem("userToken");
-        
-                if (!userToken) {
-                    console.error("User token not found in sessionStorage");
+                const loggedIn = sessionStorage.getItem("loggedIn");
+    
+                if (loggedIn !== "true") {
+                    console.log("User is not logged in. Skipping visited entities fetch.");
+                    setVisitedEntities([]); // Κενή λίστα αν ο χρήστης δεν είναι συνδεδεμένος
                     return;
                 }
-        
+    
+                const userToken = sessionStorage.getItem("userToken");
+    
+                if (!userToken) {
+                    console.error("User token not found in sessionStorage");
+                    setVisitedEntities([]); // Κενή λίστα αν δεν υπάρχει token
+                    return;
+                }
+    
                 const decodedToken = jwtDecode(userToken);
                 const userId = decodedToken.userId;
-        
+    
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/user/visit/all/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
+                    `https://olympus-riviera.onrender.com/api/user/visit/all/${userId}` +
+                        "?Authorization=Bearer%20" +
+                        `${sessionStorage.getItem("userToken")}`
                 );
-        
+    
                 if (!response.ok) {
                     throw new Error(`Failed to fetch: ${response.statusText}`);
                 }
-        
+    
                 const result = await response.json();
                 console.log("Full result:", result);
-        
-                // Εφόσον το result είναι πίνακας, παίρνουμε το πρώτο στοιχείο
+    
                 if (Array.isArray(result) && result.length > 0) {
                     const visits = result[0].visits; // Εδώ παίρνουμε τα visits
                     console.log("Visited entities:", visits);
                     setVisitedEntities(visits);
                 } else {
                     console.error("Unexpected result format or empty array");
+                    setVisitedEntities([]); // Κενή λίστα αν το result δεν είναι σωστό
                 }
             } catch (error) {
                 console.error("Error fetching visited entities:", error);
+                setVisitedEntities([]); // Κενή λίστα σε περίπτωση σφάλματος
             }
-        };        
+        };
+    
         fetchVisitedEntities();
-    }, [destinations]);
+    }, [destinations]);    
 
     // Fetch categories
     useEffect(() => {

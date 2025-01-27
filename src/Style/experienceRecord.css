@@ -10,6 +10,12 @@
     background-color: #ffffff;
 }
 
+.experience-record:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
 .record-column {
     text-align: left;
     overflow: hidden;
