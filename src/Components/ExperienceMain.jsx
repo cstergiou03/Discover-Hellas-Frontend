@@ -71,13 +71,13 @@ function ExperienceMain() {
                 console.log("Full result:", result);
     
                 if (Array.isArray(result) && result.length > 0) {
-                    const visits = result[0].visits; // Εδώ παίρνουμε τα visits
+                    const visits = result[0].visits.filter((visit) => visit !== null); // Αφαίρεση null στοιχείων
                     console.log("Visited entities:", visits);
                     setVisitedEntities(visits);
                 } else {
                     console.error("Unexpected result format or empty array");
-                    setVisitedEntities([]); // Κενή λίστα αν το result δεν είναι σωστό
-                }
+                    setVisitedEntities([]);
+                }                
             } catch (error) {
                 console.error("Error fetching visited entities:", error);
                 setVisitedEntities([]); // Κενή λίστα σε περίπτωση σφάλματος

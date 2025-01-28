@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/experienceRecord.css";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function ExperienceRecord({ data, isVisited }) {
     const navigate = useNavigate();
@@ -20,7 +22,7 @@ function ExperienceRecord({ data, isVisited }) {
         <div className={`experience-record ${isVisited ? "visited" : ""}`}>
             <div className="record-column">
                 {data.name} 
-                {isVisited && <span className="checkmark">✅</span>}
+                {isVisited && <span className="checkmark"><FontAwesomeIcon icon={faCheck} /></span>}
             </div>
             <div className="record-column">{data.description}</div>
             <div className="record-column">

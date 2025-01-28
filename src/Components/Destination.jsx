@@ -136,34 +136,6 @@ function Destination() {
     
             } catch (error) {
                 console.error("Error fetching visits:", error.message);
-    
-                // Handle the case when the user has no visits yet
-                const createVisitData = {
-                    user_id: userId,
-                    visits: [] // Empty visit list for the new user
-                };
-    
-                try {
-                    const postResponse = await fetch(
-                        "https://olympus-riviera.onrender.com/api/user/visit/create" + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify(createVisitData)
-                        }
-                    );
-    
-                    if (!postResponse.ok) {
-                        throw new Error("Failed to create visit record");
-                    }
-    
-                    console.log("Visit record created successfully");
-    
-                } catch (postError) {
-                    console.error("Error creating visit record:", postError.message);
-                }
             }
         };
     
