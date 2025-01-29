@@ -69,11 +69,14 @@ function ProviderSidebar() {
 
     // Ενημέρωση των menuItems αν το status είναι "PENDING"
     const updatedMenuItems = menuItems.map((item) => {
-        if (userStatus === "PENDING" || userStatus === "REJECTED" && (item.name === "Καταχώρηση Παροχής" || item.name === "Καταχώρηση Εκδήλωσης")) {
+        if (
+            (userStatus === "PENDING" || userStatus === "REJECTED") && 
+            (item.name === "Καταχώρηση Παροχής" || item.name === "Καταχώρηση Εκδήλωσης")
+        ) {
             return { ...item, disabled: true };  // Απενεργοποιούμε τα συγκεκριμένα items
         }
         return item;
-    });
+    });    
 
     const handleLogout = () => {
         // Αποσύνδεση χρήστη και καθαρισμός του session
