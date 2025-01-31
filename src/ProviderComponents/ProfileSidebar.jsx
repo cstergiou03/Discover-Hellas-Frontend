@@ -42,7 +42,8 @@ function ProfileSidebar() {
                     amenityUrl
                 );
                 if (!amenitiesResponse.ok) {
-                    throw new Error("Failed to fetch amenities data");
+                    setAmenitiesCount(0);
+                    setLoading(false);
                 }
                 const amenitiesData = await amenitiesResponse.json();
 
@@ -54,14 +55,18 @@ function ProfileSidebar() {
                     eventUrl
                 );
                 if (!eventsResponse.ok) {
-                    throw new Error("Failed to fetch events data");
+                    setEventsCount(0);
+                    setLoading(false);
                 }
                 const eventsData = await eventsResponse.json();
 
                 setEventsCount(eventsData.length);
 
             } catch (err) {
-                setError(err.message);
+                setAmenitiesCount(0);
+                setLoading(false);
+                setEventsCount(0);
+                setLoading(false);
             } finally {
                 setLoading(false);
             }

@@ -1,15 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, act } from "react";
 import "../Style/planView.css";
 import Header from "./Header";
 import PlanRecord from "./PlanRecord";
 import GoogleMapReact from "google-map-react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function PlanView() {
     const [plan, setPlan] = useState(null);
     const [destinations, setDestinations] = useState([]);
     const [amenities, setAmenities] = useState([]);
+    const [activities, setActivities] = useState([]);
     const { planId } = useParams();
     const [loading, setLoading] = useState(true);
     const [directionsRenderer, setDirectionsRenderer] = useState(null);
@@ -21,8 +22,6 @@ function PlanView() {
         totalCost: 0,
         legs: [],
     });
-
-    const navigate = useNavigate();
 
     // Συνάρτηση για την λήψη των δεδομένων
     const fetchData = async () => {
@@ -38,6 +37,12 @@ function PlanView() {
             );
             const amenitiesData = await amenitiesResponse.json();
             setAmenities(amenitiesData);
+
+            const activitiesResponse = await fetch(
+                "https://olympus-riviera.onrender.com/api/activities/get/all"
+            );
+            const activitiesData = await activitiesResponse.json();
+            setActivities(activitiesData);
 
             // Ελέγχουμε αν ο χρήστης είναι συνδεδεμένος
             const isLoggedIn = sessionStorage.getItem("loggedIn") === "true";
@@ -95,8 +100,11 @@ function PlanView() {
         const amenity = amenities.find(
             (amenity) => amenity.amenity_id === entityId
         );
+        const activity = activities.find(
+            (activity) => activity.activity_id === entityId
+        );
 
-        return destination || amenity || null;
+        return destination || amenity || activity || null;
     };
 
     const handleApiLoaded = ({ map, maps }) => {
@@ -287,7 +295,7 @@ function PlanView() {
             </div>
             <div className="plan-content">
                 <div className="plan-list">
-                    <h3>{plan ? `Πλάνο: ${plan.title}` : "Loading Plan..."}</h3>
+                    <h3>{plan ? `Πλάνο: ${plan.title}` : "Πλάνο"}</h3>
                     <TransitionGroup className="plan-record">
                         {plan?.plan?.map((entry, index) => {
                             const entity = getEntityDetails(entry.entity_id);

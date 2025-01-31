@@ -5,11 +5,13 @@ import "../Style/filterButton.css";
 function FilterButton({ onFilterChange }) {
     const [destinationCategories, setDestinationCategories] = useState([]);
     const [amenityCategories, setAmenityCategories] = useState([]);
+    const [activityCategories, setActivityCategories] = useState([]);
     const [tempSelectedCategories, setTempSelectedCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [panelOpen, setPanelOpen] = useState(false);
     const [loadingDestinations, setLoadingDestinations] = useState(true);
     const [loadingAmenities, setLoadingAmenities] = useState(true);
+    const [loadingActivities, setLoadingActivities] = useState(true);
     const [loggedIn, setLoggedIn] = useState(sessionStorage.getItem('loggedIn') === 'true');
 
     const navigate = useNavigate();
@@ -39,8 +41,21 @@ function FilterButton({ onFilterChange }) {
             }
         };
 
+        const fetchActivityCategories = async () => {
+            try {
+                const response = await fetch('https://olympus-riviera.onrender.com/api/activity/category/get/all');
+                const data = await response.json();
+                setActivityCategories(data);
+                setLoadingActivities(false);
+            } catch (error) {
+                console.error('Error fetching amenity categories:', error);
+                setLoadingActivities(false);
+            }
+        };
+
         fetchDestinationCategories();
         fetchAmenityCategories();
+        fetchActivityCategories();
 
         // Παρακολούθηση αλλαγών στο localStorage για το loggedIn
         const handleStorageChange = () => {
@@ -108,6 +123,25 @@ function FilterButton({ onFilterChange }) {
                                         onChange={() => handleCategoryChange(category.category_id)}
                                     />
                                     <label htmlFor={`destination-${category.category_id}`}>{category.name}</label>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                    <h3>Κατηγορίες Δραστηριοτήτων</h3>
+                    {loadingActivities ? (
+                        <p>Loading activities categories...</p>
+                    ) : (
+                        <ul>
+                            {activityCategories.map((category) => (
+                                <li key={category.category_id}>
+                                    <input
+                                        type="checkbox"
+                                        id={`activity-${category.category_id}`}
+                                        checked={tempSelectedCategories.includes(category.category_id)}
+                                        onChange={() => handleCategoryChange(category.category_id)}
+                                    />
+                                    <label htmlFor={`activity-${category.category_id}`}>{category.name}</label>
                                 </li>
                             ))}
                         </ul>

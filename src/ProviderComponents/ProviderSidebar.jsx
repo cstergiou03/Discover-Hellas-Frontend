@@ -52,8 +52,8 @@ function ProviderSidebar() {
                 const decodedToken = jwtDecode(token);
                 setUserId(decodedToken.userId);
 
-                // Κάνουμε GET το αίτημα για το status του χρήστη
-                fetch(`https://olympus-riviera.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
+                const url = "https://olympus-riviera.onrender.com/api/user/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                fetch(url)
                     .then((response) => response.json())
                     .then((data) => {
                         setUserStatus(data.status);  // Αποθηκεύουμε το status του χρήστη
@@ -82,7 +82,7 @@ function ProviderSidebar() {
         // Αποσύνδεση χρήστη και καθαρισμός του session
         sessionStorage.removeItem('userToken');
         sessionStorage.setItem('loggedIn', 'false');
-        navigate("/");  // Ανακατεύθυνση στην αρχική σελίδα
+        navigate("/");
     };
 
     return (

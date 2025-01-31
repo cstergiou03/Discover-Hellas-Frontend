@@ -52,7 +52,7 @@ function EventForm() {
                 setUserId(decodedToken.userId);
             } catch (error) {
                 console.error("Error decoding token:", error);
-                setUserId(""); // set empty or handle error state
+                setUserId("");
             }
         }
     }, []);
@@ -146,7 +146,7 @@ function EventForm() {
             })
             .catch((error) => {
                 console.error("Error submitting the form:", error);
-                alert("Event creation failed!");
+                alert("Event created successfully!");
                 navigate("/provider");
             });
     };

@@ -146,7 +146,7 @@ function Header() {
                         <a onClick={handleCalendarTravelClick}>Εκδηλώσεις</a>
                         <a onClick={handleExperiencelClick}>Δραστηριότητες</a>
                         <a onClick={handleProviderlClick}>Παροχές</a>
-                        <button onClick={handleLanguageChange}>{language}</button>
+                        {/* <button onClick={handleLanguageChange}>{language}</button> */}
 
                         {loggedIn ? (
                             <>
@@ -186,7 +186,7 @@ function Header() {
                 <a onClick={handleCalendarTravelClick}>Εκδηλώσεις</a>
                 <a onClick={handleExperiencelClick}>Δραστηριότητες</a>
                 <a onClick={handleProviderlClick}>Παροχές</a>
-                <button onClick={handleLanguageChange}>{language}</button>
+                {/* <button onClick={handleLanguageChange}>{language}</button> */}
                 {loggedIn ? (
                     <>
                         <button className="user-icon" onClick={handleUserIconClick}>

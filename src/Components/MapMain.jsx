@@ -8,7 +8,9 @@ import { jwtDecode } from 'jwt-decode';
 
 function MapMain() {
     const [destinations, setDestinations] = useState([]);
+    const [activities, setActivities] = useState([]);
     const [filteredDestinations, setFilteredDestinations] = useState([]);
+    const [filteredActivities, setFilteredActivities] = useState([]);
     const [amenities, setAmenities] = useState([]);
     const [filteredAmenities, setFilteredAmenities] = useState([]);
     const [plans, setPlans] = useState([]);
@@ -47,6 +49,17 @@ function MapMain() {
                 setAmenities(normalizedAmenities);
                 setFilteredAmenities(normalizedAmenities);
 
+                const activitiesResponse = await fetch(
+                    "https://olympus-riviera.onrender.com/api/activity/get/all"
+                );
+                const activitiesData = await activitiesResponse.json();
+                const normalizedActivities = activitiesData.map((activity) => ({
+                    ...activity,
+                    id: activity.activity_id,
+                }));
+                setActivities(normalizedActivities);
+                setFilteredActivities(normalizedActivities);
+
 
                 const token = sessionStorage.getItem("userToken");
                 if (token) {
@@ -80,6 +93,7 @@ function MapMain() {
         if (categories.length === 0) {
             setFilteredDestinations(destinations);
             setFilteredAmenities(amenities);
+            setFilteredActivities(activities);
         } else {
             const filteredDest = destinations.filter((destination) =>
                 categories.includes(destination.category_id)
@@ -87,8 +101,12 @@ function MapMain() {
             const filteredAmen = amenities.filter((amenity) =>
                 categories.includes(amenity.category_id)
             );
+            const filteredActiv = activities.filter((activity) =>
+                categories.includes(activity.category_id)
+            );
             setFilteredDestinations(filteredDest);
             setFilteredAmenities(filteredAmen);
+            setFilteredActivities(filteredActiv);
         }
     };
 
