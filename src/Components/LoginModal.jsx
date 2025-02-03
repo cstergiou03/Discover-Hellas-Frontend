@@ -85,7 +85,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 if (apiResponse.ok) {
                     login(data.jwt_token);
                     sessionStorage.setItem("loggedIn", "true");
-                    location.reload();
+                    // location.reload();
                     onClose();
                 } else {
                     const role = "REGISTERED";
