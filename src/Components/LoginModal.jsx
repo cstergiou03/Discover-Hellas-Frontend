@@ -105,7 +105,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                         login(registerData.jwt_token);
                         sessionStorage.setItem("userToken", registerData.jwt_token);
                         sessionStorage.setItem("loggedIn", "true");
-                        location.reload();
+                        // location.reload();
                         onClose();
                     } else {
                         setGoogleError("Registration failed. Please try again.");
