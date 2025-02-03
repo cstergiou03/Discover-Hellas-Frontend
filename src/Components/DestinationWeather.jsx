@@ -41,7 +41,7 @@ function DestinationWeather({ longitude, latitude }) {
 
     return (
         <div className="weather-widget">
-            <h1>Weather Forecast</h1>
+            <h1>Καιρός</h1>
             <div className="forecast-container">
                 <TodayForecast data={data} todayIndex={todayIndex} />
                 <div className="next-days-forecast">
@@ -64,7 +64,7 @@ const TodayForecast = ({ data, todayIndex }) => {
 
   return (
     <div className="today-forecast">
-      <h2>Today</h2>
+      <h2>Σήμερα</h2>
       <div className="weather-icon">{weatherIcon}</div>
       <p className="weather-description">{weatherDescription}</p>
       <p className="temperature">
@@ -82,7 +82,7 @@ const TodayForecast = ({ data, todayIndex }) => {
 const DayForecast = ({ data, dayIndex }) => {
   const weatherIcon = getWeatherIcon(data.daily.weather_code[dayIndex]);
   const date = new Date(data.daily.time[dayIndex]);
-  const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+  const dayName = date.toLocaleDateString('el-GR', { weekday: 'long' });
 
   return (
     <div className="day-forecast">

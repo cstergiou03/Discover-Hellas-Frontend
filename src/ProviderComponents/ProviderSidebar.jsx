@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../StyleProvider/providerSidebar.css";
-import logo from "../assets/logo2.png";
+import logo from "../assets/logo2 (1).png";
 import { FaBars } from 'react-icons/fa';
 import { jwtDecode } from 'jwt-decode';
 
@@ -107,7 +107,7 @@ function ProviderSidebar() {
             </div>
 
             <div className="side-bar-footer">
-                {!collapsed && <img src={logo} alt="Logo" />}  {/* Το λογότυπο θα εμφανίζεται μόνο αν η sidebar δεν είναι συμπιεσμένη */}
+                {!collapsed && <img src={logo} alt="Logo" className="logo"/>}  {/* Το λογότυπο θα εμφανίζεται μόνο αν η sidebar δεν είναι συμπιεσμένη */}
 
                 <div className="menu">
                     {/* Εμφανίζουμε πάντα το Logout item */}

@@ -39,7 +39,7 @@ function PlanView() {
             setAmenities(amenitiesData);
 
             const activitiesResponse = await fetch(
-                "https://olympus-riviera.onrender.com/api/activities/get/all"
+                "https://olympus-riviera.onrender.com/api/activity/get/all"
             );
             const activitiesData = await activitiesResponse.json();
             setActivities(activitiesData);
@@ -52,25 +52,12 @@ function PlanView() {
                     `https://olympus-riviera.onrender.com/api/plan/${planId}`
                 );
                 const planData = await planResponse.json();
-
                 if (planData) {
                     // Ταξινόμηση του πλάνου με βάση την ημερομηνία
-                    const sortedPlan = planData.plan.sort((a, b) => {
-                        const dateA = new Date(a.date.split('T')[0]);
-                        const dateB = new Date(b.date.split('T')[0]);
-
-                        if (isNaN(dateA.getTime())) {
-                            console.error("Μη έγκυρη ημερομηνία:", a.date);
-                            return 0;
-                        }
-                        if (isNaN(dateB.getTime())) {
-                            console.error("Μη έγκυρη ημερομηνία:", b.date);
-                            return 0;
-                        }
-
-                        return dateA - dateB;
-                    });
-
+                    const sortedPlan = [...planData.plan].sort((a, b) => {
+                        return a.date.localeCompare(b.date);
+                    });                                                        
+                    console.log(sortedPlan)
                     setPlan({ ...planData, plan: sortedPlan });
                 }
             } else {

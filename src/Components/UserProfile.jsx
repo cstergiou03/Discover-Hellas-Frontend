@@ -118,7 +118,8 @@ function UserProfile() {
                 })
                 .catch((error) => console.error("Error fetching plans:", error));
         }
-    }, [plans]); // Βάζουμε το userId σαν εξάρτηση για να κάνουμε fetch τα πλάνα όταν το userId είναι έτοιμο
+    }, [userId]); // Εξάρτηση μόνο από το userId
+    
 
 
 
@@ -174,10 +175,10 @@ function UserProfile() {
     const handleCreatePlan = () => {
         const newPlan = {
             title: newPlanTitle,
-            plan: [],  // Στέλνεις το κενό array για το πεδίο plan
-            user_id: userId, // Χρησιμοποιούμε το decodedToken.sub ως user_id
+            plan: [],
+            user_id: userId,
         };
-
+    
         fetch("https://olympus-riviera.onrender.com/api/plan/create", {
             method: "POST",
             headers: {
@@ -187,11 +188,25 @@ function UserProfile() {
         })
             .then((response) => response.json())
             .then((data) => {
-                setPlans([...plans, data]);
-                alert("Το νέο πλάνο δημιουργήθηκε με επιτυχία!");
+                // Αντί να προσθέτουμε το νέο πλάνο χειροκίνητα, κάνουμε νέο fetch
+                fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+                    .then((response) => response.json())
+                    .then((updatedPlans) => {
+                        setPlans(updatedPlans);
+                    })
+                    .catch((error) => console.error("Error fetching updated plans:", error));
+            })
+            .catch((error) => {
+                fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+                    .then((response) => response.json())
+                    .then((updatedPlans) => {
+                        setPlans(updatedPlans);
+                    })
+                    .catch((error) => console.error("Error fetching updated plans:", error));
             });
+    
         setNewPlanTitle("");
-    };
+    };    
 
     const handleDeletePlan = (planId) => {
         fetch(`https://olympus-riviera.onrender.com/api/plan/${planId}`, {

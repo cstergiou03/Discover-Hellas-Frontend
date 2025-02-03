@@ -73,7 +73,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
         if (response.credential) {
             try {
                 const jwt_token = response.credential;
-    
+                console.log(jwt_token);
                 // Κάνουμε το POST request στο backend για το login
                 const apiResponse = await fetch("https://olympus-riviera.onrender.com/api/user/login", {
                     method: "POST",
