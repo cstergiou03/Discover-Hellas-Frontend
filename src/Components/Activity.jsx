@@ -34,6 +34,7 @@ function Activity() {
     const [showLoginModal, setShowLoginModal] = useState(false);
     const [visited, setVisited] = useState(false);
     const [visitData, setVisitData] = useState([]);
+    const [averageRating, setAverageRating] = useState(null);
 
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
@@ -70,7 +71,23 @@ function Activity() {
             }
         };
 
+        const fetchAverageRating = async () => {
+            try {
+                const response = await fetch(
+                    `https://olympus-riviera.onrender.com/api/activity/statistics/${activityId}`
+                );
+                if (!response.ok) {
+                    throw new Error("Failed to fetch average rating");
+                }
+                const stats = await response.json();
+                setAverageRating(stats[0]?.average_rating || "N/A"); // Set average rating
+            } catch (err) {
+                console.error("Error fetching average rating:", err.message);
+            }
+        };
+
         fetchData();
+        fetchAverageRating();
     }, [activityId]);
 
     useEffect(() => {
@@ -299,6 +316,12 @@ function Activity() {
                         <button onClick={closeReviewsModal} className="close-modal-button">
                             ×
                         </button>
+                    </div>
+                    <div className="average-rating">
+                        <p>
+                            <strong>Μέση Αξιολόγηση:</strong>{" "}
+                            {averageRating !== null ? parseFloat(averageRating).toFixed(1) : "Δεν υπάρχουν δεδομένα"}
+                        </p>
                     </div>
                     <div className="reviews-list">
                         {reviews.length === 0 ? (
