@@ -5,7 +5,7 @@ function Footer() {
         <footer className="footer">
             <div className="footer-content">
                 <div className="footer-logo">
-                    <p>Visit Pieria</p>
+                    <p>Discover Hellas</p>
                 </div>
                 <div className="footer-links">
                     <ul>
@@ -15,7 +15,7 @@ function Footer() {
                         <li><a href="/activity">Δραστηριότητες</a></li>
                         <li><a href="/provider">Πάροχοι</a></li>
                     </ul>
-                    <p className="footer-text">© 2024 Visit Pieria | All rights reserved</p>
+                    <p className="footer-text">© 2024 Discover Hellas | All rights reserved</p>
                     {/* <ul>
                         <li><a href="/terms">Terms of Use</a></li>
                         <li><a href="/privacy">Privacy Policy</a></li>

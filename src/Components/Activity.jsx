@@ -15,8 +15,8 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-    lat: 40.0853,
-    lng: 22.3584,
+    lat: 39.0742,
+    lng: 21.8243,
 };
 
 function Activity() {

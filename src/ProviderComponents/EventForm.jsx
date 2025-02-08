@@ -13,8 +13,8 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-    lat: 40.0853,
-    lng: 22.3584,
+    lat: 39.0742,
+    lng: 21.8243,
 };
 
 function EventForm() {
@@ -159,9 +159,9 @@ function EventForm() {
 
     return (
         <div className="event-form-container">
-            <h1>Create a New Event</h1>
+            <h1>Πάροχος - Δημιουργία Εκδήλωσης</h1>
             <form className="event-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
-                <label htmlFor="name">Event Name:</label>
+                <label htmlFor="name">Όνομα Εκδήλωσης:</label>
                 <input
                     type="text"
                     id="name"
@@ -170,7 +170,7 @@ function EventForm() {
                     onChange={handleChange}
                     required
                 />
-                <label htmlFor="description">Description:</label>
+                <label htmlFor="description">Περιγραφή:</label>
                 <textarea
                     id="description"
                     name="description"
@@ -179,7 +179,7 @@ function EventForm() {
                     required
                 />
 
-                <label htmlFor="eventStart">Event Start:</label>
+                <label htmlFor="eventStart">Έναρξη Εκδήλωσης:</label>
                 <input
                     type="datetime-local"
                     id="eventStart"
@@ -189,7 +189,7 @@ function EventForm() {
                     required
                 />
 
-                <label htmlFor="eventEnd">Event End:</label>
+                <label htmlFor="eventEnd">Λήξη Εκδήλωσης:</label>
                 <input
                     type="datetime-local"
                     id="eventEnd"
@@ -199,7 +199,7 @@ function EventForm() {
                     required
                 />
     
-                <label htmlFor="location">Search for a Location:</label>
+                <label htmlFor="location">Αναζήτηση Τοποθεσίας:</label>
                 {isLoaded ? (
                     <Autocomplete
                         onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
@@ -218,7 +218,7 @@ function EventForm() {
                     <p>Loading maps...</p>
                 )}
     
-                <label htmlFor="location">Location (Click on the map to select):</label>
+                <label htmlFor="location">Τοποθεσία (Click on the map to select):</label>
                 {isLoaded ? (
                     <GoogleMap
                         mapContainerStyle={containerStyle}
@@ -247,27 +247,7 @@ function EventForm() {
                     onChange={handleChange}
                 />
 
-                <label htmlFor="phone">Phone:</label>
-                <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    required
-                />
-
-                <label htmlFor="email">Email:</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
-
-                <label htmlFor="photos">Photos:</label>
+                <label htmlFor="photos">Φωτογραφίες:</label>
                 <input
                     type="file"
                     id="photos"

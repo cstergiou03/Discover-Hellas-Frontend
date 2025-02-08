@@ -158,7 +158,7 @@ function ProviderApprovalForm() {
                 )}
 
                 <div className="action-buttons">
-                    {userData.status === "PENDING" && (
+                    {userData.status === "APPROVED" && (
                         <>
                             <button
                                 className='more-btn'

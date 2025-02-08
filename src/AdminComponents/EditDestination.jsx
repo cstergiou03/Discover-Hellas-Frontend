@@ -12,8 +12,8 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-    lat: 40.0853,
-    lng: 22.3584,
+    lat: 39.0742,
+    lng: 21.8243,
 };
 
 function EditDestination() {
@@ -245,14 +245,6 @@ function EditDestination() {
                         <MarkerF position={{ lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }} />
                     )}
                 </GoogleMap>
-
-                <label htmlFor="360Link">360 Link:</label>
-                <input
-                    // type="url"
-                    id="360Link"
-                    value={formData.link_360_view}
-                    onChange={(e) => setFormData({ ...formData, link_360_view: e.target.value })}
-                />
 
                 <label htmlFor="photos">Photos:</label>
                 <input type="file" multiple onChange={handlePhotoChange} />

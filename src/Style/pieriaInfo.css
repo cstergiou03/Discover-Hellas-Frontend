@@ -1,4 +1,4 @@
-.pieria-container {
+.main-info-container {
     margin: auto;
     width: 100%;
     padding-left: 2em;
@@ -10,7 +10,7 @@
     height: 100%;
 }
 
-.pieria-title {
+.main-info-title {
     font-size: 2rem;
     font-weight: bold;
     color: #a4c991;
@@ -18,7 +18,7 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.pieria-paragraph {
+.main-info-paragraph {
     font-size: 1.2rem;
     line-height: 1.6;
     color: #333;

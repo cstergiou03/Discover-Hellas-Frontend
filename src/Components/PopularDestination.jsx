@@ -98,7 +98,7 @@ function PopularDestination() {
     return (
         <div className="popular-destinations-container">
             <h2>Δημοφιλείς Προορισμοί</h2>
-            <p>Οι πιο Δημοφιλείς προορισμοί της Πιερίας</p>
+            <p>Οι πιο Δημοφιλείς προορισμοί</p>
             <div className="popular-destinations-grid">
                 {topDestinations.map((destination, index) => (
                     <div

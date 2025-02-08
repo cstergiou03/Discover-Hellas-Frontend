@@ -34,7 +34,7 @@ html, body {
     max-width: 1200px; /* Μπορείς να προσαρμόσεις το μέγιστο πλάτος ανάλογα με τις ανάγκες σου */
 }
 
-.weather, .pieria-info {
+.weather, .visit-info {
     flex: 1; /* Δηλώνει ότι κάθε στοιχείο καταλαμβάνει τον ίδιο χώρο */
     display: flex;
     justify-content: center; /* Τοποθετεί το περιεχόμενο στο κέντρο του container */
@@ -57,7 +57,7 @@ html, body {
         width: 100%; /* Διασφαλίζουμε ότι καταλαμβάνουν το πλήρες πλάτος */
     }
 
-    .weather, .pieria-info {
+    .weather, .visit-info {
         flex: unset; /* Αφαιρούμε την ιδιότητα flex ώστε τα στοιχεία να καταλαμβάνουν το πλάτος που χρειάζονται */
     }
 }

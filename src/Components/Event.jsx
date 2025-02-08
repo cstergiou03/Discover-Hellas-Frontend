@@ -5,8 +5,19 @@ import DestinationGallery from "./DestinationGallery";
 import { useParams } from "react-router-dom";
 import Footer from "./Footer";
 import DestinationInfo from "./DestinationInfo";
-import GoogleMapReact from 'google-map-react';
+import LoginModal from "./LoginModal";
+import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
 import { useState, useEffect } from "react";
+
+const containerStyle = {
+    width: "100%",
+    height: "500px",
+};
+
+const defaultCenter = {
+    lat: 39.0742,
+    lng: 21.8243,
+};
 
 function Event() {
     const { eventId } = useParams();
@@ -15,6 +26,10 @@ function Event() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [mapKey, setMapKey] = useState(Date.now());
+
+    const { isLoaded, loadError } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+    });
 
     // Λήψη των event δεδομένων από το API
     useEffect(() => {
@@ -107,19 +122,24 @@ function Event() {
             <div className="event-map-and-info">
                 <div className="event-map-container">
                     {event.latitude && event.longitude ? (
-                        <GoogleMapReact
-                        key={mapKey}
-                            bootstrapURLKeys={{
-                                key: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
+                        <GoogleMap
+                            key={mapKey}
+                            mapContainerStyle={containerStyle}
+                            center={{
+                                lat: parseFloat(event.latitude) || defaultCenter.lat,
+                                lng: parseFloat(event.longitude) || defaultCenter.lng,
                             }}
-                            defaultZoom={10}
-                            defaultCenter={{
-                                lat: 40.0853,
-                                lng: 22.3584,
-                            }}
-                            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-                            yesIWantToUseGoogleMapApiInternals
-                        />
+                            zoom={9}
+                        >
+                            {event.latitude && event.longitude && (
+                                <MarkerF
+                                    position={{
+                                        lat: parseFloat(event.latitude),
+                                        lng: parseFloat(event.longitude),
+                                    }}
+                                />
+                            )}
+                        </GoogleMap>
                     ) : (
                         <div>Δεν υπάρχουν διαθέσιμες συντεταγμένες για τον χάρτη.</div>
                     )}

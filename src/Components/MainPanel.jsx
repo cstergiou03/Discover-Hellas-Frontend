@@ -2,7 +2,7 @@ import React from "react";
 import Footer from "./Footer.jsx";
 import PageTop from "./PageTop.jsx";
 import StatSection from "./StatSection.jsx";
-import PieriaInfo from "./PieriaInfo";
+import MainInfo from "./MainInfo.jsx";
 import WeatherWidget from "./Weather.jsx";
 import "../Style/mainPanel.css";
 import PopularDestination from "./PopularDestination.jsx";
@@ -20,7 +20,7 @@ function MainPanel() {
                 <div className="stat-section"><StatSection /></div>
                 <div className="inside-mid-container">
                     <div className="weather"><WeatherWidget/></div>
-                    <div className="pieria-info"><PieriaInfo /></div>
+                    <div className="visit-info"><MainInfo /></div>
                 </div>
                 <div className="popular-amenity"><PopularDestination /></div>
                 {loggedIn && (

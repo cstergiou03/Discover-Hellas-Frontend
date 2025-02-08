@@ -31,49 +31,56 @@ function ProfileSidebar() {
 
     useEffect(() => {
         if (!userId) return;
-
+    
         const fetchData = async () => {
             try {
                 setLoading(true);
-
-                const amenityUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
-                console.log(amenityUrl);
-                const amenitiesResponse = await fetch(
-                    amenityUrl
-                );
+    
+                // Fetch amenities data
+                const amenityUrl =
+                    "https://olympus-riviera.onrender.com/api/provider/amenity/get/all/" +
+                    `${userId}` +
+                    "?Authorization=Bearer%20" +
+                    `${sessionStorage.getItem("userToken")}`;
+                const amenitiesResponse = await fetch(amenityUrl);
+    
                 if (!amenitiesResponse.ok) {
                     setAmenitiesCount(0);
-                    setLoading(false);
+                } else {
+                    const amenitiesData = await amenitiesResponse.json();
+                    setAmenitiesCount(amenitiesData.length);
                 }
-                const amenitiesData = await amenitiesResponse.json();
-
-                setAmenitiesCount(amenitiesData.length);
-
-                const eventUrl = "https://olympus-riviera.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+            } catch (err) {
+                console.error("Error fetching amenities:", err);
+                setAmenitiesCount(0);
+            }
+    
+            try {
+                // Fetch events data
+                const eventUrl =
+                    "https://olympus-riviera.onrender.com/api/provider/event/get/all/" +
+                    `${userId}` +
+                    "?Authorization=Bearer%20" +
+                    `${sessionStorage.getItem("userToken")}`;
                 console.log(eventUrl);
-                const eventsResponse = await fetch(
-                    eventUrl
-                );
+                const eventsResponse = await fetch(eventUrl);
+    
                 if (!eventsResponse.ok) {
                     setEventsCount(0);
-                    setLoading(false);
+                } else {
+                    const eventsData = await eventsResponse.json();
+                    setEventsCount(eventsData.length);
                 }
-                const eventsData = await eventsResponse.json();
-
-                setEventsCount(eventsData.length);
-
             } catch (err) {
-                setAmenitiesCount(0);
-                setLoading(false);
+                console.error("Error fetching events:", err);
                 setEventsCount(0);
-                setLoading(false);
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchData();
-    }, [userId]);
+    }, [userId]);    
 
     if (loading) {
         return (
