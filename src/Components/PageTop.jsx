@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Header from "./Header";
 import "../Style/topPage.css";
 import seasonsData from "../assets/season.json";
@@ -9,11 +9,9 @@ import fall from "../assets/fall.jpg";
 
 function TopPage() {
     const [currentImage, setCurrentImage] = useState(winter); // Default image
-    const [currentText, setCurrentText] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 970); // Ελέγχουμε αν είναι κινητό
-
-    const typingTimeoutRef = useRef(null);
+    const [currentText, setCurrentText] = useState(""); // Default text
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 970); // Check if mobile
+    const [fadeKey, setFadeKey] = useState(0); // Key to trigger fade-in animation
 
     const imagesMap = {
         Χειμώνας: winter,
@@ -35,53 +33,34 @@ function TopPage() {
     };
 
     useEffect(() => {
-        const currentSeasonName = getCurrentSeason();
-        const season = seasonsData.seasons.find((s) => s.name === currentSeasonName);
+        const initializeSeason = () => {
+            const currentSeasonName = getCurrentSeason();
+            const season = seasonsData?.seasons?.find((s) => s.name === currentSeasonName);
 
-        if (season) {
-            setCurrentImage(imagesMap[currentSeasonName]);
-            startTyping(season.text);
-        }
-
-        // Event listener για έλεγχο του μεγέθους της οθόνης
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 970);
+            if (season) {
+                setCurrentImage(imagesMap[currentSeasonName]);
+                setCurrentText(season.text || "Season text not available.");
+                setFadeKey((prev) => prev + 1); // Trigger fade-in
+            } else {
+                setCurrentText("Unable to determine the current season.");
+            }
         };
 
+        initializeSeason();
+
+        // Handle screen resizing
+        const checkMobile = () => setIsMobile(window.innerWidth <= 970);
         window.addEventListener("resize", checkMobile);
-        return () => {
-            window.removeEventListener("resize", checkMobile);
-        };
-    }, []);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []); // Only run once on component mount
 
     const handleSeasonClick = (seasonName) => {
         const season = seasonsData.seasons.find((s) => s.name === seasonName);
         if (season) {
             setCurrentImage(imagesMap[seasonName]);
-            startTyping(season.text);
+            setCurrentText(season.text);
+            setFadeKey((prev) => prev + 1); // Trigger fade-in
         }
-    };
-
-    const startTyping = (text) => {
-        if (typingTimeoutRef.current) {
-            clearTimeout(typingTimeoutRef.current);
-        }
-
-        setIsTyping(true);
-        setCurrentText("");
-        let i = 0;
-
-        const typeWriter = () => {
-            if (i < text.length) {
-                setCurrentText((prev) => prev + text.charAt(i));
-                i++;
-                typingTimeoutRef.current = setTimeout(typeWriter, 40);
-            } else {
-                setIsTyping(false);
-            }
-        };
-
-        typeWriter();
     };
 
     return (
@@ -90,10 +69,9 @@ function TopPage() {
             <img src={currentImage} className="photo" alt="season" />
             <div className="description-container">
                 <h2 className="description-title">Info</h2>
-                <p className={isTyping ? "typing" : ""}>{currentText}</p>
+                {/* Add a dynamic key to force reapplication of the fade-in animation */}
+                <p key={fadeKey} className="fade-in">{currentText}</p>
             </div>
-            
-            {/* Εμφάνιση ή απόκρυψη του season-container ανάλογα με το μέγεθος της οθόνης */}
             {!isMobile && (
                 <div className="season-container">
                     {seasonsData.seasons.map((season) => (

@@ -177,7 +177,7 @@ function AmenityForm() {
 
     return (
         <div className="amenity-form-container">
-            <h1>{location.pathname.includes("/admin") ? "ΠΟΤΑΠ - Δημιουργία Παροχής" : "Πάροχος - Δημιουργία Παροχής"}</h1>
+            <h1>{location.pathname.includes("/admin") ? "Πάροχος - Δημιουργία Παροχής" : ""}</h1>
             <form className="amenity-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
                 <label htmlFor="name">Όνομα Παροχής:</label>
                 <input

@@ -36,6 +36,7 @@ function Destination() {
     const [loggedIn, setLoggedIn] = useState(false);
     const [visitData, setVisitData] = useState([]);
     const [visited, setVisited] = useState(false);
+    const [averageRating, setAverageRating] = useState(null);
 
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyCIrKrxTVDqlcRVFNyNMm5iS869G7RYvuc",
@@ -72,7 +73,23 @@ function Destination() {
             }
         };
 
+        const fetchAverageRating = async () => {
+            try {
+                const response = await fetch(
+                    `https://olympus-riviera.onrender.com/api/destination/statistics/${destinationId}`
+                );
+                if (!response.ok) {
+                    throw new Error("Failed to fetch average rating");
+                }
+                const stats = await response.json();
+                setAverageRating(stats[0]?.average_rating || "N/A"); // Set average rating
+            } catch (err) {
+                console.error("Error fetching average rating:", err.message);
+            }
+        };
+
         fetchData();
+        fetchAverageRating(); // Fetch the average rating
     }, [destinationId]);
 
     useEffect(() => {
@@ -272,6 +289,13 @@ function Destination() {
                             ×
                         </button>
                     </div>
+                    {/* Display the average rating */}
+                    <div className="average-rating">
+                        <p>
+                            <strong>Μέση Αξιολόγηση:</strong>{" "}
+                            {averageRating !== null ? parseFloat(averageRating).toFixed(1) : "Δεν υπάρχουν δεδομένα"}
+                        </p>
+                    </div>
                     <div className="reviews-list">
                         {reviews.length === 0 ? (
                             <p>Δεν υπάρχουν κριτικές ακόμα.</p>
@@ -300,7 +324,6 @@ function Destination() {
                             ))
                         )}
                     </div>
-
                 </div>
             </div>
         );
@@ -340,7 +363,6 @@ function Destination() {
             if (visited) {
                 // Αφαίρεση του συγκεκριμένου entity_id αν το κάνουμε uncheck
                 const updatedVisitsList = updatedVisits.filter(visit => visit.entity_id !== destinationId);
-                console.log("addfsafas" + updatedVisitsList);
                 await updateUserVisits(updatedVisitsList);
             } else {
                 // Προσθήκη του νέου entity_id στην λίστα των επισκέψεων

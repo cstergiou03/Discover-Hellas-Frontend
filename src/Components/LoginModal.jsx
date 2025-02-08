@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Style/loginModal.css";
-import { jwtDecode } from 'jwt-decode';
 import { useAuth } from "../Context/AuthContext";
 
 function LoginModal({ isOpen, onClose, setLoggedIn }) {
@@ -85,7 +84,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 if (apiResponse.ok) {
                     login(data.jwt_token);
                     sessionStorage.setItem("loggedIn", "true");
-                    // location.reload();
+                    location.reload();
                     onClose();
                 } else {
                     const role = "REGISTERED";
@@ -105,7 +104,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                         login(registerData.jwt_token);
                         sessionStorage.setItem("userToken", registerData.jwt_token);
                         sessionStorage.setItem("loggedIn", "true");
-                        // location.reload();
+                        location.reload();
                         onClose();
                     } else {
                         setGoogleError("Registration failed. Please try again.");
@@ -139,9 +138,9 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
                 const data = await apiResponse.json();
                 if (apiResponse.ok) {
-                    // sessionStorage.setItem("userToken", data.jwt_token);
-                    // sessionStorage.setItem("loggedIn", "true");
-                    // login(data.jwt_token);
+                    sessionStorage.setItem("userToken", data.jwt_token);
+                    sessionStorage.setItem("loggedIn", "true");
+                    login(data.jwt_token);
                     alert("Ο χρήστης δημιουργήθηκε με επιτυχία μπορείτε πλέον να συνδεθείτε");
                 } else {
                     setGoogleError("Registration failed. Please try again.");

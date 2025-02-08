@@ -62,7 +62,7 @@ function CategoryForm() {
 
     return (
         <div className="amenity-form-container">
-            <h1>Create Category</h1>
+            <h1>Δημιουργία Κατηγορίας</h1>
             <form className="amenity-form" onSubmit={handleSubmit}>
                 <label htmlFor="name">Όνομα Κατηγορίας:</label>
                 <input
