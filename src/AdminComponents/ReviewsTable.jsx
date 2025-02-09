@@ -37,11 +37,11 @@ function ReviewsTable({ data, dataType }) {
         const fetchDestinationsAndActivities = async () => {
             try {
                 // Φέρνουμε όλα τα destinations
-                const destinationsResponse = await fetch("https://olympus-riviera.onrender.com/api/destination/get/all");
+                const destinationsResponse = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/destination/get/all");
                 const destinationsData = await destinationsResponse.json();
 
                 // Φέρνουμε όλα τα activities
-                const activitiesResponse = await fetch("https://olympus-riviera.onrender.com/api/activity/get/all");
+                const activitiesResponse = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/activity/get/all");
                 const activitiesData = await activitiesResponse.json();
 
                 // Δημιουργούμε χάρτες για τα destinations και τα activities

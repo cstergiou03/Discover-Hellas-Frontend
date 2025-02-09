@@ -67,7 +67,7 @@ function UserProfile() {
 
         // Fetching user's plans
         if (userId) {
-            fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/plan/user/${userId}/plans`)
                 .then((response) => response.json())
                 .then((data) => {
                     setPlans(data);
@@ -75,7 +75,7 @@ function UserProfile() {
                 })
                 .catch((error) => console.error("Error fetching plans:", error));
 
-            fetch(`https://olympus-riviera.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`)
+            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch user data");
@@ -94,14 +94,14 @@ function UserProfile() {
                 });
         }
 
-        fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/destination/category/get/all")
             .then((response) => response.json())
             .then((data) => {
                 setPreferences(data); // Αποθηκεύουμε όλες τις κατηγορίες
             })
             .catch((error) => console.error("Error fetching categories:", error));
 
-        fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/activity/category/get/all")
             .then((response) => response.json())
             .then((data) => {
                 setHobbies(data); // Αποθηκεύουμε όλες τις κατηγορίες
@@ -111,7 +111,7 @@ function UserProfile() {
     
     useEffect(() => {
         if (userId) {
-            fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/plan/user/${userId}/plans`)
                 .then((response) => response.json())
                 .then((data) => {
                     setPlans(data);
@@ -148,7 +148,7 @@ function UserProfile() {
         console.log(JSON.stringify(updateData));
     
         fetch(
-            `https://olympus-riviera.onrender.com/api/user/updateProfile/Registered/${userId}` +
+            `https://discover-hellas-springboot-backend.onrender.com/api/user/updateProfile/Registered/${userId}` +
                 "?Authorization=Bearer%20" +
                 `${sessionStorage.getItem("userToken")}`,
             {
@@ -179,7 +179,7 @@ function UserProfile() {
             user_id: userId,
         };
     
-        fetch("https://olympus-riviera.onrender.com/api/plan/create", {
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/plan/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -189,7 +189,7 @@ function UserProfile() {
             .then((response) => response.json())
             .then((data) => {
                 // Αντί να προσθέτουμε το νέο πλάνο χειροκίνητα, κάνουμε νέο fetch
-                fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+                fetch(`https://discover-hellas-springboot-backend.onrender.com/api/plan/user/${userId}/plans`)
                     .then((response) => response.json())
                     .then((updatedPlans) => {
                         setPlans(updatedPlans);
@@ -197,7 +197,7 @@ function UserProfile() {
                     .catch((error) => console.error("Error fetching updated plans:", error));
             })
             .catch((error) => {
-                fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+                fetch(`https://discover-hellas-springboot-backend.onrender.com/api/plan/user/${userId}/plans`)
                     .then((response) => response.json())
                     .then((updatedPlans) => {
                         setPlans(updatedPlans);
@@ -209,13 +209,13 @@ function UserProfile() {
     };    
 
     const handleDeletePlan = (planId) => {
-        fetch(`https://olympus-riviera.onrender.com/api/plan/${planId}`, {
+        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/plan/${planId}`, {
             method: "DELETE",
         })
             .then((response) => {
                 if (response.ok) {
                     // Αν η διαγραφή ήταν επιτυχής, ανανεώνουμε τη λίστα πλάνων
-                    fetch(`https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`)
+                    fetch(`https://discover-hellas-springboot-backend.onrender.com/api/plan/user/${userId}/plans`)
                         .then((response) => response.json())
                         .then((data) => {
                             setPlans(data); // Ενημέρωση της λίστας με τα νέα δεδομένα

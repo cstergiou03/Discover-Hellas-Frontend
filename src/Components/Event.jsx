@@ -33,7 +33,7 @@ function Event() {
 
     // Λήψη των event δεδομένων από το API
     useEffect(() => {
-        fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
+        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/event/get/${eventId}`)
             .then((response) => response.json())
             .then((data) => {
                 setEvent(data);

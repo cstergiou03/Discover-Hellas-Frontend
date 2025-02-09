@@ -22,10 +22,10 @@ function CategoryForm() {
 
         const url =
             categoryFor === "Προορισμό"
-                ? "https://olympus-riviera.onrender.com/api/admin/destination/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                ? "https://discover-hellas-springboot-backend.onrender.com/api/admin/destination/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                 : categoryFor === "Δραστηριότητα"
-                ? "https://olympus-riviera.onrender.com/api/admin/activity/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
-                : "https://olympus-riviera.onrender.com/api/admin/amenity/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+                ? "https://discover-hellas-springboot-backend.onrender.com/api/admin/activity/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                : "https://discover-hellas-springboot-backend.onrender.com/api/admin/amenity/category/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         const body = {
             name,
             description,

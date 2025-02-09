@@ -42,7 +42,7 @@ function EditActivity() {
             try {
                 // Ανάκτηση του προορισμού με το destinationID για την επεξεργασία
                 if (activityId) {
-                    const response = await fetch(`https://olympus-riviera.onrender.com/api/activity/${activityId}`);
+                    const response = await fetch(`https://discover-hellas-springboot-backend.onrender.com/api/activity/${activityId}`);
                     const data = await response.json();
                     setFormData({
                         name: data.name,
@@ -56,7 +56,7 @@ function EditActivity() {
                 }
 
                 // Ανάκτηση κατηγοριών για το dropdown
-                const categoriesResponse = await fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all");
+                const categoriesResponse = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/activity/category/get/all");
                 const categoriesData = await categoriesResponse.json();
                 setCategories(categoriesData);
 
@@ -102,7 +102,7 @@ function EditActivity() {
         e.preventDefault();
 
         // Αποστολή δεδομένων για ενημέρωση του προορισμού
-        const url = "https://olympus-riviera.onrender.com/api/admin/activity/" + `${activityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url = "https://discover-hellas-springboot-backend.onrender.com/api/admin/activity/" + `${activityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url , {
             method: "PUT",
             headers: {
@@ -124,7 +124,7 @@ function EditActivity() {
 
     const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this destination?")) {
-            const url = "https://olympus-riviera.onrender.com/api/admin/activity/" + `${activityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+            const url = "https://discover-hellas-springboot-backend.onrender.com/api/admin/activity/" + `${activityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
             fetch(url , {
                 method: "DELETE",
             })

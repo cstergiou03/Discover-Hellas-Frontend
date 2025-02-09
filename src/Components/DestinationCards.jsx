@@ -27,7 +27,7 @@ function DestinationCards() {
     useEffect(() => {
         if (userId) {
             // Φέρνουμε τα preferences του χρήστη
-            fetch(`https://olympus-riviera.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`)
+            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch user preferences");
@@ -51,7 +51,7 @@ function DestinationCards() {
                 const categoryDestinations = await Promise.all(
                     preferences.map(async (categoryId) => {
                         try {
-                            const response = await fetch(`https://olympus-riviera.onrender.com/api/destination/${categoryId}/destinations`);
+                            const response = await fetch(`https://discover-hellas-springboot-backend.onrender.com/api/destination/${categoryId}/destinations`);
                             if (!response.ok) {
                                 throw new Error(`Failed to fetch destinations for category ${categoryId}`);
                             }
@@ -73,7 +73,7 @@ function DestinationCards() {
             // Αν οι προτάσεις είναι λιγότερες από 3, φέρνουμε τυχαία από όλα τα destinations
             if (fetchedDestinations.length < 3) {
                 try {
-                    const response = await fetch("https://olympus-riviera.onrender.com/api/destination/get/all");
+                    const response = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/destination/get/all");
                     if (!response.ok) {
                         throw new Error("Failed to fetch all destinations");
                     }

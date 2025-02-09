@@ -131,7 +131,7 @@ function EventForm() {
         };
 
         
-        const url = "https://olympus-riviera.onrender.com/api/provider/event/add-request/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url = "https://discover-hellas-springboot-backend.onrender.com/api/provider/event/add-request/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url , {
             method: "POST",
             headers: {

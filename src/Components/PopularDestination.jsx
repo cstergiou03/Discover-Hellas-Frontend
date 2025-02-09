@@ -15,7 +15,7 @@ function PopularDestination() {
                 setLoading(true);
 
                 const destinationsResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/destination/get/all"
+                    "https://discover-hellas-springboot-backend.onrender.com/api/destination/get/all"
                 );
                 if (!destinationsResponse.ok) {
                     throw new Error("Failed to fetch destinations");
@@ -24,7 +24,7 @@ function PopularDestination() {
                 setDestinations(destinationsData);
 
                 const statisticsResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/destination/statistics/get/all"
+                    "https://discover-hellas-springboot-backend.onrender.com/api/destination/statistics/get/all"
                 );
                 if (!statisticsResponse.ok) {
                     throw new Error("Failed to fetch statistics");

@@ -44,13 +44,13 @@ function AmenityEdit() {
 
     useEffect(() => {
         // Fetch categories
-        fetch("https://olympus-riviera.onrender.com/api/amenity/category/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/amenity/category/get/all")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch((error) => console.error("Error fetching categories:", error));
 
         // Fetch amenity data
-        fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
+        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/${amenityId}`)
             .then((response) => response.json())
             .then((data) => {
                 setStatus(data.status);
@@ -70,7 +70,7 @@ function AmenityEdit() {
                 setInitialFormData(initialData);
 
                 if(data.status === "REJECTED"){
-                    const approvalUrl = `https://olympus-riviera.onrender.com/api/provider/approval/${amenityId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                    const approvalUrl = `https://discover-hellas-springboot-backend.onrender.com/api/provider/approval/${amenityId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                     console.log(approvalUrl);
                         fetch(approvalUrl)
                             .then((response) => response.json())
@@ -128,7 +128,7 @@ function AmenityEdit() {
             ...changedFields,
         };
 
-        const url = "https://olympus-riviera.onrender.com/api/provider/amenity/edit-request/create/" + `${amenityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url = "https://discover-hellas-springboot-backend.onrender.com/api/provider/amenity/edit-request/create/" + `${amenityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url , {
             method: "PUT",
             headers: {

@@ -30,7 +30,7 @@ function AdminStatistics() {
     useEffect(() => {
         if (selectedItem === "Amenities") {
             setLoading(true);
-            const url1 = "https://olympus-riviera.onrender.com/api/admin/amenity/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+            const url1 = "https://discover-hellas-springboot-backend.onrender.com/api/admin/amenity/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
             fetch(url1)
                 .then((response) => response.json())
                 .then((data) => {
@@ -45,7 +45,7 @@ function AdminStatistics() {
 
         if (selectedItem === "Events") {
             setLoading(true);
-            const url2 = "https://olympus-riviera.onrender.com/api/admin/event/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+            const url2 = "https://discover-hellas-springboot-backend.onrender.com/api/admin/event/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
             fetch(url2)
                 .then((response) => response.json())
                 .then((data) => {
@@ -60,7 +60,7 @@ function AdminStatistics() {
 
         if (selectedItem === "DestinationCategories") {
             setLoading(true);
-            fetch(`https://olympus-riviera.onrender.com/api/destination/category/get/all`)
+            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/destination/category/get/all`)
                 .then((response) => response.json())
                 .then((data) => {
                     setDestinationCategories(data);
@@ -74,7 +74,7 @@ function AdminStatistics() {
 
         if (selectedItem === "AmenityCategories") {
             setLoading(true);
-            fetch("https://olympus-riviera.onrender.com/api/amenity/category/get/all")
+            fetch("https://discover-hellas-springboot-backend.onrender.com/api/amenity/category/get/all")
                 .then((response) => response.json())
                 .then((data) => {
                     setAmenityCategories(data);
@@ -88,7 +88,7 @@ function AdminStatistics() {
 
         if (selectedItem === "ActivityCategories") {
             setLoading(true);
-            fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all")
+            fetch("https://discover-hellas-springboot-backend.onrender.com/api/activity/category/get/all")
                 .then((response) => response.json())
                 .then((data) => {
                     setActivityCategories(data);
@@ -102,7 +102,7 @@ function AdminStatistics() {
 
         if (selectedItem === "Reviews") {
             setLoading(true);
-            fetch("https://olympus-riviera.onrender.com/api/admin/feedback/evaluation/get/all?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
+            fetch("https://discover-hellas-springboot-backend.onrender.com/api/admin/feedback/evaluation/get/all?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
                 .then((response) => response.json())
                 .then((data) => {
                     setReviews(data);
@@ -116,7 +116,7 @@ function AdminStatistics() {
 
         if (selectedItem === "Users") {
             setLoading(true);
-            fetch("https://olympus-riviera.onrender.com/api/admin/providers/get/all?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
+            fetch("https://discover-hellas-springboot-backend.onrender.com/api/admin/providers/get/all?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
                 .then((response) => response.json())
                 .then((data) => {
                     setProviders(data);

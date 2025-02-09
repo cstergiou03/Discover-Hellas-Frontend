@@ -48,7 +48,7 @@ function ProviderProfile() {
                 setProfilePicture(decodedToken.photo);
                 setUserId(decodedToken.userId);
 
-                fetch(`https://olympus-riviera.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                fetch(`https://discover-hellas-springboot-backend.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
 
                 )
                     .then((response) => response.json())
@@ -71,7 +71,7 @@ function ProviderProfile() {
     useEffect(() => {
         if (!userId) return;
 
-        const amenityUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+        const amenityUrl = "https://discover-hellas-springboot-backend.onrender.com/api/provider/amenity/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         console.log(amenityUrl)
         fetch(amenityUrl)
             .then((response) => response.json())
@@ -82,7 +82,7 @@ function ProviderProfile() {
                 console.error('Error fetching amenities:', err.message);
             });
 
-        const eventUrl = "https://olympus-riviera.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+        const eventUrl = "https://discover-hellas-springboot-backend.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         fetch(eventUrl)
             .then((response) => response.json())
             .then((data) => {
@@ -106,7 +106,7 @@ function ProviderProfile() {
             tin, // Στέλνουμε το νέο πεδίο ΑΦΜ
         };
 
-        fetch(`https://olympus-riviera.onrender.com/api/user/updateProfile/Provider/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`, {
+        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/user/updateProfile/Provider/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ function ProviderProfile() {
                 legal_document_tin: files[1], // Assuming the second file is the TIN
             };
 
-            fetch(`https://olympus-riviera.onrender.com/api/user/updateProfile/Provider/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`, {
+            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/user/updateProfile/Provider/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

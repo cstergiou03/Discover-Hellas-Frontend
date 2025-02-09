@@ -29,7 +29,7 @@ function Header() {
         setLoggedIn(!!storedUserToken);  // If there's a userToken, set loggedIn to true
 
         // Fetch categories from API
-        fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/destination/category/get/all")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch((error) => console.error("Error fetching categories:", error));

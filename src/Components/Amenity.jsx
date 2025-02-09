@@ -31,7 +31,7 @@ function Amenity() {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`
+                    `https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/${amenityId}`
                 );
                 if (!response.ok) {
                     throw new Error("Failed to fetch data");

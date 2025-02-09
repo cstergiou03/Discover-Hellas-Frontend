@@ -52,7 +52,7 @@ function ProviderSidebar() {
                 const decodedToken = jwtDecode(token);
                 setUserId(decodedToken.userId);
 
-                const url = "https://olympus-riviera.onrender.com/api/user/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                const url = "https://discover-hellas-springboot-backend.onrender.com/api/user/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                 fetch(url)
                     .then((response) => response.json())
                     .then((data) => {

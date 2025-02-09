@@ -56,7 +56,7 @@ function EventEdit() {
             }
         }
 
-        fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
+        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/event/get/${eventId}`)
             .then((response) => response.json())
             .then((data) => {
                 // Convert ISO date strings to the proper format for datetime-local input
@@ -81,7 +81,7 @@ function EventEdit() {
                 });
 
                 if(data.status === "REJECTED"){
-                    const approvalUrl = `https://olympus-riviera.onrender.com/api/provider/approval/${eventId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                    const approvalUrl = `https://discover-hellas-springboot-backend.onrender.com/api/provider/approval/${eventId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                     console.log(approvalUrl);
                         fetch(approvalUrl)
                             .then((response) => response.json())
@@ -190,7 +190,7 @@ function EventEdit() {
             photos: photosBase64,
         };
 
-        const url = "https://olympus-riviera.onrender.com/api/provider/event/edit-request/create/" + `${eventId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
+        const url = "https://discover-hellas-springboot-backend.onrender.com/api/provider/event/edit-request/create/" + `${eventId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
         fetch(url, {
             method: "PUT",
             headers: {

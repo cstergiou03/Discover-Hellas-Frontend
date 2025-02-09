@@ -59,7 +59,7 @@ function Destination() {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/destination/${destinationId}`
+                    `https://discover-hellas-springboot-backend.onrender.com/api/destination/${destinationId}`
                 );
                 if (!response.ok) {
                     throw new Error("Failed to fetch data");
@@ -76,7 +76,7 @@ function Destination() {
         const fetchAverageRating = async () => {
             try {
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/destination/statistics/${destinationId}`
+                    `https://discover-hellas-springboot-backend.onrender.com/api/destination/statistics/${destinationId}`
                 );
                 if (!response.ok) {
                     throw new Error("Failed to fetch average rating");
@@ -96,7 +96,7 @@ function Destination() {
         const fetchReviews = async () => {
             try {
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/feedback/get/${destinationId}/evaluation/get/all`
+                    `https://discover-hellas-springboot-backend.onrender.com/api/feedback/get/${destinationId}/evaluation/get/all`
                 );
                 if (!response.ok) {
                     throw new Error("Failed to fetch reviews");
@@ -124,7 +124,7 @@ function Destination() {
         const fetchUserVisits = async () => {
             try {
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/user/visit/all/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
+                    `https://discover-hellas-springboot-backend.onrender.com/api/user/visit/all/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
                 );
     
                 if (!response.ok) {
@@ -234,7 +234,7 @@ function Destination() {
         };
 
         try {
-            const response = await fetch("https://olympus-riviera.onrender.com/api/feedback/evaluation/create", {
+            const response = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/feedback/evaluation/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -378,7 +378,7 @@ function Destination() {
     const updateUserVisits = async (updatedVisits) => {
         try {
             const response = await fetch(
-                `https://olympus-riviera.onrender.com/api/user/visit/update/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`,
+                `https://discover-hellas-springboot-backend.onrender.com/api/user/visit/update/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`,
                 {
                     method: 'PUT',
                     headers: {

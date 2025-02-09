@@ -19,7 +19,7 @@ function FilterButton({ onFilterChange }) {
     useEffect(() => {
         const fetchDestinationCategories = async () => {
             try {
-                const response = await fetch('https://olympus-riviera.onrender.com/api/destination/category/get/all');
+                const response = await fetch('https://discover-hellas-springboot-backend.onrender.com/api/destination/category/get/all');
                 const data = await response.json();
                 setDestinationCategories(data);
                 setLoadingDestinations(false);
@@ -31,7 +31,7 @@ function FilterButton({ onFilterChange }) {
 
         const fetchAmenityCategories = async () => {
             try {
-                const response = await fetch('https://olympus-riviera.onrender.com/api/amenity/category/get/all');
+                const response = await fetch('https://discover-hellas-springboot-backend.onrender.com/api/amenity/category/get/all');
                 const data = await response.json();
                 setAmenityCategories(data);
                 setLoadingAmenities(false);
@@ -43,7 +43,7 @@ function FilterButton({ onFilterChange }) {
 
         const fetchActivityCategories = async () => {
             try {
-                const response = await fetch('https://olympus-riviera.onrender.com/api/activity/category/get/all');
+                const response = await fetch('https://discover-hellas-springboot-backend.onrender.com/api/activity/category/get/all');
                 const data = await response.json();
                 setActivityCategories(data);
                 setLoadingActivities(false);

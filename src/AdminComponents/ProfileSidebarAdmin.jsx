@@ -36,7 +36,7 @@ function ProfileSidebarAdmin() {
 
                 // Fetch Amenities
                 const amenitiesResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/amenity/get/all"
+                    "https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/all"
                 );
                 if (!amenitiesResponse.ok) {
                     throw new Error("Failed to fetch amenities data");
@@ -46,7 +46,7 @@ function ProfileSidebarAdmin() {
 
                 // Fetch Events
                 const eventsResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/event/get/all"
+                    "https://discover-hellas-springboot-backend.onrender.com/api/event/get/all"
                 );
                 if (!eventsResponse.ok) {
                     throw new Error("Failed to fetch events data");

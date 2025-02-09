@@ -19,7 +19,7 @@ function AmenityMain() {
 
     // Fetch all amenities
     useEffect(() => {
-        fetch("https://olympus-riviera.onrender.com/api/amenity/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/all")
             .then((response) => response.json())
             .then((data) => {
                 setAmenities(data);  // Ενημερώνουμε το όνομα της μεταβλητής
@@ -34,7 +34,7 @@ function AmenityMain() {
 
     // Fetch categories
     useEffect(() => {
-        fetch("https://olympus-riviera.onrender.com/api/amenity/category/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/amenity/category/get/all")
             .then((response) => response.json())
             .then((data) => {
                 setCategories([{ category_id: "all", name: "All" }, ...data]);

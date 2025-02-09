@@ -47,13 +47,13 @@ function AmenityFormAdmin() {
 
     useEffect(() => {
         // Φόρτωση κατηγοριών
-        fetch("https://olympus-riviera.onrender.com/api/amenity/category/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/amenity/category/get/all")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch(() => setError("Failed to fetch categories."));
 
         // Φορτώνουμε το πρώτο endpoint για το add-request
-        const url1 = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/add-request/get/" + `${amenityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url1 = "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/amenity/add-request/get/" + `${amenityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url1)
             .then(async (response) => {
                 if (response.ok) {
@@ -75,7 +75,7 @@ function AmenityFormAdmin() {
 
                     // Αν το status είναι "APPROVED", πρέπει να φορτώσουμε τα δεδομένα του amenity από άλλο endpoint
                     if (approvalData.status === "PENDING") {
-                        fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
+                        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/${amenityId}`)
                             .then((response) => response.json())
                             .then((data) => {
                                 const photosTable = data.photos
@@ -135,7 +135,7 @@ function AmenityFormAdmin() {
             .catch((err) => {
                 // Εδώ γίνεται το fetch για το edit-request αν αποτύχει το πρώτο
                 // console.error("Error fetching add-request, trying edit-request:", err);
-                const url2 = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/edit-request/get/" + `${amenityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                const url2 = "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/amenity/edit-request/get/" + `${amenityId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                 fetch(url2)
                     .then((response) => {
                         if (!response.ok) {
@@ -154,7 +154,7 @@ function AmenityFormAdmin() {
                                 : approvalData;
 
                             if (approvalData.status === "PENDING") {
-                                fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
+                                fetch(`https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/${amenityId}`)
                                     .then((response) => response.json())
                                     .then((data) => {
                                         const photosTable = data.photos
@@ -214,7 +214,7 @@ function AmenityFormAdmin() {
                     .catch((err) => {
                         console.error("Error fetching edit-request, trying amenity data:", err);
 
-                        const approvalUrl = `https://olympus-riviera.onrender.com/api/admin/approval/${amenityId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                        const approvalUrl = `https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/${amenityId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                         fetch(approvalUrl)
                             .then((response) => response.json())
                             .then((data) => {
@@ -222,7 +222,7 @@ function AmenityFormAdmin() {
                                 setRejectionReason(approvalData.comments);
                             })
                        
-                        fetch(`https://olympus-riviera.onrender.com/api/amenity/get/${amenityId}`)
+                        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/${amenityId}`)
                             .then((response) => response.json())
                             .then((data) => {
                                 console.log("EDQWWWWW ");
@@ -259,8 +259,8 @@ function AmenityFormAdmin() {
 
     const handleStatusChange = (status) => {
         console.log(approvalId)
-        const addUrl = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/add-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
-        const editUrl = "https://olympus-riviera.onrender.com/api/admin/approval/amenity/edit-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const addUrl = "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/amenity/add-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const editUrl = "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/amenity/edit-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         
         const url3 = isNewAmenity
             ? addUrl

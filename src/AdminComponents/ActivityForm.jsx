@@ -38,7 +38,7 @@ function ActivityForm() {
     useEffect(() => {
         // Ανάκτηση κατηγοριών για το dropdown
 
-        fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/activity/category/get/all")
             .then((response) => response.json())
             .then((data) => setCategories(data))
             .catch((error) => console.error(error))
@@ -98,7 +98,7 @@ function ActivityForm() {
         e.preventDefault();
 
         // Αποστολή δεδομένων για δημιουργία νέου προορισμού
-        const url = "https://olympus-riviera.onrender.com/api/admin/activity/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url = "https://discover-hellas-springboot-backend.onrender.com/api/admin/activity/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url , {
             method: "POST",
             headers: {

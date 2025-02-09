@@ -3,7 +3,7 @@ import "../Style/experienceRecord.css";
 
 function CategoryRecord({ data, type, onDelete }) {
     const handleDelete = () => {
-        const url = `https://olympus-riviera.onrender.com/api/admin/${type}/category/` + `${data.category_id}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url = `https://discover-hellas-springboot-backend.onrender.com/api/admin/${type}/category/` + `${data.category_id}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
 
         fetch(url, {
             method: 'DELETE',

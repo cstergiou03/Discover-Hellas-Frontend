@@ -28,7 +28,7 @@ function MyCalendar() {
 
     // Λήψη των events από το API
     useEffect(() => {
-        fetch("https://olympus-riviera.onrender.com/api/event/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/event/get/all")
             .then((response) => response.json())
             .then((data) => {
                 const approvedEvents = data

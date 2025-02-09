@@ -49,7 +49,7 @@ function EventFormAdmin() {
 
     useEffect(() => {
         // Φορτώνουμε το πρώτο endpoint για το add-request
-        const url1 = "https://olympus-riviera.onrender.com/api/admin/approval/event/add-request/get/" + `${eventId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url1 = "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/event/add-request/get/" + `${eventId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url1)
             .then(async (response) => {
                 if (response.ok) {
@@ -67,7 +67,7 @@ function EventFormAdmin() {
 
                 // Αν το status είναι "PENDING", πρέπει να φορτώσουμε τα δεδομένα του event
                 if (approval.status === "PENDING") {
-                    fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
+                    fetch(`https://discover-hellas-springboot-backend.onrender.com/api/event/get/${eventId}`)
                         .then((response) => response.json())
                         .then((data) => {
                             const photosTable = data.photos
@@ -131,7 +131,7 @@ function EventFormAdmin() {
                 }
             })
             .catch((err) => {
-                const url2 = "https://olympus-riviera.onrender.com/api/admin/approval/event/edit-request/get/" + `${eventId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                const url2 = "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/event/edit-request/get/" + `${eventId}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                 fetch(url2)
                     .then((response) => {
                         if (!response.ok) {
@@ -148,7 +148,7 @@ function EventFormAdmin() {
                         const eventData = approval.entity_id ? approval.entity_id : approval;
 
                         if (approval.status === "PENDING") {
-                            fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
+                            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/event/get/${eventId}`)
                                 .then((response) => response.json())
                                 .then((data) => {
                                     const photosTable = data.photos
@@ -213,7 +213,7 @@ function EventFormAdmin() {
                     .catch((err) => {
                         console.error("Error fetching edit-request, trying amenity data:", err);
 
-                        const approvalUrl = `https://olympus-riviera.onrender.com/api/admin/approval/${eventId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+                        const approvalUrl = `https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/${eventId}/rejections/get/all?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
                         fetch(approvalUrl)
                             .then((response) => response.json())
                             .then((data) => {
@@ -221,7 +221,7 @@ function EventFormAdmin() {
                                 setRejectionReason(approvalData.comments);
                         })
 
-                        fetch(`https://olympus-riviera.onrender.com/api/event/get/${eventId}`)
+                        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/event/get/${eventId}`)
                             .then((response) => response.json())
                             .then((data) => {
                                 const photosTable = data.photos
@@ -259,8 +259,8 @@ function EventFormAdmin() {
     }, [eventId]);
 
     const handleStatusChange = (status) => {
-        const addUrl = "https://olympus-riviera.onrender.com/api/admin/approval/event/add-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
-        const editUrl ="https://olympus-riviera.onrender.com/api/admin/approval/event/edit-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const addUrl = "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/event/add-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const editUrl ="https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/event/edit-request/get/" + `${approvalId}` + "/updateStatus?status=" + `${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         const url3 = approvalData.approval_type === "Create"
             ? addUrl
             : editUrl;

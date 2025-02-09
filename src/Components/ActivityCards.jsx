@@ -27,7 +27,7 @@ function ActivityCards() {
     useEffect(() => {
         if (userId) {
             // Φέρνουμε τα hobbies του χρήστη
-            fetch(`https://olympus-riviera.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`)
+            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/user/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch user hobbies");
@@ -51,7 +51,7 @@ function ActivityCards() {
                 const hobbyActivities = await Promise.all(
                     hobbies.map(async (hobbyId) => {
                         try {
-                            const response = await fetch(`https://olympus-riviera.onrender.com/api/activity/${hobbyId}/activities`);
+                            const response = await fetch(`https://discover-hellas-springboot-backend.onrender.com/api/activity/${hobbyId}/activities`);
                             if (!response.ok) {
                                 throw new Error(`Failed to fetch activities for hobby ${hobbyId}`);
                             }
@@ -73,7 +73,7 @@ function ActivityCards() {
             // Αν οι προτάσεις είναι λιγότερες από 3, φέρνουμε τυχαία από όλα τα activities
             if (fetchedActivities.length < 3) {
                 try {
-                    const response = await fetch("https://olympus-riviera.onrender.com/api/activity/get/all");
+                    const response = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/activity/get/all");
                     if (!response.ok) {
                         throw new Error("Failed to fetch all activities");
                     }

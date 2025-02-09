@@ -48,7 +48,7 @@ function DestinationsTable() {
 
     useEffect(() => {
         // Fetch από το endpoint για να πάρουμε τους προορισμούς
-        fetch("https://olympus-riviera.onrender.com/api/destination/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/destination/get/all")
             .then((response) => response.json())
             .then((data) => {
                 setDestinations(data);

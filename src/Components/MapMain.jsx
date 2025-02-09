@@ -28,7 +28,7 @@ function MapMain() {
         const fetchData = async () => {
             try {
                 const destinationsResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/destination/get/all"
+                    "https://discover-hellas-springboot-backend.onrender.com/api/destination/get/all"
                 );
                 const destinationsData = await destinationsResponse.json();
                 const normalizedDestinations = destinationsData.map((destination) => ({
@@ -39,7 +39,7 @@ function MapMain() {
                 setFilteredDestinations(normalizedDestinations);
 
                 const amenitiesResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/amenity/get/all"
+                    "https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/all"
                 );
                 const amenitiesData = await amenitiesResponse.json();
                 const normalizedAmenities = amenitiesData.map((amenity) => ({
@@ -50,7 +50,7 @@ function MapMain() {
                 setFilteredAmenities(normalizedAmenities);
 
                 const activitiesResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/activity/get/all"
+                    "https://discover-hellas-springboot-backend.onrender.com/api/activity/get/all"
                 );
                 const activitiesData = await activitiesResponse.json();
                 const normalizedActivities = activitiesData.map((activity) => ({
@@ -69,7 +69,7 @@ function MapMain() {
 
                     // Νέα κλήση API για τα plans με το userId
                     const plansResponse = await fetch(
-                        `https://olympus-riviera.onrender.com/api/plan/user/${userId}/plans`
+                        `https://discover-hellas-springboot-backend.onrender.com/api/plan/user/${userId}/plans`
                     );
                     const plansData = await plansResponse.json();
                     setPlans(plansData); // Αποθήκευση των plans
@@ -250,7 +250,7 @@ function MapMain() {
                         if (loggedIn) {
                             // Αν είναι συνδεδεμένος, κάνουμε την κανονική προσθήκη στο πλάνο
                             try {
-                                const response = await fetch(`https://olympus-riviera.onrender.com/api/plan/${plan_id}`, {
+                                const response = await fetch(`https://discover-hellas-springboot-backend.onrender.com/api/plan/${plan_id}`, {
                                     method: 'PUT',
                                     headers: {
                                         'Content-Type': 'application/json',

@@ -14,7 +14,7 @@ function ProviderApprovalForm() {
         // Κάνουμε fetch τα δεδομένα από το API
         const fetchUserData = async () => {
             try {
-                const response = await fetch(`https://olympus-riviera.onrender.com/api/user/${providerId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`);
+                const response = await fetch(`https://discover-hellas-springboot-backend.onrender.com/api/user/${providerId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`);
                 const data = await response.json();
                 setUserData(data);
 
@@ -66,7 +66,7 @@ function ProviderApprovalForm() {
 
     const handleApproval = async (status) => {
         try {
-            const response = await fetch(`https://olympus-riviera.onrender.com/api/admin/providers/get/${providerId}/updateStatus?status=${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`, {
+            const response = await fetch(`https://discover-hellas-springboot-backend.onrender.com/api/admin/providers/get/${providerId}/updateStatus?status=${status}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

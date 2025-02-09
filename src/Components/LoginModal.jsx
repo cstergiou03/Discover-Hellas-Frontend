@@ -74,7 +74,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                 const jwt_token = response.credential;
                 console.log(jwt_token);
                 // Κάνουμε το POST request στο backend για το login
-                const apiResponse = await fetch("https://olympus-riviera.onrender.com/api/user/login", {
+                const apiResponse = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/user/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ jwt_token }),
@@ -91,7 +91,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
                     const requestBody = { jwt_token, role };
     
                     const registerResponse = await fetch(
-                        "https://olympus-riviera.onrender.com/api/user/register",
+                        "https://discover-hellas-springboot-backend.onrender.com/api/user/register",
                         {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
@@ -128,7 +128,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
 
             try {
                 const apiResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/user/register",
+                    "https://discover-hellas-springboot-backend.onrender.com/api/user/register",
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

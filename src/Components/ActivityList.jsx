@@ -23,7 +23,7 @@ function ActivityList() {
 
     // Fetch all destinations
     useEffect(() => {
-        fetch("https://olympus-riviera.onrender.com/api/activity/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/activity/get/all")
             .then((response) => response.json())
             .then((data) => {
                 setDestinations(data);
@@ -49,7 +49,7 @@ function ActivityList() {
                 const userId = decodedToken.userId;
 
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/user/visit/all/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
+                    `https://discover-hellas-springboot-backend.onrender.com/api/user/visit/all/${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem("userToken")}`
                 );
 
                 if (!response.ok) {
@@ -76,7 +76,7 @@ function ActivityList() {
 
     // Fetch categories
     useEffect(() => {
-        fetch("https://olympus-riviera.onrender.com/api/activity/category/get/all")
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/activity/category/get/all")
             .then((response) => response.json())
             .then((data) => {
                 const categoriesWithAll = [{ category_id: "all", name: "All" }, ...data];

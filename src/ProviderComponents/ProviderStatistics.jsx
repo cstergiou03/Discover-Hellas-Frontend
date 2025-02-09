@@ -29,7 +29,7 @@ function ProviderStatistics() {
     useEffect(() => {
         if (!userId) return;
     
-        const amenityUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+        const amenityUrl = "https://discover-hellas-springboot-backend.onrender.com/api/provider/amenity/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         fetch(amenityUrl)
             .then((response) => response.json())
             .then((data) => {
@@ -40,7 +40,7 @@ function ProviderStatistics() {
                 setError("Error fetching amenities: " + err.message);
             });
     
-        const eventUrl = "https://olympus-riviera.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+        const eventUrl = "https://discover-hellas-springboot-backend.onrender.com/api/provider/event/get/all/" + `${userId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         fetch(eventUrl)
             .then((response) => response.json())
             .then((data) => {

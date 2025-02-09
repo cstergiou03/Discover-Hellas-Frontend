@@ -57,7 +57,7 @@ function RegisterPanel() {
     
             try {
                 const apiResponse = await fetch(
-                    "https://olympus-riviera.onrender.com/api/user/register",
+                    "https://discover-hellas-springboot-backend.onrender.com/api/user/register",
                     {
                         method: "POST",
                         headers: {

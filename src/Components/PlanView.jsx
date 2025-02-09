@@ -27,19 +27,19 @@ function PlanView() {
     const fetchData = async () => {
         try {
             const destinationsResponse = await fetch(
-                "https://olympus-riviera.onrender.com/api/destination/get/all"
+                "https://discover-hellas-springboot-backend.onrender.com/api/destination/get/all"
             );
             const destinationsData = await destinationsResponse.json();
             setDestinations(destinationsData);
 
             const amenitiesResponse = await fetch(
-                "https://olympus-riviera.onrender.com/api/amenity/get/all"
+                "https://discover-hellas-springboot-backend.onrender.com/api/amenity/get/all"
             );
             const amenitiesData = await amenitiesResponse.json();
             setAmenities(amenitiesData);
 
             const activitiesResponse = await fetch(
-                "https://olympus-riviera.onrender.com/api/activity/get/all"
+                "https://discover-hellas-springboot-backend.onrender.com/api/activity/get/all"
             );
             const activitiesData = await activitiesResponse.json();
             setActivities(activitiesData);
@@ -49,7 +49,7 @@ function PlanView() {
             if (isLoggedIn) {
                 // Αν είναι συνδεδεμένος, παίρνουμε το plan από το backend
                 const planResponse = await fetch(
-                    `https://olympus-riviera.onrender.com/api/plan/${planId}`
+                    `https://discover-hellas-springboot-backend.onrender.com/api/plan/${planId}`
                 );
                 const planData = await planResponse.json();
                 if (planData) {
@@ -132,7 +132,7 @@ function PlanView() {
             if (isLoggedIn) {
                 // Διαγραφή από το backend
                 const response = await fetch(
-                    `https://olympus-riviera.onrender.com/api/plan/${planId}/remove`,
+                    `https://discover-hellas-springboot-backend.onrender.com/api/plan/${planId}/remove`,
                     {
                         method: "PUT",
                         headers: {
@@ -187,7 +187,7 @@ function PlanView() {
     const handleUpdate = async (updatedEntity) => {
         // Ενημέρωση του πλάνου
         const postResponse = await fetch(
-            `https://olympus-riviera.onrender.com/api/plan/${planId}`,
+            `https://discover-hellas-springboot-backend.onrender.com/api/plan/${planId}`,
             {
                 method: "PUT",
                 headers: {

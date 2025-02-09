@@ -43,7 +43,7 @@ function EditDestination() {
             try {
                 // Ανάκτηση του προορισμού με το destinationID για την επεξεργασία
                 if (destinationID) {
-                    const response = await fetch(`https://olympus-riviera.onrender.com/api/destination/${destinationID}`);
+                    const response = await fetch(`https://discover-hellas-springboot-backend.onrender.com/api/destination/${destinationID}`);
                     const data = await response.json();
                     setFormData({
                         name: data.name,
@@ -57,7 +57,7 @@ function EditDestination() {
                 }
 
                 // Ανάκτηση κατηγοριών για το dropdown
-                const categoriesResponse = await fetch("https://olympus-riviera.onrender.com/api/destination/category/get/all");
+                const categoriesResponse = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/destination/category/get/all");
                 const categoriesData = await categoriesResponse.json();
                 setCategories(categoriesData);
 
@@ -103,7 +103,7 @@ function EditDestination() {
         e.preventDefault();
 
         // Αποστολή δεδομένων για ενημέρωση του προορισμού
-        const url = "https://olympus-riviera.onrender.com/api/admin/destination/" + `${destinationID}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url = "https://discover-hellas-springboot-backend.onrender.com/api/admin/destination/" + `${destinationID}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url , {
             method: "PUT",
             headers: {
@@ -125,7 +125,7 @@ function EditDestination() {
 
     const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this destination?")) {
-            const url = "https://olympus-riviera.onrender.com/api/admin/destination/" + `${destinationID}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+            const url = "https://discover-hellas-springboot-backend.onrender.com/api/admin/destination/" + `${destinationID}?` + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
             fetch(url , {
                 method: "DELETE",
             })

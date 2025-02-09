@@ -50,7 +50,7 @@ function AdminProfile() {
             }
         }
 
-        const url1 = "https://olympus-riviera.onrender.com/api/admin/amenity/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url1 = "https://discover-hellas-springboot-backend.onrender.com/api/admin/amenity/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url1)
         .then((response) => response.json())
         .then((data) => {
@@ -60,7 +60,7 @@ function AdminProfile() {
             console.error('Error fetching amenities:', err.message);
         });
 
-        const url2 = "https://olympus-riviera.onrender.com/api/admin/event/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
+        const url2 = "https://discover-hellas-springboot-backend.onrender.com/api/admin/event/get/all?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`
         fetch(url2)
             .then((response) => response.json())
             .then((data) => {

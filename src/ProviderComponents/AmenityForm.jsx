@@ -53,7 +53,7 @@ function AmenityForm() {
             }
         }
 
-        fetch("https://olympus-riviera.onrender.com/api/amenity/category/get/all", {
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/amenity/category/get/all", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -137,9 +137,9 @@ function AmenityForm() {
 
         let apiUrl = "";
         if (location.pathname.includes("/admin/create-amenity")) {
-            apiUrl = "https://olympus-riviera.onrender.com/api/admin/amenity/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+            apiUrl = "https://discover-hellas-springboot-backend.onrender.com/api/admin/amenity/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         } else {
-            apiUrl = "https://olympus-riviera.onrender.com/api/provider/amenity/add-request/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+            apiUrl = "https://discover-hellas-springboot-backend.onrender.com/api/provider/amenity/add-request/create?" + "Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
         }
 
         fetch(apiUrl, {

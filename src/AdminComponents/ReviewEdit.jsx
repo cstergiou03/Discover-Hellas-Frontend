@@ -13,7 +13,7 @@ function ReviewEdit() {
     const navigate = useNavigate();
 
     useEffect(() => {
-            fetch(`https://olympus-riviera.onrender.com/api/admin/feedback/evaluation/get/${reviewId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
+            fetch(`https://discover-hellas-springboot-backend.onrender.com/api/admin/feedback/evaluation/get/${reviewId}` + "?Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`)
                 .then((response) => response.json())
                 .then((data) => {
                     setStatus(data.status);
@@ -29,7 +29,7 @@ function ReviewEdit() {
     }, []);
 
     useEffect(() => {
-        fetch(`https://olympus-riviera.onrender.com/api/${type}/${review.entity_id}`)
+        fetch(`https://discover-hellas-springboot-backend.onrender.com/api/${type}/${review.entity_id}`)
             .then((response) => response.json())
             .then((data) => {
                 setDestinationName(data.name);
@@ -42,7 +42,7 @@ function ReviewEdit() {
 
     const handleStatusChange = (newStatus) => {
         const approvalUrl =
-            "https://olympus-riviera.onrender.com/api/admin/approval/review/" +
+            "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/review/" +
             `${reviewId}` +
             "/approval?Authorization=Bearer%20" +
             `${sessionStorage.getItem('userToken')}`;
@@ -54,7 +54,7 @@ function ReviewEdit() {
                 const fetchedApprovalId = data.approval_id; // Παίρνουμε το ID από την απόκριση
                 console.log(fetchedApprovalId);
     
-                const updateStatusUrl = "https://olympus-riviera.onrender.com/api/admin/approval/review/get/" + `${fetchedApprovalId}` + "/updateStatus?status=" + `${newStatus}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
+                const updateStatusUrl = "https://discover-hellas-springboot-backend.onrender.com/api/admin/approval/review/get/" + `${fetchedApprovalId}` + "/updateStatus?status=" + `${newStatus}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`;
                 console.log(updateStatusUrl);
     
                 fetch(updateStatusUrl, {
@@ -92,7 +92,7 @@ function ReviewEdit() {
             view: newValue === "true" ? "VISIBLE" : "HIDDEN",
         }));
     
-        fetch("https://olympus-riviera.onrender.com/api/admin/feedback/evaluation/get/" + `${reviewId}` + "/view?visible=" + `${newValue}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`, {
+        fetch("https://discover-hellas-springboot-backend.onrender.com/api/admin/feedback/evaluation/get/" + `${reviewId}` + "/view?visible=" + `${newValue}` + "&Authorization=Bearer%20" + `${sessionStorage.getItem('userToken')}`, {
             method: "PUT"
         })
             .then((response) => {

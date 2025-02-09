@@ -38,7 +38,7 @@ function ProfileSidebar() {
     
                 // Fetch amenities data
                 const amenityUrl =
-                    "https://olympus-riviera.onrender.com/api/provider/amenity/get/all/" +
+                    "https://discover-hellas-springboot-backend.onrender.com/api/provider/amenity/get/all/" +
                     `${userId}` +
                     "?Authorization=Bearer%20" +
                     `${sessionStorage.getItem("userToken")}`;
@@ -58,7 +58,7 @@ function ProfileSidebar() {
             try {
                 // Fetch events data
                 const eventUrl =
-                    "https://olympus-riviera.onrender.com/api/provider/event/get/all/" +
+                    "https://discover-hellas-springboot-backend.onrender.com/api/provider/event/get/all/" +
                     `${userId}` +
                     "?Authorization=Bearer%20" +
                     `${sessionStorage.getItem("userToken")}`;
