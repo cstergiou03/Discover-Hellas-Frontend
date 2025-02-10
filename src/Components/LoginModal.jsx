@@ -13,7 +13,6 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
     const [isGoogleScriptLoaded, setIsGoogleScriptLoaded] = useState(false);
 
     useEffect(() => {
-        // Φόρτωση του Google script μόνο μία φορά
         if (!window.google || !window.google.accounts) {
             const script = document.createElement("script");
             script.src = "https://accounts.google.com/gsi/client";
@@ -43,11 +42,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
             });
             window.google.accounts.id.renderButton(
                 googleSignInButtonRef.current,
-                {
-                    theme: "outline",
-                    size: "large",
-                    text: "signin_with",
-                }
+                { theme: "outline", size: "large", text: "signin_with" }
             );
         }
 
@@ -59,11 +54,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
             });
             window.google.accounts.id.renderButton(
                 googleSignUpButtonRef.current,
-                {
-                    theme: "outline",
-                    size: "large",
-                    text: "signup_with",
-                }
+                { theme: "outline", size: "large", text: "signup_with" }
             );
         }
     };
@@ -72,8 +63,8 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
         if (response.credential) {
             try {
                 const jwt_token = response.credential;
-                console.log(jwt_token);
-                // Κάνουμε το POST request στο backend για το login
+                localStorage.setItem("googleCredential", jwt_token); // Αποθήκευση στο localStorage
+                
                 const apiResponse = await fetch("https://discover-hellas-springboot-backend.onrender.com/api/user/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -122,7 +113,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
     const handleGoogleSignUp = async (response) => {
         if (response.credential) {
             const jwt_token = response.credential;
-            console.log(jwt_token);
+            localStorage.setItem("googleCredential", jwt_token); // Αποθήκευση στο localStorage
             const role = "PROVIDER";
             const requestBody = { jwt_token, role };
 
@@ -158,9 +149,7 @@ function LoginModal({ isOpen, onClose, setLoggedIn }) {
         isOpen && (
             <div className="login-modal-overlay">
                 <div className="login-modal-content">
-                    <button className="close-btn" onClick={onClose}>
-                        X
-                    </button>
+                    <button className="close-btn" onClick={onClose}>X</button>
                     <h2>Σύνδεση</h2>
                     <div ref={googleSignInButtonRef}></div>
 
