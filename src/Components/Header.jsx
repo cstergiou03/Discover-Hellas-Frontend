@@ -182,6 +182,7 @@ function Header() {
 
             {/* Mobile Menu - Conditional Rendering */}
             <nav className={`mobile-nav ${isMenuOpen ? 'open' : ''}`}>
+                <a onClick={() => navigate("/destination")}>Προορισμοί</a>
                 <a onClick={handleTravelClick}>Οργάνωσε το ταξίδι σου</a>
                 <a onClick={handleCalendarTravelClick}>Εκδηλώσεις</a>
                 <a onClick={handleExperiencelClick}>Δραστηριότητες</a>
