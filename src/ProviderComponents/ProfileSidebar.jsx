@@ -131,11 +131,11 @@ function ProfileSidebar() {
 
             <div className="profile-metrics">
                 <div className="metrics-item">
-                    <span className="metrics-label">Amenities</span>
+                    <span className="metrics-label">Παροχές</span>
                     <span className="metrics-count">{amenitiesCount}</span>
                 </div>
                 <div className="metrics-item">
-                    <span className="metrics-label">Events</span>
+                    <span className="metrics-label">Εκδηλώσεις</span>
                     <span className="metrics-count">{eventsCount}</span>
                 </div>
             </div>
